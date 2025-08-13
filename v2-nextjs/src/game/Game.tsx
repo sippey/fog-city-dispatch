@@ -1,13 +1,14 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
+// import { motion } from 'framer-motion' // Unused
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
 import { GameState, INITIAL_GAME_STATE } from './types'
 import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
+import { getUnsplashImageUrl } from '@/utils/unsplash'
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE)
@@ -96,6 +97,7 @@ export default function Game() {
   }, [gameState.isGameActive])
 
   const currentCard = cardDeck[gameState.currentCardIndex]
+  const backgroundImageUrl = currentCard ? getUnsplashImageUrl(currentCard, 400, 600) : null
 
   const handleSwipe = (direction: 'left' | 'right' | 'up') => {
     if (!currentCard || gameState.showOutcome) return
@@ -168,7 +170,25 @@ export default function Game() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 text-gray-800 font-sans flex flex-col relative overflow-hidden">
+    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+      {/* Background image with blur and dark overlay */}
+      {backgroundImageUrl && (
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(${backgroundImageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(8px)',
+            transform: 'scale(1.1)' // Slight scale to hide blur edges
+          }}
+        />
+      )}
+      
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/60 z-10" />
+      
       <StatusBar
         readiness={gameState.readiness}
         capacity={gameState.capacity}
@@ -177,11 +197,11 @@ export default function Game() {
       />
       
       {/* IGNORE tab - flush against left viewport edge */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 z-20" style={{ left: '-60px' }}>
+      <div className="absolute top-1/2 transform -translate-y-1/2 z-30" style={{ left: '-60px' }}>
         <div style={{ transform: 'rotate(-90deg)' }}>
           <div className={`py-3 px-3 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[150px] text-center flex items-center justify-center ${
             currentCard?.isPowerup 
-              ? 'bg-gray-400 text-gray-200 opacity-40' 
+              ? 'bg-gray-500 text-gray-300 opacity-40' 
               : `bg-green-500 text-white ${currentSwipeDirection === 'left' ? 'opacity-100' : 'opacity-70'}`
           }`}>
             <span className="text-xs font-bold uppercase tracking-wide">IGNORE</span>
@@ -190,11 +210,11 @@ export default function Game() {
       </div>
 
       {/* BASIC tab - flush against right viewport edge */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 z-20" style={{ right: '-60px' }}>
+      <div className="absolute top-1/2 transform -translate-y-1/2 z-30" style={{ right: '-60px' }}>
         <div style={{ transform: 'rotate(90deg)' }}>
           <div className={`py-3 px-2 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[150px] text-center flex items-center justify-center ${
             currentCard?.isPowerup 
-              ? 'bg-gray-400 text-gray-200 opacity-40' 
+              ? 'bg-gray-500 text-gray-300 opacity-40' 
               : `bg-blue-500 text-white ${currentSwipeDirection === 'right' ? 'opacity-100' : 'opacity-70'}`
           }`}>
             <span className="text-xs font-bold uppercase tracking-wide">BASIC</span>
@@ -202,12 +222,12 @@ export default function Game() {
         </div>
       </div>
       
-      <div className="flex-1 flex items-center justify-center p-8 relative">
+      <div className="flex-1 flex items-center justify-center p-8 relative z-20">
         {/* Maximum label at top of card area */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-30">
           <div className={`px-2 py-2 rounded-b-lg shadow-lg transition-opacity duration-200 w-[150px] text-center ${
             currentCard?.isPowerup 
-              ? 'bg-gray-400 text-gray-200 opacity-40' 
+              ? 'bg-gray-500 text-gray-300 opacity-40' 
               : `bg-red-500 text-white ${currentSwipeDirection === 'up' ? 'opacity-100' : 'opacity-70'}`
           }`}>
             <span className="text-xs font-bold uppercase tracking-wide">MAXIMUM</span>

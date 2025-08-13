@@ -22,7 +22,7 @@ export interface StoryArcProgress {
 }
 
 export interface GameCard {
-  card: any; // DispatchCard type from main types
+  card: import('@/types').DispatchCard;
   isInDeck: boolean;
 }
 

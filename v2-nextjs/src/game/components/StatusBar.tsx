@@ -15,7 +15,7 @@ export default function StatusBar({ readiness, capacity, score, timeRemaining }:
   const readinessPercentage = Math.max(0, Math.min(100, (readiness / capacity) * 100))
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-4">
+    <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-4 relative z-30">
       <div className="max-w-4xl mx-auto flex items-center justify-between">
         {/* Readiness Bar */}
         <div className="flex-1 max-w-xs">

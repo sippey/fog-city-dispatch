@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion'
 import { DispatchCard } from '@/types'
+import { getUnsplashImageUrl } from '@/utils/unsplash'
 
 interface GameCardProps {
   card: DispatchCard
@@ -12,7 +13,7 @@ interface GameCardProps {
 }
 
 export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirectionChange }: GameCardProps) {
-  const [isDragging, setIsDragging] = useState(false)
+  const [, setIsDragging] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   
   // Motion values for smooth animations
@@ -21,11 +22,11 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   
   // Transform motion values to determine swipe direction and visual feedback
   const rotateZ = useTransform(x, [-150, 0, 150], [-10, 0, 10])
-  const opacity = useTransform([x, y], (values: number[]) => {
-    const [xVal, yVal] = values
-    const distance = Math.sqrt(xVal * xVal + yVal * yVal)
-    return Math.max(0.7, 1 - distance / 200)
-  })
+  // const opacity = useTransform([x, y], (values: number[]) => {
+  //   const [xVal, yVal] = values
+  //   const distance = Math.sqrt(xVal * xVal + yVal * yVal)
+  //   return Math.max(0.7, 1 - distance / 200)
+  // })
 
   // Determine current swipe direction and show appropriate feedback
   const getSwipeDirection = (offsetX: number, offsetY: number) => {
@@ -59,6 +60,9 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
       } else if (Math.abs(offset.x) > Math.abs(offset.y)) {
         onSwipe(offset.x < 0 ? 'left' : 'right') // Ignore or Basic
       }
+    } else {
+      // Reset direction immediately if not swiping
+      onSwipeDirectionChange?.(null)
     }
   }
 
@@ -82,23 +86,32 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   const activeResponse = getActiveResponse()
 
   const isPowerupCard = card.isPowerup === true
+  const backgroundImageUrl = getUnsplashImageUrl(card, 400, 600)
+  
+  // Debug: log the URL being used
+  console.log(`Card ${card.id}: ${backgroundImageUrl}`)
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-full max-w-sm mx-auto px-8">
+      <div className="relative w-full mx-auto px-4" style={{ maxWidth: 'min(90vw, 400px)' }}>
         
 
         {/* Draggable Card */}
         <motion.div
           ref={cardRef}
-          className="relative bg-white rounded-2xl p-4 shadow-xl border-0 h-[24rem] flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
+          className="relative rounded-2xl p-4 border-0 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
           style={{ 
+            height: 'min(70vh, 500px)', // Scale with viewport height but cap at 500px
+            aspectRatio: '5/7', // Maintain card proportions
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
             x, 
             y, 
             rotateZ,
-            background: card.storyArc !== 'Random' 
-              ? 'linear-gradient(to bottom right, #ffffff, #fef7cd)' 
-              : 'linear-gradient(to bottom right, #ffffff, #dbeafe)'
+            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${backgroundImageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
           }}
           drag={!isPowerupCard}
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
@@ -120,11 +133,11 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           {isPowerupCard ? (
             /* Powerup Card - Compact Layout */
             <div className="flex-1 flex flex-col justify-center text-center space-y-4 mt-8">
-              <h2 className="text-lg font-extrabold text-gray-800 leading-tight pr-20">
+              <h2 className="text-lg font-extrabold text-white leading-tight pr-20 drop-shadow-lg">
                 {card.headline}
               </h2>
               
-              <p className="text-gray-600 leading-relaxed font-medium text-sm px-2">
+              <p className="text-gray-200 leading-relaxed font-medium text-sm px-2 drop-shadow-md">
                 {card.description}
               </p>
 
@@ -148,18 +161,18 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
             </div>
           ) : !currentDirection ? (
             <div className="flex-1 flex flex-col justify-end text-left px-2 pb-4 overflow-hidden">
-              <h2 className="text-lg md:text-xl font-extrabold mb-2 text-gray-800 leading-tight line-clamp-2">
+              <h2 className="text-lg md:text-xl font-extrabold mb-2 text-white leading-tight line-clamp-2 drop-shadow-lg">
                 {card.headline}
               </h2>
               
-              <p className="text-gray-600 leading-relaxed font-medium text-xs md:text-sm line-clamp-6 overflow-hidden">
+              <p className="text-gray-200 leading-relaxed font-medium text-xs md:text-sm line-clamp-6 overflow-hidden drop-shadow-md">
                 {card.description}
               </p>
             </div>
           ) : (
             /* Dramatic Score Display */
             <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8">
-              <div className="text-2xl font-black text-gray-700 uppercase tracking-widest">
+              <div className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-lg">
                 {currentDirection === 'left' ? 'Ignoring Call' : 
                  currentDirection === 'right' ? 'Basic Response' : 
                  'Maximum Response'}
@@ -168,19 +181,19 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
               {activeResponse && (
                 <>
                   <div className="space-y-6">
-                    <div className={`text-6xl font-extrabold ${activeResponse.readiness < 0 ? 'text-red-500' : 'text-green-500'}`}>
+                    <div className={`text-6xl font-extrabold drop-shadow-lg ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`}>
                       {activeResponse.readiness > 0 ? '+' : ''}{activeResponse.readiness}
                     </div>
-                    <div className="text-lg font-bold text-gray-600 uppercase tracking-wide">
+                    <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
                       Readiness
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <div className="text-4xl font-extrabold text-emerald-500">
+                    <div className="text-4xl font-extrabold text-emerald-400 drop-shadow-lg">
                       +{activeResponse.score}
                     </div>
-                    <div className="text-lg font-bold text-gray-600 uppercase tracking-wide">
+                    <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
                       Points
                     </div>
                   </div>

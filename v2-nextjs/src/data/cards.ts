@@ -1,4 +1,6 @@
-import { DispatchCard } from '@/types'; export const cardsData: DispatchCard[] = 
+import type { DispatchCard } from '@/types'
+
+export const cardsData: DispatchCard[] = 
 [
   {
     "id": 1,
