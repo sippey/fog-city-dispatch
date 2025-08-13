@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion'
+import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion'
 import { DispatchCard } from '@/types'
 import { getCardImageUrl } from '@/utils/unsplash'
 
@@ -22,12 +22,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   
   // Transform motion values to determine swipe direction and visual feedback
   const rotateZ = useTransform(x, [-150, 0, 150], [-10, 0, 10])
-  // const opacity = useTransform([x, y], (values: number[]) => {
-  //   const [xVal, yVal] = values
-  //   const distance = Math.sqrt(xVal * xVal + yVal * yVal)
-  //   return Math.max(0.7, 1 - distance / 200)
-  // })
-
+  
   // Determine current swipe direction and show appropriate feedback
   const getSwipeDirection = (offsetX: number, offsetY: number) => {
     const threshold = 2 // Extremely low threshold for immediate preview
@@ -63,6 +58,9 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     } else {
       // Reset direction immediately if not swiping
       onSwipeDirectionChange?.(null)
+      // Smoothly animate back to origin
+      animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 })
+      animate(y, 0, { type: 'spring', stiffness: 400, damping: 30 })
     }
   }
 
@@ -94,118 +92,89 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   }, [card.id, backgroundImageUrl])
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-full mx-auto" style={{ maxWidth: 'min(60vw, 280px)', margin: '0 80px' }}>
-        
-
-        {/* Draggable Card */}
-        <motion.div
-          ref={cardRef}
-          className="relative rounded-2xl p-4 border-0 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
-          style={{ 
-            height: 'min(70vh, 400px)', // Smaller height for mobile
-            width: 'min(60vw, 280px)', // Explicit width limit
-            aspectRatio: '6/7', // Maintain card proportions
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
-            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
-            x, 
-            y, 
-            rotateZ,
-            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${backgroundImageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-          drag={!isPowerupCard}
-          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          dragElastic={1}
-          dragSnapToOrigin={true}
-          whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
-          onDragStart={() => setIsDragging(true)}
-          onDragEnd={handleDragEnd}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        >
-          {/* Location - top right */}
-          <div className="absolute top-3 right-3">
-            <div className="bg-gray-100 px-2 py-1 rounded-full text-xs font-medium text-gray-600">
-              📍 {card.location}
-            </div>
+    <div className="relative" style={{ width: 'min(60vw, 280px)' }}>
+      {/* Draggable Card */}
+      <motion.div
+        ref={cardRef}
+        className="rounded-2xl p-4 border border-gray-700 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
+        style={{ 
+          height: 'min(70vh, 400px)',
+          width: 'min(60vw, 280px)',
+          aspectRatio: '6 / 7',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+          filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
+          x, 
+          y, 
+          rotateZ,
+          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${backgroundImageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+        drag={!isPowerupCard}
+        dragElastic={0.8}
+        dragMomentum={false}
+        whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={handleDragEnd}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      >
+        {/* Location - top right */}
+        <div className="absolute top-3 right-3">
+          <div className="bg-black/80 px-2 py-1 rounded-full text-xs font-medium text-gray-300">
+            📍 {card.location}
           </div>
-          
-          {/* Card Content */}
-          {isPowerupCard ? (
-            /* Powerup Card - Compact Layout */
-            <div className="flex-1 flex flex-col justify-center text-center space-y-4 mt-8">
-              <h2 className="text-lg font-extrabold text-white leading-tight pr-20 drop-shadow-lg">
-                {card.headline}
-              </h2>
-              
-              <p className="text-gray-200 leading-relaxed font-medium text-sm px-2 drop-shadow-md">
-                {card.description}
-              </p>
-
-              {/* Readiness Bonus Display */}
-              <div className="space-y-1">
-                <div className="text-3xl font-extrabold text-green-500">
-                  +{card.powerupValue}
-                </div>
-                <div className="text-xs font-bold text-gray-600 uppercase tracking-wide">
-                  Readiness
-                </div>
-              </div>
-
-              {/* Accept Button */}
-              <button
-                onClick={onAcceptPowerup}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl text-base uppercase tracking-wide shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
-              >
-                Accept Bonus
-              </button>
+        </div>
+        
+        {/* Card Content */}
+        {isPowerupCard ? (
+          /* Powerup Card - Clean with button */
+          <div className="flex-1 flex flex-col justify-center items-center">
+            <button
+              onClick={onAcceptPowerup}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl text-lg uppercase tracking-wide shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
+            >
+              Accept Bonus
+            </button>
+          </div>
+        ) : !currentDirection ? (
+          /* Just show location badge - text moved below card */
+          <div className="flex-1 flex flex-col justify-start">
+            {/* Location badge will be positioned by the absolute div above */}
+          </div>
+        ) : (
+          /* Dramatic Score Display */
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8">
+            <div className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-lg">
+              {currentDirection === 'left' ? 'Ignoring Call' : 
+               currentDirection === 'right' ? 'Basic Response' : 
+               'Maximum Response'}
             </div>
-          ) : !currentDirection ? (
-            <div className="flex-1 flex flex-col justify-end text-left px-2 pb-4 overflow-hidden">
-              <h2 className="text-lg md:text-xl font-extrabold mb-2 text-white leading-tight line-clamp-2 drop-shadow-lg">
-                {card.headline}
-              </h2>
-              
-              <p className="text-gray-200 leading-relaxed font-medium text-xs md:text-sm line-clamp-6 overflow-hidden drop-shadow-md">
-                {card.description}
-              </p>
-            </div>
-          ) : (
-            /* Dramatic Score Display */
-            <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8">
-              <div className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-lg">
-                {currentDirection === 'left' ? 'Ignoring Call' : 
-                 currentDirection === 'right' ? 'Basic Response' : 
-                 'Maximum Response'}
-              </div>
-              
-              {activeResponse && (
-                <>
-                  <div className="space-y-6">
-                    <div className={`text-6xl font-extrabold drop-shadow-lg ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`}>
-                      {activeResponse.readiness > 0 ? '+' : ''}{activeResponse.readiness}
-                    </div>
-                    <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
-                      Readiness
-                    </div>
+            
+            {activeResponse && (
+              <>
+                <div className="space-y-6">
+                  <div className={`text-6xl font-extrabold drop-shadow-lg ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`}>
+                    {activeResponse.readiness > 0 ? '+' : ''}{activeResponse.readiness}
                   </div>
-                  
-                  <div className="space-y-2">
-                    <div className="text-4xl font-extrabold text-emerald-400 drop-shadow-lg">
-                      +{activeResponse.score}
-                    </div>
-                    <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
-                      Points
-                    </div>
+                  <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
+                    Readiness
                   </div>
-                </>
-              )}
-            </div>
-          )}
-        </motion.div>
-      </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="text-4xl font-extrabold text-emerald-400 drop-shadow-lg">
+                    +{activeResponse.score}
+                  </div>
+                  <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
+                    Points
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </motion.div>
     </div>
   )
 }
