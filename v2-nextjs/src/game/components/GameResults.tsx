@@ -16,13 +16,13 @@ export default function GameResults({
 }: GameResultsProps) {
   const { storyBonus, totalScore, completedArcs } = calculateFinalScore(baseScore, storyProgress)
   
-  const getArcIcon = (progress: any) => {
+  const getArcIcon = (progress: { isCompleted: boolean; cardsResponded: number }) => {
     if (progress.isCompleted) return '✅'
     if (progress.cardsResponded > 0) return '🔶'
     return '❌'
   }
 
-  const getArcStatus = (progress: any) => {
+  const getArcStatus = (progress: { cardsResponded: number; cardsIgnored: number; totalCards: number; isCompleted: boolean; multiplier: number }) => {
     const responded = progress.cardsResponded
     const ignored = progress.cardsIgnored
     const encountered = responded + ignored

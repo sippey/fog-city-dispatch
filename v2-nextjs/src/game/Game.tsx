@@ -224,7 +224,7 @@ export default function Game() {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-2xl leading-relaxed drop-shadow-lg">
-            You're a 1970s San Francisco police dispatcher. Make split-second decisions on emergency calls—swipe left to ignore, right for basic response, or up for maximum response. Balance your readiness with the city's needs.
+            You&apos;re a 1970s San Francisco police dispatcher. Make split-second decisions on emergency calls—swipe left to ignore, right for basic response, or up for maximum response. Balance your readiness with the city&apos;s needs.
           </p>
           
           <button

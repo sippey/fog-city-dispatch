@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion'
 import { DispatchCard } from '@/types'
 import { getCardImageUrl } from '@/utils/unsplash'
@@ -65,7 +65,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     }
   }
 
-  const resetCard = () => {
+  const resetCard = useCallback(() => {
     // Clear any existing timeout
     if (resetTimeoutRef.current) {
       clearTimeout(resetTimeoutRef.current)
@@ -77,7 +77,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     // Force reset position with stronger spring
     animate(x, 0, { type: 'spring', stiffness: 600, damping: 40 })
     animate(y, 0, { type: 'spring', stiffness: 600, damping: 40 })
-  }
+  }, [x, y, onSwipeDirectionChange])
 
   // Safety mechanism: if card gets stuck far from center, auto-reset
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
 
     const interval = setInterval(checkPosition, 1000) // Check every second
     return () => clearInterval(interval)
-  }, [x, y])
+  }, [x, y, resetCard])
 
   const currentDirection = getSwipeDirection(x.get(), y.get())
   
@@ -122,7 +122,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   // Debug: log URL only when card changes
   useEffect(() => {
     console.log(`Card ${card.id} (${card.headline}): ${backgroundImageUrl}`)
-  }, [card.id, backgroundImageUrl])
+  }, [card.id, card.headline, backgroundImageUrl])
 
   return (
     <div className="relative" style={{ width: 'min(60vw, 280px)' }}>

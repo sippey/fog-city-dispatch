@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
 import { getCardImageUrl } from '@/utils/unsplash'
@@ -101,11 +102,12 @@ export default function PreviewPage() {
                   <div className={`px-2 py-1 rounded text-xs font-medium ${getCardTypeColor(card)}`}>
                     {getCardType(card)}
                   </div>
-                  <div className="w-16 h-20 rounded border overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img 
+                  <div className="w-16 h-20 rounded border overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                    <Image 
                       src={imageUrl} 
                       alt={card.headline}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                       onError={(e) => {
                         console.log(`Failed to load image for card ${card.id}: ${imageUrl}`)
                         e.currentTarget.style.display = 'none'
