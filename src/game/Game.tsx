@@ -202,6 +202,16 @@ function Game() {
         visible={gameState.showOutcome}
         onComplete={handleOutcomeComplete}
       />
+      
+      {/* Card Browser Link */}
+      <div className="absolute bottom-4 left-4">
+        <a
+          href="/fog-city-dispatch/browse-cards"
+          className="inline-flex items-center px-4 py-2 bg-white rounded-full shadow-lg border border-gray-200 text-gray-600 hover:text-blue-600 hover:border-blue-300 transition-colors duration-200 text-sm font-medium"
+        >
+          📚 Browse All Cards
+        </a>
+      </div>
     </div>
   );
 }
