@@ -8,7 +8,7 @@ import { GameState, INITIAL_GAME_STATE } from './types'
 import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
-import { getUnsplashImageUrl } from '@/utils/unsplash'
+import { getCardImageUrl } from '@/utils/unsplash'
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE)
@@ -97,7 +97,7 @@ export default function Game() {
   }, [gameState.isGameActive])
 
   const currentCard = cardDeck[gameState.currentCardIndex]
-  const backgroundImageUrl = currentCard ? getUnsplashImageUrl(currentCard, 400, 600) : null
+  const backgroundImageUrl = currentCard ? getCardImageUrl(currentCard) : null
 
   const handleSwipe = (direction: 'left' | 'right' | 'up') => {
     if (!currentCard || gameState.showOutcome) return

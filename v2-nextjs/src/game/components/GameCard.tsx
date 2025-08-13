@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion'
 import { DispatchCard } from '@/types'
-import { getUnsplashImageUrl } from '@/utils/unsplash'
+import { getCardImageUrl } from '@/utils/unsplash'
 
 interface GameCardProps {
   card: DispatchCard
@@ -86,14 +86,16 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   const activeResponse = getActiveResponse()
 
   const isPowerupCard = card.isPowerup === true
-  const backgroundImageUrl = getUnsplashImageUrl(card, 400, 600)
+  const backgroundImageUrl = getCardImageUrl(card)
   
-  // Debug: log the URL being used
-  console.log(`Card ${card.id}: ${backgroundImageUrl}`)
+  // Debug: log URL only when card changes
+  useEffect(() => {
+    console.log(`Card ${card.id} (${card.headline}): ${backgroundImageUrl}`)
+  }, [card.id, backgroundImageUrl])
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-full mx-auto px-4" style={{ maxWidth: 'min(90vw, 400px)' }}>
+      <div className="relative w-full mx-auto" style={{ maxWidth: 'min(60vw, 280px)', margin: '0 80px' }}>
         
 
         {/* Draggable Card */}
@@ -101,8 +103,9 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           ref={cardRef}
           className="relative rounded-2xl p-4 border-0 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
           style={{ 
-            height: 'min(70vh, 500px)', // Scale with viewport height but cap at 500px
-            aspectRatio: '5/7', // Maintain card proportions
+            height: 'min(70vh, 400px)', // Smaller height for mobile
+            width: 'min(60vw, 280px)', // Explicit width limit
+            aspectRatio: '6/7', // Maintain card proportions
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
             filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
             x, 

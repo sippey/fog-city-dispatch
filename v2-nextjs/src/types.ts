@@ -17,6 +17,7 @@ export interface DispatchCard {
   voiceScript?: string;
   isPowerup?: boolean;
   powerupValue?: number;  // Readiness points gained for powerup cards
+  imageFile?: string;  // Local image filename (without extension)
   responses: {
     ignore?: ResponseOption;
     basic?: ResponseOption;

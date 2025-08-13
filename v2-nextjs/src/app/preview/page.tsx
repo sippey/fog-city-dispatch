@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
+import { getCardImageUrl } from '@/utils/unsplash'
 
 // Smart shuffle function that maintains story order
 function smartShuffle(cards: DispatchCard[]): DispatchCard[] {
@@ -90,20 +91,35 @@ export default function PreviewPage() {
         
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="space-y-3">
-            {shuffledCards.map((card, index) => (
-              <div key={`${card.id}-${index}`} className="flex items-center space-x-4 p-3 border rounded-lg">
-                <div className="text-sm font-mono text-gray-500 w-8">
-                  {index + 1}
+            {shuffledCards.map((card, index) => {
+              const imageUrl = getCardImageUrl(card)
+              return (
+                <div key={`${card.id}-${index}`} className="flex items-center space-x-4 p-3 border rounded-lg">
+                  <div className="text-sm font-mono text-gray-500 w-8">
+                    {index + 1}
+                  </div>
+                  <div className={`px-2 py-1 rounded text-xs font-medium ${getCardTypeColor(card)}`}>
+                    {getCardType(card)}
+                  </div>
+                  <div className="w-16 h-20 rounded border overflow-hidden bg-gray-100 flex-shrink-0">
+                    <img 
+                      src={imageUrl} 
+                      alt={card.headline}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.log(`Failed to load image for card ${card.id}: ${imageUrl}`)
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">{card.headline}</div>
+                    <div className="text-sm text-gray-600">{card.location}</div>
+                    <div className="text-xs text-gray-400 mt-1">{imageUrl}</div>
+                  </div>
                 </div>
-                <div className={`px-2 py-1 rounded text-xs font-medium ${getCardTypeColor(card)}`}>
-                  {getCardType(card)}
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">{card.headline}</div>
-                  <div className="text-sm text-gray-600">{card.location}</div>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
         
