@@ -9,7 +9,7 @@ function CardBrowser() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/fog-city-dispatch/fog_city_dispatch_cards_with_powerups.json')
+    fetch('./fog_city_dispatch_cards_with_powerups.json')
       .then(response => response.json())
       .then(data => {
         setCards(data)

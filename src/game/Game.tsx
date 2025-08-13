@@ -23,7 +23,7 @@ function Game() {
 
   // Initialize game
   useEffect(() => {
-    fetch('/fog-city-dispatch/fog_city_dispatch_cards_with_powerups.json')
+    fetch('./fog_city_dispatch_cards_with_powerups.json')
       .then(response => response.json())
       .then(data => {
         const shuffled = shuffleCards(data as DispatchCard[]);
@@ -146,7 +146,7 @@ function Game() {
     setStoryProgress(initializeStoryProgress());
     setLoading(true);
     
-    fetch('/fog-city-dispatch/fog_city_dispatch_cards_with_powerups.json')
+    fetch('./fog_city_dispatch_cards_with_powerups.json')
       .then(response => response.json())
       .then(data => {
         const shuffled = shuffleCards(data as DispatchCard[]);
