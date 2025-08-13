@@ -15,6 +15,7 @@ interface GameCardProps {
 export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirectionChange }: GameCardProps) {
   const [, setIsDragging] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+  const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   
   // Motion values for smooth animations
   const x = useMotionValue(0)
@@ -39,8 +40,8 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     setIsDragging(false)
     
     const { offset, velocity } = info
-    const swipeThreshold = 100
-    const swipeVelocity = 500
+    const swipeThreshold = 80
+    const swipeVelocity = 400
     
     // Check for swipe based on distance OR velocity
     const shouldSwipe = Math.abs(offset.x) > swipeThreshold || 
@@ -49,20 +50,52 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
                        Math.abs(velocity.y) > swipeVelocity
     
     if (shouldSwipe) {
-      // Determine swipe direction
+      // Determine swipe direction - prioritize the larger movement
       if (Math.abs(offset.y) > Math.abs(offset.x) && offset.y < 0) {
         onSwipe('up') // Maximum response
       } else if (Math.abs(offset.x) > Math.abs(offset.y)) {
         onSwipe(offset.x < 0 ? 'left' : 'right') // Ignore or Basic
+      } else {
+        // If unclear direction, reset card
+        resetCard()
       }
     } else {
-      // Reset direction immediately if not swiping
-      onSwipeDirectionChange?.(null)
-      // Smoothly animate back to origin
-      animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 })
-      animate(y, 0, { type: 'spring', stiffness: 400, damping: 30 })
+      // No swipe detected, reset card
+      resetCard()
     }
   }
+
+  const resetCard = () => {
+    // Clear any existing timeout
+    if (resetTimeoutRef.current) {
+      clearTimeout(resetTimeoutRef.current)
+      resetTimeoutRef.current = null
+    }
+    
+    // Reset direction immediately
+    onSwipeDirectionChange?.(null)
+    // Force reset position with stronger spring
+    animate(x, 0, { type: 'spring', stiffness: 600, damping: 40 })
+    animate(y, 0, { type: 'spring', stiffness: 600, damping: 40 })
+  }
+
+  // Safety mechanism: if card gets stuck far from center, auto-reset
+  useEffect(() => {
+    const checkPosition = () => {
+      const currentX = x.get()
+      const currentY = y.get()
+      const distance = Math.sqrt(currentX * currentX + currentY * currentY)
+      
+      // If card is more than 250px from center and not being dragged, reset it
+      if (distance > 250) {
+        console.log('Card stuck, auto-resetting')
+        resetCard()
+      }
+    }
+
+    const interval = setInterval(checkPosition, 1000) // Check every second
+    return () => clearInterval(interval)
+  }, [x, y])
 
   const currentDirection = getSwipeDirection(x.get(), y.get())
   
@@ -112,8 +145,14 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           backgroundRepeat: 'no-repeat'
         }}
         drag={!isPowerupCard}
-        dragElastic={0.8}
+        dragElastic={0.2}
         dragMomentum={false}
+        dragConstraints={{ 
+          left: -200, 
+          right: 200, 
+          top: -200, 
+          bottom: 100 
+        }}
         whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
         onDragStart={() => setIsDragging(true)}
         onDragEnd={handleDragEnd}

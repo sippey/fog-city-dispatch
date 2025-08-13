@@ -4,11 +4,14 @@ export interface GameState {
   score: number;
   timeRemaining: number; // in seconds
   isGameActive: boolean;
+  showIntro: boolean; // Show intro screen before game starts
+  showResults: boolean; // Show results screen after game ends
   currentCardIndex: number;
   cardsHandled: number;
   showOutcome: boolean;
   currentOutcome: string;
   tutorialStep: number; // 0-2 for first 3 cards, -1 when done
+  storyProgress: StoryArcProgress; // Track story arc completion
 }
 
 export interface StoryArcProgress {
@@ -44,11 +47,14 @@ export const INITIAL_GAME_STATE: GameState = {
   readiness: 100,
   capacity: 200,
   score: 0,
-  timeRemaining: 300, // 5 minutes
-  isGameActive: true,
+  timeRemaining: 30, // 30 seconds for testing
+  isGameActive: false, // Don't start until intro is complete
+  showIntro: true, // Show intro screen first
+  showResults: false, // Show results screen after game ends
   currentCardIndex: 0,
   cardsHandled: 0,
   showOutcome: false,
   currentOutcome: '',
-  tutorialStep: 0
+  tutorialStep: 0,
+  storyProgress: {} // Will be initialized when game starts
 };

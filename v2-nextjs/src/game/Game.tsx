@@ -8,7 +8,9 @@ import { GameState, INITIAL_GAME_STATE } from './types'
 import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
+import GameResults from './components/GameResults'
 import { getCardImageUrl } from '@/utils/unsplash'
+import { initializeStoryProgress, updateStoryProgress } from './gameLogic'
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE)
@@ -82,7 +84,7 @@ export default function Game() {
         const newTimeRemaining = prev.timeRemaining - 1
         
         if (newTimeRemaining <= 0) {
-          return { ...prev, timeRemaining: 0, isGameActive: false }
+          return { ...prev, timeRemaining: 0, isGameActive: false, showResults: true }
         }
         
         return {
@@ -112,7 +114,7 @@ export default function Game() {
     const cost = response.readiness
     if (gameState.readiness + cost < 0) return // Can't afford
 
-    // Update game state with outcome
+    // Update game state with outcome and story progress
     setGameState(prev => ({
       ...prev,
       readiness: Math.min(prev.capacity, prev.readiness + cost),
@@ -120,7 +122,8 @@ export default function Game() {
       capacity: prev.capacity + response.capacity,
       cardsHandled: prev.cardsHandled + 1,
       showOutcome: true,
-      currentOutcome: response.outcome
+      currentOutcome: response.outcome,
+      storyProgress: updateStoryProgress(currentCard, responseType, prev.storyProgress)
     }))
   }
 
@@ -139,6 +142,15 @@ export default function Game() {
     }))
   }
 
+  const handleStartGame = () => {
+    setGameState(prev => ({
+      ...prev,
+      showIntro: false,
+      isGameActive: true,
+      storyProgress: initializeStoryProgress()
+    }))
+  }
+
   const handleOutcomeComplete = useCallback(() => {
     console.log('handleOutcomeComplete called')
     setGameState(prev => {
@@ -148,7 +160,7 @@ export default function Game() {
       // Check if we've run out of cards or time
       if (nextIndex >= cardDeck.length || prev.timeRemaining <= 0) {
         console.log('Game ending - out of cards or time')
-        return { ...prev, showOutcome: false, isGameActive: false }
+        return { ...prev, showOutcome: false, isGameActive: false, showResults: true }
       }
       
       console.log('Moving to next card')
@@ -165,6 +177,63 @@ export default function Game() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-2xl font-bold text-gray-600">Loading game...</div>
+      </div>
+    )
+  }
+
+  // Show results screen
+  if (gameState.showResults) {
+    return (
+      <GameResults
+        baseScore={gameState.score}
+        cardsHandled={gameState.cardsHandled}
+        storyProgress={gameState.storyProgress}
+        onPlayAgain={() => {
+          setGameState(INITIAL_GAME_STATE)
+          const shuffled = smartShuffle(cardsData)
+          setCardDeck(shuffled)
+        }}
+      />
+    )
+  }
+
+  // Show intro screen
+  if (gameState.showIntro) {
+    return (
+      <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+        {/* Background image with blur and dark overlay */}
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(/images/cards/Confession%20Call%20Downtown.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(8px)',
+            transform: 'scale(1.1)'
+          }}
+        />
+        
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/70 z-10" />
+        
+        {/* Intro content */}
+        <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-8 text-center">
+          <h1 className="text-6xl md:text-8xl font-extrabold text-white mb-8 drop-shadow-2xl">
+            Fog City Dispatch
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-2xl leading-relaxed drop-shadow-lg">
+            You're a 1970s San Francisco police dispatcher. Make split-second decisions on emergency calls—swipe left to ignore, right for basic response, or up for maximum response. Balance your readiness with the city's needs.
+          </p>
+          
+          <button
+            onClick={handleStartGame}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+          >
+            Start Dispatch
+          </button>
+        </div>
       </div>
     )
   }
