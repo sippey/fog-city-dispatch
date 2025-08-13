@@ -4,7 +4,7 @@ import CardBrowser from './CardBrowser'
 
 function App() {
   return (
-    <Router>
+    <Router basename="/fog-city-dispatch">
       <Routes>
         <Route path="/" element={<Game />} />
         <Route path="/browse-cards" element={<CardBrowser />} />
