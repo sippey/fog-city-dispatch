@@ -47,7 +47,7 @@ export const INITIAL_GAME_STATE: GameState = {
   readiness: 100,
   capacity: 200,
   score: 0,
-  timeRemaining: 30, // 30 seconds for testing
+  timeRemaining: 300, // 5 minutes
   isGameActive: false, // Don't start until intro is complete
   showIntro: true, // Show intro screen first
   showResults: false, // Show results screen after game ends
