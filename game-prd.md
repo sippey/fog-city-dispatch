@@ -15,8 +15,8 @@ Fog City Dispatch is a mobile card-swiping game where players take on the role o
 7. **Next Card**: New card slides in immediately after outcome
 
 ## Starting Game State
-- **Readiness**: 100/200
-- **Capacity**: 200 (increases +1 every second automatically)
+- **Readiness**: 100/200 (increases +1 every second automatically)
+- **Capacity**: 200 (increases only when resolving cards)
 - **Score**: 0
 - **Timer**: 5:00
 
@@ -118,9 +118,9 @@ Fog City Dispatch is a mobile card-swiping game where players take on the role o
 
 ### Resource System
 **Automatic Progression**:
-- Capacity increases by +1 every second (regardless of activity)
+- Readiness increases by +1 every second (up to current capacity maximum)
 - Timer decreases by 1 second every second
-- Readiness can be restored up to current capacity maximum
+- Capacity increases only when resolving cards (via basic/maximum responses)
 
 ### Card Deck System
 **Total Cards**: 100 emergency cards + ~10 powerup cards

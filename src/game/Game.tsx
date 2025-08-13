@@ -41,7 +41,7 @@ function Game() {
         return {
           ...prev,
           timeRemaining: newTimeRemaining,
-          capacity: prev.capacity + 1 // +1 capacity every second
+          readiness: Math.min(prev.capacity, prev.readiness + 1) // +1 readiness every second (capped by capacity)
         };
       });
     }, 1000);
