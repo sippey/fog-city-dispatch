@@ -66,7 +66,7 @@ function CardBrowser() {
           </p>
           <div className="mt-4">
             <a 
-              href="/" 
+              href="/fog-city-dispatch/" 
               className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200"
             >
               ← Back to Game

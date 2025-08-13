@@ -139,7 +139,7 @@ function Game() {
   }, []);
 
   const handleBrowseCards = useCallback(() => {
-    window.location.href = '/browse-cards';
+    window.location.href = '/fog-city-dispatch/browse-cards';
   }, []);
 
   // Check affordability for current card
