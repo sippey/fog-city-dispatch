@@ -16,13 +16,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Neighbors handle it themselves"
       },
       "basic": {
-        "readiness": -5,
+        "readiness": -2.5,
         "capacity": 5,
         "score": 10,
         "outcome": "Officers calm the situation"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 50,
         "outcome": "SWAT overwhelms domestic dispute"
@@ -46,13 +46,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Crime scene goes cold"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers find bodies, evidence lost"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 32,
         "score": 75,
         "outcome": "Full scene secured, K9 units deployed"
@@ -76,13 +76,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Store owner finds broken window"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 10,
         "outcome": "Officers check perimeter, false alarm"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 16,
         "score": 25,
         "outcome": "SWAT surrounds empty store"
@@ -105,13 +105,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Passerby calls ambulance instead"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer provides first aid"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 16,
         "score": 50,
         "outcome": "Full hazmat response for overdose"
@@ -134,13 +134,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Tourists direct traffic"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 20,
         "outcome": "Traffic cleared, minor injuries"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 24,
         "score": 75,
         "outcome": "Full emergency response shuts street"
@@ -163,13 +163,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Robber escapes with cash"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Suspect caught two blocks away"
       },
       "maximum": {
-        "readiness": -36,
+        "readiness": -18,
         "capacity": 32,
         "score": 75,
         "outcome": "Helicopter tracks fleeing suspect"
@@ -192,13 +192,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Family searches alone in fog"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers find man by pond"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 125,
         "outcome": "Full search with dogs and helicopters"
@@ -222,13 +222,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Call logged as prank"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer checks payphone area"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "Full investigation team mobilized"
@@ -252,13 +252,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Bouncer breaks up fight"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 10,
         "outcome": "Officers arrest instigators"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 32,
         "score": 50,
         "outcome": "Riot squad clears entire block"
@@ -281,13 +281,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Wife continues CPR alone"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 20,
         "outcome": "Paramedics save tourist's life"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 75,
         "outcome": "Life flight helicopter lands on pier"
@@ -310,13 +310,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Bystanders call ambulances"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 20,
         "outcome": "Officers secure scene, aid victims"
       },
       "maximum": {
-        "readiness": -56,
+        "readiness": -28,
         "capacity": 40,
         "score": 100,
         "outcome": "City-wide manhunt initiated"
@@ -339,13 +339,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Residents wait on street"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 10,
         "outcome": "Fire chief declares false alarm"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 24,
         "score": 50,
         "outcome": "Full fire response blocks traffic"
@@ -368,13 +368,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Parents hire private investigators"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 15,
         "score": 30,
         "outcome": "Missing person report filed"
       },
       "maximum": {
-        "readiness": -80,
+        "readiness": -40,
         "capacity": 48,
         "score": 125,
         "outcome": "FBI takes over investigation"
@@ -398,13 +398,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Women avoid the area"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer talks to man, he leaves"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 16,
         "score": 50,
         "outcome": "Tactical team arrests confused man"
@@ -427,13 +427,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Cab company finds body"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 15,
         "score": 30,
         "outcome": "Homicide detectives investigate"
       },
       "maximum": {
-        "readiness": -72,
+        "readiness": -36,
         "capacity": 48,
         "score": 125,
         "outcome": "Full forensic team processes scene"
@@ -457,13 +457,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Burglars escape with valuables"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers arrest fleeing suspects"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 32,
         "score": 75,
         "outcome": "SWAT surrounds mansion"
@@ -486,13 +486,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Editor files story anyway"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Detective reviews cipher letter"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 40,
         "score": 150,
         "outcome": "All schools get protection details"
@@ -516,13 +516,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Crowd talks man down"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Negotiator saves life"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 32,
         "score": 100,
         "outcome": "Net deployment traumatizes man"
@@ -546,13 +546,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Correction goes unnoticed"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 20,
         "outcome": "Detective updates suspect profile"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 75,
         "outcome": "Presidio searched by K9 teams"
@@ -576,13 +576,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Party winds down naturally"
       },
       "basic": {
-        "readiness": -2,
+        "readiness": -1,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer asks them to quiet down"
       },
       "maximum": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 8,
         "score": 25,
         "outcome": "SWAT raids Italian dinner party"
@@ -605,13 +605,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Intelligence filed away"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 20,
         "outcome": "Extra patrols in Chinatown"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 24,
         "score": 75,
         "outcome": "Gang task force mobilized"
@@ -635,13 +635,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Dog walkers help victim"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers search yacht harbor"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "Coast Guard searches waterfront"
@@ -665,13 +665,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Family negotiates privately"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 20,
         "outcome": "FBI analyzes voice tape"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 32,
         "score": 100,
         "outcome": "Full federal task force created"
@@ -695,13 +695,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Traffic backs up for hours"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 20,
         "score": 30,
         "outcome": "Emergency crews clear bridge"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 100,
         "outcome": "Bridge closed, helicopter rescues"
@@ -725,13 +725,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "School continues normal dismissal"
       },
       "basic": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 20,
         "score": 40,
         "outcome": "School locked down immediately"
       },
       "maximum": {
-        "readiness": -120,
+        "readiness": -60,
         "capacity": 64,
         "score": 200,
         "outcome": "SWAT surrounds entire school"
@@ -755,13 +755,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Groundskeeper files insurance claim"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer reviews security footage"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 24,
         "score": 75,
         "outcome": "Crime scene team processes garden"
@@ -784,13 +784,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "PG&E worker calls fire dept"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Fire chief checks gas levels"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 32,
         "score": 100,
         "outcome": "Hazmat team evacuates building"
@@ -814,13 +814,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Company calls private ambulance"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Discrete medical response"
       },
       "maximum": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 16,
         "score": 50,
         "outcome": "Full emergency response disrupts meeting"
@@ -844,13 +844,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Cable car stops using emergency brake"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers block intersection"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 32,
         "score": 100,
         "outcome": "Fire trucks create safety barriers"
@@ -874,13 +874,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Security handles it internally"
       },
       "basic": {
-        "readiness": -2,
+        "readiness": -1,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer takes shoplifter to station"
       },
       "maximum": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 8,
         "score": 25,
         "outcome": "SWAT raids department store"
@@ -903,13 +903,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Security guard handles alone"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers escort White out"
       },
       "maximum": {
-        "readiness": -56,
+        "readiness": -28,
         "capacity": 40,
         "score": 125,
         "outcome": "City Hall evacuated and searched"
@@ -933,13 +933,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Party ends at sunrise"
       },
       "basic": {
-        "readiness": -2,
+        "readiness": -1,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer asks them to quiet down"
       },
       "maximum": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 8,
         "score": 25,
         "outcome": "Noise violation arrests made"
@@ -962,13 +962,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Thieves escape with bikes"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers arrest bike thieves"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "Full park surrounded by police"
@@ -991,13 +991,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Victims bleed while waiting"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 20,
         "score": 40,
         "outcome": "Paramedics treat wounded"
       },
       "maximum": {
-        "readiness": -80,
+        "readiness": -40,
         "capacity": 56,
         "score": 150,
         "outcome": "Full emergency response mobilized"
@@ -1021,13 +1021,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Thieves escape with masterpieces"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers catch thieves inside"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 24,
         "score": 75,
         "outcome": "SWAT breaches gallery"
@@ -1050,13 +1050,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Robbers escape with money"
       },
       "basic": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 20,
         "score": 50,
         "outcome": "Police surround bank"
       },
       "maximum": {
-        "readiness": -100,
+        "readiness": -50,
         "capacity": 64,
         "score": 175,
         "outcome": "FBI takes over bank siege"
@@ -1080,13 +1080,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Fire spreads to building"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Fire contained to truck"
       },
       "maximum": {
-        "readiness": -36,
+        "readiness": -18,
         "capacity": 32,
         "score": 75,
         "outcome": "Full hazmat team responds"
@@ -1109,13 +1109,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Man disappears before bus arrives"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers question suspicious man"
       },
       "maximum": {
-        "readiness": -72,
+        "readiness": -36,
         "capacity": 48,
         "score": 175,
         "outcome": "All school buses get escorts"
@@ -1139,13 +1139,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Family calls ambulance"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Paramedics treat shop owner"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "Chinatown cordoned off"
@@ -1168,13 +1168,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Fire dept evacuates anyway"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 20,
         "score": 40,
         "outcome": "Controlled evacuation proceeds"
       },
       "maximum": {
-        "readiness": -80,
+        "readiness": -40,
         "capacity": 64,
         "score": 150,
         "outcome": "Emergency broadcast, mass exodus"
@@ -1198,13 +1198,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Tourists lose wallets and phones"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 10,
         "outcome": "Undercover cops arrest ring"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 24,
         "score": 50,
         "outcome": "Full pier shutdown for searches"
@@ -1228,13 +1228,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Gunman escapes in chaos"
       },
       "basic": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 25,
         "score": 60,
         "outcome": "Officers secure crime scene"
       },
       "maximum": {
-        "readiness": -120,
+        "readiness": -60,
         "capacity": 80,
         "score": 225,
         "outcome": "Full emergency lockdown activated"
@@ -1258,13 +1258,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Parade volunteers help"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Paramedics treat heat stroke"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 50,
         "outcome": "Life flight disrupts parade prep"
@@ -1287,13 +1287,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Tourists help each other"
       },
       "basic": {
-        "readiness": -14,
+        "readiness": -7,
         "capacity": 15,
         "score": 30,
         "outcome": "Emergency crews treat injured"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 125,
         "outcome": "Full system shutdown, massive response"
@@ -1317,13 +1317,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Other tourists call ambulance"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 10,
         "outcome": "Paramedics treat head injury"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 16,
         "score": 50,
         "outcome": "Life flight blocks famous street"
@@ -1346,13 +1346,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "FBI conducts raid alone"
       },
       "basic": {
-        "readiness": -30,
+        "readiness": -15,
         "capacity": 30,
         "score": 50,
         "outcome": "SWAT provides backup support"
       },
       "maximum": {
-        "readiness": -140,
+        "readiness": -70,
         "capacity": 96,
         "score": 200,
         "outcome": "Full military-style siege"
@@ -1376,13 +1376,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Commuters talk person down"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 15,
         "score": 30,
         "outcome": "Negotiator saves life"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 40,
         "score": 125,
         "outcome": "Bridge closed, helicopter rescue"
@@ -1405,13 +1405,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Community forms own patrols"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Extra patrols reassure community"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 48,
         "score": 125,
         "outcome": "Chinatown under police occupation"
@@ -1435,13 +1435,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Undercover officer aborts"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 20,
         "outcome": "Drug dealers arrested quietly"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 32,
         "score": 75,
         "outcome": "SWAT raids hippie drug deal"
@@ -1465,13 +1465,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Call treated as hoax"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 40,
         "outcome": "Detectives investigate call"
       },
       "maximum": {
-        "readiness": -80,
+        "readiness": -40,
         "capacity": 64,
         "score": 225,
         "outcome": "City-wide Zodiac task force activated"
@@ -1495,13 +1495,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Performers sort it out"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 10,
         "outcome": "Officers separate performers"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 24,
         "score": 50,
         "outcome": "SWAT arrests costumed performers"
@@ -1524,13 +1524,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Disaster spreads unchecked"
       },
       "basic": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 40,
         "score": 60,
         "outcome": "Emergency crews contain disaster"
       },
       "maximum": {
-        "readiness": -200,
+        "readiness": -100,
         "capacity": 120,
         "score": 250,
         "outcome": "Full disaster response mobilized"
@@ -1554,13 +1554,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Flash mob disperses naturally"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Officers guide crowd flow"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 24,
         "score": 50,
         "outcome": "Riot squad breaks up dancers"
@@ -1583,13 +1583,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Tourists walk down steep hills"
       },
       "basic": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 25,
         "score": 40,
         "outcome": "Buses evacuate stranded tourists"
       },
       "maximum": {
-        "readiness": -100,
+        "readiness": -50,
         "capacity": 80,
         "score": 175,
         "outcome": "Helicopters evacuate cable cars"
@@ -1613,13 +1613,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Fire spreads to three buildings"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Fire contained to restaurant"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 40,
         "score": 100,
         "outcome": "Full hazmat response for kitchen fire"
@@ -1642,13 +1642,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "FBI handles arrest alone"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 15,
         "score": 40,
         "outcome": "Police assist with crowd control"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 150,
         "outcome": "Full media circus management"
@@ -1672,13 +1672,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Family escapes through window"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 15,
         "score": 30,
         "outcome": "Negotiator frees family safely"
       },
       "maximum": {
-        "readiness": -72,
+        "readiness": -36,
         "capacity": 48,
         "score": 125,
         "outcome": "Full SWAT siege of house"
@@ -1701,13 +1701,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "White waits at front desk"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 30,
         "outcome": "Officers process confession"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 24,
         "score": 100,
         "outcome": "Full protective custody protocol"
@@ -1731,13 +1731,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Dog walkers help victim"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 10,
         "outcome": "Animal control captures dog"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 16,
         "score": 50,
         "outcome": "K9 unit hunts dangerous dog"
@@ -1760,13 +1760,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Riots spread unchecked"
       },
       "basic": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 25,
         "score": 40,
         "outcome": "Riot police contain crowd"
       },
       "maximum": {
-        "readiness": -100,
+        "readiness": -50,
         "capacity": 80,
         "score": 175,
         "outcome": "Full martial law declared"
@@ -1790,13 +1790,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Burglar hits six more houses"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers catch cat burglar"
       },
       "maximum": {
-        "readiness": -36,
+        "readiness": -18,
         "capacity": 32,
         "score": 75,
         "outcome": "Helicopter searches all rooftops"
@@ -1819,13 +1819,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Community cleans graffiti"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Officer takes vandalism report"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 75,
         "outcome": "Crime scene team dusts church"
@@ -1848,13 +1848,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Coast Guard handles rescue"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 20,
         "outcome": "Police boat assists Coast Guard"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 24,
         "score": 75,
         "outcome": "Full maritime rescue mobilized"
@@ -1877,13 +1877,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Castro burns while police watch"
       },
       "basic": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 30,
         "score": 50,
         "outcome": "Riot control restores order"
       },
       "maximum": {
-        "readiness": -120,
+        "readiness": -60,
         "capacity": 96,
         "score": 200,
         "outcome": "Military intervenes in Castro"
@@ -1907,13 +1907,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Family handles matter privately"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Detective investigates scam"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 75,
         "outcome": "Fraud task force mobilized"
@@ -1936,13 +1936,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Rave continues until dawn"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 15,
         "score": 20,
         "outcome": "Fire marshal shuts down rave"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 48,
         "score": 100,
         "outcome": "SWAT raids warehouse rave"
@@ -1965,13 +1965,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Concert ends peacefully"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 10,
         "outcome": "Officers ask for permit, dispersal"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 32,
         "score": 75,
         "outcome": "Riot squad breaks up concert"
@@ -1994,13 +1994,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Hotel security handles it"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Detectives interview witnesses"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 40,
         "score": 100,
         "outcome": "Full forensic team processes hotel"
@@ -2023,13 +2023,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Witnesses call ambulance"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers search for hit-run driver"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "City-wide BOLO for vehicle"
@@ -2052,13 +2052,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Residents jump to safety"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 20,
         "score": 40,
         "outcome": "Fire department rescues residents"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 56,
         "score": 125,
         "outcome": "Full emergency response mobilized"
@@ -2081,13 +2081,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Suspect crashes into mansion gate"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 15,
         "score": 20,
         "outcome": "Police safely end pursuit"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 40,
         "score": 75,
         "outcome": "Helicopter tracks luxury car chase"
@@ -2110,13 +2110,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Party organizers clean up"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Officers check permits, disperse"
       },
       "maximum": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 16,
         "score": 50,
         "outcome": "SWAT breaks up block party"
@@ -2139,13 +2139,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Bystanders break up fight"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers disarm combatants"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "SWAT responds to knife fight"
@@ -2168,13 +2168,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Community mediates dispute"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers separate groups"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 32,
         "score": 75,
         "outcome": "Riot squad surrounds festival"
@@ -2197,13 +2197,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Tourists help each other"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers search hiking trails"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 32,
         "score": 75,
         "outcome": "Helicopter searches all trails"
@@ -2226,13 +2226,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Building security handles evacuation"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 20,
         "score": 40,
         "outcome": "Bomb squad clears building"
       },
       "maximum": {
-        "readiness": -80,
+        "readiness": -40,
         "capacity": 64,
         "score": 175,
         "outcome": "Full district lockdown initiated"
@@ -2255,13 +2255,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Residents evacuate themselves"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Fire dept assists elderly residents"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 56,
         "score": 125,
         "outcome": "Full hazmat response for SRO fire"
@@ -2284,13 +2284,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "School security handles situation"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers break up gang fight"
       },
       "maximum": {
-        "readiness": -56,
+        "readiness": -28,
         "capacity": 48,
         "score": 125,
         "outcome": "SWAT secures entire school area"
@@ -2313,13 +2313,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Lifeguards attempt rescue alone"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 5,
         "score": 20,
         "outcome": "Coast Guard assists rescue"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 24,
         "score": 75,
         "outcome": "Full maritime rescue deployed"
@@ -2342,13 +2342,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Artists pack up voluntarily"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Officers negotiate compromise"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 24,
         "score": 50,
         "outcome": "SWAT raids art walk"
@@ -2371,13 +2371,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Bouncers restore order"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers arrest instigators"
       },
       "maximum": {
-        "readiness": -36,
+        "readiness": -18,
         "capacity": 32,
         "score": 75,
         "outcome": "SWAT raids jazz club"
@@ -2400,13 +2400,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Hikers carry out injured biker"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 20,
         "outcome": "Park rangers assist evacuation"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 32,
         "score": 100,
         "outcome": "Helicopter rescue from trail"
@@ -2429,13 +2429,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Community locks down center"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers secure children"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 125,
         "outcome": "SWAT evacuates community center"
@@ -2458,13 +2458,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Drivers help each other"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers direct traffic in fog"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 40,
         "score": 100,
         "outcome": "Full fog emergency response"
@@ -2487,13 +2487,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Protest ends naturally"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 10,
         "outcome": "Officers negotiate route"
       },
       "maximum": {
-        "readiness": -24,
+        "readiness": -12,
         "capacity": 24,
         "score": 75,
         "outcome": "Riot squad breaks up protest"
@@ -2516,13 +2516,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Owner calls insurance company"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Detective investigates theft"
       },
       "maximum": {
-        "readiness": -32,
+        "readiness": -16,
         "capacity": 24,
         "score": 75,
         "outcome": "City-wide luxury car search"
@@ -2545,13 +2545,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "BART staff handles emergency"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Paramedics treat patient"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 50,
         "outcome": "Full station evacuation ordered"
@@ -2574,13 +2574,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Dog owners break up fight"
       },
       "basic": {
-        "readiness": -4,
+        "readiness": -2,
         "capacity": 5,
         "score": 10,
         "outcome": "Animal control responds"
       },
       "maximum": {
-        "readiness": -20,
+        "readiness": -10,
         "capacity": 16,
         "score": 50,
         "outcome": "K9 unit responds to dog fight"
@@ -2603,13 +2603,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Fire spreads to three cars"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 15,
         "score": 30,
         "outcome": "Fire contained, injuries treated"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 40,
         "score": 100,
         "outcome": "Hazmat team responds to explosion"
@@ -2632,13 +2632,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Neighbors avoid the area"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers investigate warehouse"
       },
       "maximum": {
-        "readiness": -56,
+        "readiness": -28,
         "capacity": 48,
         "score": 125,
         "outcome": "Full hazmat team raids lab"
@@ -2661,13 +2661,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Surfer friends organize search"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Coast Guard searches water"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 125,
         "outcome": "Full maritime search launched"
@@ -2690,13 +2690,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Community leaders mediate"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers escort gang away"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 40,
         "score": 100,
         "outcome": "SWAT surrounds community center"
@@ -2719,13 +2719,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Fire spreads to three shops"
       },
       "basic": {
-        "readiness": -14,
+        "readiness": -7,
         "capacity": 20,
         "score": 40,
         "outcome": "Fire contained to garage"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 56,
         "score": 125,
         "outcome": "Full hazmat response deployed"
@@ -2748,13 +2748,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Librarian calls security"
       },
       "basic": {
-        "readiness": -6,
+        "readiness": -3,
         "capacity": 10,
         "score": 20,
         "outcome": "Officer de-escalates situation"
       },
       "maximum": {
-        "readiness": -28,
+        "readiness": -14,
         "capacity": 24,
         "score": 75,
         "outcome": "SWAT clears library"
@@ -2777,13 +2777,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Private security handles it"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 10,
         "score": 20,
         "outcome": "Detectives investigate break-ins"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 32,
         "score": 100,
         "outcome": "Full neighborhood lockdown"
@@ -2806,13 +2806,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Residents evacuate themselves"
       },
       "basic": {
-        "readiness": -16,
+        "readiness": -8,
         "capacity": 20,
         "score": 40,
         "outcome": "Emergency crews assist evacuation"
       },
       "maximum": {
-        "readiness": -80,
+        "readiness": -40,
         "capacity": 64,
         "score": 150,
         "outcome": "Full disaster response mobilized"
@@ -2835,13 +2835,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Bystanders help injured"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 15,
         "score": 30,
         "outcome": "Emergency crews treat injured"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 40,
         "score": 100,
         "outcome": "Full emergency response deployed"
@@ -2864,13 +2864,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Bus driver uses emergency brake"
       },
       "basic": {
-        "readiness": -8,
+        "readiness": -4,
         "capacity": 10,
         "score": 20,
         "outcome": "Officers block intersection"
       },
       "maximum": {
-        "readiness": -40,
+        "readiness": -20,
         "capacity": 32,
         "score": 100,
         "outcome": "Emergency vehicles create barriers"
@@ -2893,13 +2893,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Parents rush children to hospital"
       },
       "basic": {
-        "readiness": -12,
+        "readiness": -6,
         "capacity": 15,
         "score": 30,
         "outcome": "Paramedics treat injured children"
       },
       "maximum": {
-        "readiness": -60,
+        "readiness": -30,
         "capacity": 48,
         "score": 125,
         "outcome": "Full emergency response activated"
@@ -2922,13 +2922,13 @@ import { DispatchCard } from '../types'; export const cardsData: DispatchCard[] 
         "outcome": "Neighbors call ambulance"
       },
       "basic": {
-        "readiness": -10,
+        "readiness": -5,
         "capacity": 15,
         "score": 30,
         "outcome": "Officers search for suspects"
       },
       "maximum": {
-        "readiness": -48,
+        "readiness": -24,
         "capacity": 40,
         "score": 100,
         "outcome": "City-wide manhunt launched"
