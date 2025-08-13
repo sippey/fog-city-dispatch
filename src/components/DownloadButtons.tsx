@@ -66,31 +66,45 @@ function DownloadButtons({ cards, filteredCards }: DownloadButtonsProps) {
   }
 
   return (
-    <div className="download-buttons">
-      <h4>Download Data:</h4>
-      <div className="button-group">
+    <div className="bg-white p-6 rounded-3xl card-shadow border border-gray-200 mb-8">
+      <h4 className="text-blue-600 mb-5 text-lg font-bold uppercase tracking-wide">
+        Download Data:
+      </h4>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <button 
           onClick={() => downloadJson(cards, 'fog-city-cards-all.json')}
-          className="download-btn json-btn"
+          className="text-white px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-md flex items-center justify-center gap-2"
+          style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}
         >
           📄 All Cards (JSON)
         </button>
         <button 
           onClick={() => downloadCsv(cards, 'fog-city-cards-all.csv')}
-          className="download-btn csv-btn"
+          className="text-white px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-md flex items-center justify-center gap-2"
+          style={{ background: 'linear-gradient(135deg, #059669, #047857)' }}
         >
           📊 All Cards (CSV)
         </button>
         <button 
           onClick={() => downloadJson(filteredCards, 'fog-city-cards-filtered.json')}
-          className="download-btn json-btn"
+          className={`text-white px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 shadow-md flex items-center justify-center gap-2 ${
+            filteredCards.length === cards.length 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:-translate-y-1 hover:shadow-lg'
+          }`}
+          style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)' }}
           disabled={filteredCards.length === cards.length}
         >
           📄 Filtered Cards (JSON)
         </button>
         <button 
           onClick={() => downloadCsv(filteredCards, 'fog-city-cards-filtered.csv')}
-          className="download-btn csv-btn"
+          className={`text-white px-6 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 shadow-md flex items-center justify-center gap-2 ${
+            filteredCards.length === cards.length 
+              ? 'opacity-50 cursor-not-allowed' 
+              : 'hover:-translate-y-1 hover:shadow-lg'
+          }`}
+          style={{ background: 'linear-gradient(135deg, #059669, #047857)' }}
           disabled={filteredCards.length === cards.length}
         >
           📊 Filtered Cards (CSV)

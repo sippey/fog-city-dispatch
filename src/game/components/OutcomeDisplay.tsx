@@ -45,8 +45,13 @@ function OutcomeDisplay({ message, visible, onComplete }: OutcomeDisplayProps) {
   if (phase === 'hidden') return null;
 
   return (
-    <div className={`outcome-display ${phase}`} onClick={handleClick}>
-      <div className="outcome-message">
+    <div 
+      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm z-50 cursor-pointer ${
+        phase === 'showing' ? 'animate-fade-in' : 'animate-fade-out'
+      }`} 
+      onClick={handleClick}
+    >
+      <div className="bg-white text-gray-800 px-10 py-8 rounded-2xl text-xl font-bold text-center max-w-4xl border-4 border-blue-500 card-shadow">
         {message}
       </div>
     </div>

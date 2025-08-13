@@ -55,37 +55,47 @@ function CardBrowser() {
   }, [cards, searchTerm, selectedArc, selectedLocation, hasVoiceFilter, powerupFilter])
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Fog City Dispatch Cards</h1>
-        <p className="subtitle">1970s San Francisco Emergency Response Scenarios</p>
-        <div className="nav-links">
-          <a href="/" className="nav-link">← Back to Game</a>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 text-gray-800">
+      <div className="max-w-7xl mx-auto p-5">
+        <header className="text-center mb-10 p-10 bg-white rounded-3xl card-shadow border border-gray-200">
+          <h1 className="text-5xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            Fog City Dispatch Cards
+          </h1>
+          <p className="text-xl text-gray-600 font-medium mb-6">
+            1970s San Francisco Emergency Response Scenarios
+          </p>
+          <div className="mt-4">
+            <a 
+              href="/" 
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200"
+            >
+              ← Back to Game
+            </a>
+          </div>
+        </header>
+        <Filters
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedArc={selectedArc}
+          setSelectedArc={setSelectedArc}
+          selectedLocation={selectedLocation}
+          setSelectedLocation={setSelectedLocation}
+          hasVoiceFilter={hasVoiceFilter}
+          setHasVoiceFilter={setHasVoiceFilter}
+          powerupFilter={powerupFilter}
+          setPowerupFilter={setPowerupFilter}
+          storyArcs={storyArcs}
+          locations={locations}
+        />
+        
+        <div className="text-center mb-6 text-gray-600 font-medium">
+          Showing {filteredCards.length} of {cards.length} cards
         </div>
-      </header>
-      
-      <Filters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedArc={selectedArc}
-        setSelectedArc={setSelectedArc}
-        selectedLocation={selectedLocation}
-        setSelectedLocation={setSelectedLocation}
-        hasVoiceFilter={hasVoiceFilter}
-        setHasVoiceFilter={setHasVoiceFilter}
-        powerupFilter={powerupFilter}
-        setPowerupFilter={setPowerupFilter}
-        storyArcs={storyArcs}
-        locations={locations}
-      />
-      
-      <div className="results-count">
-        Showing {filteredCards.length} of {cards.length} cards
-      </div>
 
-      <DownloadButtons cards={cards} filteredCards={filteredCards} />
-      
-      <CardList cards={filteredCards} />
+        <DownloadButtons cards={cards} filteredCards={filteredCards} />
+        
+        <CardList cards={filteredCards} />
+      </div>
     </div>
   )
 }

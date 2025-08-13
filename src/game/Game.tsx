@@ -162,11 +162,15 @@ function Game() {
   }
 
   if (!currentCard) {
-    return <div className="loading">Loading cards...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center">
+        <div className="text-gray-800 text-xl font-semibold">Loading cards...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="game-container">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 text-gray-800 font-sans flex flex-col select-none overflow-hidden">
       <StatusBar
         readiness={gameState.readiness}
         capacity={gameState.capacity}
@@ -174,7 +178,7 @@ function Game() {
         timeRemaining={gameState.timeRemaining}
       />
       
-      <div className="game-area">
+      <div className="flex-1 flex items-center justify-center p-8 relative">
         <GameCard
           card={currentCard}
           onSwipe={handleSwipe}
