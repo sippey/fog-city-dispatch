@@ -127,38 +127,38 @@ function Card({ card }: CardProps) {
                   </div>
                   <div className="grid grid-cols-4 border-t border-gray-200 hover:bg-gray-50 transition-colors">
                     <div className="p-4 font-semibold text-gray-600 bg-gray-50">Readiness:</div>
-                    <div className={`p-4 text-center font-bold bg-gray-100 ${getValueColor(card.responses.ignore.readiness, 'readiness')}`}>
-                      {formatValue(card.responses.ignore.readiness, 'readiness')}
+                    <div className={`p-4 text-center font-bold bg-gray-100 ${getValueColor(card.responses.ignore!.readiness, 'readiness')}`}>
+                      {formatValue(card.responses.ignore!.readiness, 'readiness')}
                     </div>
-                    <div className={`p-4 text-center font-bold bg-blue-50 ${getValueColor(card.responses.basic.readiness, 'readiness')}`}>
-                      {formatValue(card.responses.basic.readiness, 'readiness')}
+                    <div className={`p-4 text-center font-bold bg-blue-50 ${getValueColor(card.responses.basic!.readiness, 'readiness')}`}>
+                      {formatValue(card.responses.basic!.readiness, 'readiness')}
                     </div>
-                    <div className={`p-4 text-center font-bold bg-red-50 ${getValueColor(card.responses.maximum.readiness, 'readiness')}`}>
-                      {formatValue(card.responses.maximum.readiness, 'readiness')}
+                    <div className={`p-4 text-center font-bold bg-red-50 ${getValueColor(card.responses.maximum!.readiness, 'readiness')}`}>
+                      {formatValue(card.responses.maximum!.readiness, 'readiness')}
                     </div>
                   </div>
                   <div className="grid grid-cols-4 border-t border-gray-200 hover:bg-gray-50 transition-colors">
                     <div className="p-4 font-semibold text-gray-600 bg-gray-50">Capacity:</div>
-                    <div className={`p-4 text-center font-bold bg-gray-100 ${getValueColor(card.responses.ignore.capacity, 'capacity')}`}>
-                      {formatValue(card.responses.ignore.capacity, 'capacity')}
+                    <div className={`p-4 text-center font-bold bg-gray-100 ${getValueColor(card.responses.ignore!.capacity, 'capacity')}`}>
+                      {formatValue(card.responses.ignore!.capacity, 'capacity')}
                     </div>
-                    <div className={`p-4 text-center font-bold bg-blue-50 ${getValueColor(card.responses.basic.capacity, 'capacity')}`}>
-                      {formatValue(card.responses.basic.capacity, 'capacity')}
+                    <div className={`p-4 text-center font-bold bg-blue-50 ${getValueColor(card.responses.basic!.capacity, 'capacity')}`}>
+                      {formatValue(card.responses.basic!.capacity, 'capacity')}
                     </div>
-                    <div className={`p-4 text-center font-bold bg-red-50 ${getValueColor(card.responses.maximum.capacity, 'capacity')}`}>
-                      {formatValue(card.responses.maximum.capacity, 'capacity')}
+                    <div className={`p-4 text-center font-bold bg-red-50 ${getValueColor(card.responses.maximum!.capacity, 'capacity')}`}>
+                      {formatValue(card.responses.maximum!.capacity, 'capacity')}
                     </div>
                   </div>
                   <div className="grid grid-cols-4 border-t border-gray-200 hover:bg-gray-50 transition-colors">
                     <div className="p-4 font-semibold text-gray-600 bg-gray-50">Score:</div>
-                    <div className={`p-4 text-center font-bold bg-gray-100 ${getValueColor(card.responses.ignore.score, 'score')}`}>
-                      {formatValue(card.responses.ignore.score, 'score')}
+                    <div className={`p-4 text-center font-bold bg-gray-100 ${getValueColor(card.responses.ignore!.score, 'score')}`}>
+                      {formatValue(card.responses.ignore!.score, 'score')}
                     </div>
-                    <div className={`p-4 text-center font-bold bg-blue-50 ${getValueColor(card.responses.basic.score, 'score')}`}>
-                      {formatValue(card.responses.basic.score, 'score')}
+                    <div className={`p-4 text-center font-bold bg-blue-50 ${getValueColor(card.responses.basic!.score, 'score')}`}>
+                      {formatValue(card.responses.basic!.score, 'score')}
                     </div>
-                    <div className={`p-4 text-center font-bold bg-red-50 ${getValueColor(card.responses.maximum.score, 'score')}`}>
-                      {formatValue(card.responses.maximum.score, 'score')}
+                    <div className={`p-4 text-center font-bold bg-red-50 ${getValueColor(card.responses.maximum!.score, 'score')}`}>
+                      {formatValue(card.responses.maximum!.score, 'score')}
                     </div>
                   </div>
                 </div>
@@ -170,15 +170,15 @@ function Card({ card }: CardProps) {
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-200 border-l-4 border-l-gray-500 hover:-translate-x-1 transition-transform">
                       <span className="font-bold text-gray-600 min-w-20 text-sm">Ignore:</span>
-                      <span className="flex-1 text-gray-700 italic text-sm font-medium">"{card.responses.ignore.outcome}"</span>
+                      <span className="flex-1 text-gray-700 italic text-sm font-medium">"{card.responses.ignore!.outcome}"</span>
                     </div>
                     <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-2xl border border-blue-200 border-l-4 border-l-blue-500 hover:-translate-x-1 transition-transform">
                       <span className="font-bold text-blue-600 min-w-20 text-sm">Basic:</span>
-                      <span className="flex-1 text-gray-700 italic text-sm font-medium">"{card.responses.basic.outcome}"</span>
+                      <span className="flex-1 text-gray-700 italic text-sm font-medium">"{card.responses.basic!.outcome}"</span>
                     </div>
                     <div className="flex items-center gap-3 p-4 bg-red-50 rounded-2xl border border-red-200 border-l-4 border-l-red-500 hover:-translate-x-1 transition-transform">
                       <span className="font-bold text-red-600 min-w-20 text-sm">Maximum:</span>
-                      <span className="flex-1 text-gray-700 italic text-sm font-medium">"{card.responses.maximum.outcome}"</span>
+                      <span className="flex-1 text-gray-700 italic text-sm font-medium">"{card.responses.maximum!.outcome}"</span>
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 import { DispatchCard } from '../types';
-import { GameState, StoryArcProgress, STORY_ARC_MULTIPLIERS } from './types';
+import { StoryArcProgress, STORY_ARC_MULTIPLIERS } from './types';
 
 export function shuffleCards(cards: DispatchCard[]): DispatchCard[] {
   // Separate powerups and regular cards
@@ -118,11 +118,11 @@ export function getResponseCost(card: DispatchCard, responseType: 'ignore' | 'ba
   
   switch (responseType) {
     case 'ignore':
-      return card.responses.ignore.readiness;
+      return card.responses.ignore!.readiness;
     case 'basic':
-      return card.responses.basic.readiness;
+      return card.responses.basic!.readiness;
     case 'maximum':
-      return card.responses.maximum.readiness;
+      return card.responses.maximum!.readiness;
     default:
       return 0;
   }
@@ -135,11 +135,11 @@ export function getResponseOutcome(card: DispatchCard, responseType: 'ignore' | 
   
   switch (responseType) {
     case 'ignore':
-      return card.responses.ignore.outcome;
+      return card.responses.ignore!.outcome;
     case 'basic':
-      return card.responses.basic.outcome;
+      return card.responses.basic!.outcome;
     case 'maximum':
-      return card.responses.maximum.outcome;
+      return card.responses.maximum!.outcome;
     default:
       return '';
   }

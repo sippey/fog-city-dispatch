@@ -39,18 +39,18 @@ function DownloadButtons({ cards, filteredCards }: DownloadButtonsProps) {
         `"${card.visual.replace(/"/g, '""')}"`,
         `"${card.hasVoice}"`,
         `"${card.voiceScript?.replace(/"/g, '""') || ''}"`,
-        `"${card.responses.ignore.readiness}"`,
-        `"${card.responses.ignore.capacity}"`,
-        `"${card.responses.ignore.score}"`,
-        `"${card.responses.ignore.outcome?.replace(/"/g, '""') || ''}"`,
-        `"${card.responses.basic.readiness}"`,
-        `"${card.responses.basic.capacity}"`,
-        `"${card.responses.basic.score}"`,
-        `"${card.responses.basic.outcome?.replace(/"/g, '""') || ''}"`,
-        `"${card.responses.maximum.readiness}"`,
-        `"${card.responses.maximum.capacity}"`,
-        `"${card.responses.maximum.score}"`,
-        `"${card.responses.maximum.outcome?.replace(/"/g, '""') || ''}"`
+        `"${card.responses.ignore!.readiness}"`,
+        `"${card.responses.ignore!.capacity}"`,
+        `"${card.responses.ignore!.score}"`,
+        `"${card.responses.ignore!.outcome?.replace(/"/g, '""') || ''}"`,
+        `"${card.responses.basic!.readiness}"`,
+        `"${card.responses.basic!.capacity}"`,
+        `"${card.responses.basic!.score}"`,
+        `"${card.responses.basic!.outcome?.replace(/"/g, '""') || ''}"`,
+        `"${card.responses.maximum!.readiness}"`,
+        `"${card.responses.maximum!.capacity}"`,
+        `"${card.responses.maximum!.score}"`,
+        `"${card.responses.maximum!.outcome?.replace(/"/g, '""') || ''}"`
       ].join(','))
     ].join('\n')
 

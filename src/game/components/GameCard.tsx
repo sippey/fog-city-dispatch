@@ -17,9 +17,7 @@ function GameCard({
   card, 
   onSwipe, 
   onPowerupAccept, 
-  canAfford, 
-  showTutorial, 
-  tutorialStep 
+  canAfford 
 }: GameCardProps) {
 
   if (card.isPowerup) {
@@ -95,10 +93,10 @@ function GameCard({
           
           <div className="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border-2 border-gray-200">
             <div className="text-red-600 font-bold text-sm">
-              {card.responses.basic.readiness} readiness
+              {card.responses.basic!.readiness} readiness
             </div>
             <div className="text-emerald-600 font-bold text-sm">
-              +{card.responses.basic.score} pts
+              +{card.responses.basic!.score} pts
             </div>
           </div>
         </div>

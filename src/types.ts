@@ -18,8 +18,9 @@ export interface DispatchCard {
   isPowerup?: boolean;
   powerupValue?: number;  // Readiness points gained for powerup cards
   responses: {
-    ignore: ResponseOption;
-    basic: ResponseOption;
-    maximum: ResponseOption;
+    ignore?: ResponseOption;
+    basic?: ResponseOption;
+    maximum?: ResponseOption;
+    accept?: ResponseOption;  // For powerup cards
   };
 }

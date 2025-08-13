@@ -64,13 +64,13 @@ function Game() {
     const outcome = getResponseOutcome(currentCard, responseType);
     const points = currentCard.isPowerup ? 0 : 
       responseType === 'ignore' ? 0 :
-      responseType === 'basic' ? currentCard.responses.basic.score :
-      currentCard.responses.maximum.score;
+      responseType === 'basic' ? currentCard.responses.basic!.score :
+      currentCard.responses.maximum!.score;
 
     const capacityGain = currentCard.isPowerup ? 0 :
       responseType === 'ignore' ? 0 :
-      responseType === 'basic' ? currentCard.responses.basic.capacity :
-      currentCard.responses.maximum.capacity;
+      responseType === 'basic' ? currentCard.responses.basic!.capacity :
+      currentCard.responses.maximum!.capacity;
 
     // Update game state
     setGameState(prev => ({

@@ -18,13 +18,13 @@ function GameResults({
 }: GameResultsProps) {
   const { storyBonus, totalScore, completedArcs } = calculateFinalScore(baseScore, storyProgress);
   
-  const getArcIcon = (arcName: string, progress: any) => {
+  const getArcIcon = (progress: any) => {
     if (progress.isCompleted) return '✅';
     if (progress.cardsResponded > 0) return '🔶';
     return '❌';
   };
 
-  const getArcStatus = (arcName: string, progress: any) => {
+  const getArcStatus = (progress: any) => {
     const responded = progress.cardsResponded;
     const total = progress.totalCards;
     
@@ -70,9 +70,9 @@ function GameResults({
             <div className="space-y-4">
               {Object.entries(storyProgress).map(([arcName, progress]) => (
                 <div key={arcName} className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                  <span className="text-2xl min-w-8">{getArcIcon(arcName, progress)}</span>
+                  <span className="text-2xl min-w-8">{getArcIcon(progress)}</span>
                   <span className="flex-1 text-left text-gray-800 font-semibold">{arcName}</span>
-                  <span className="text-gray-600 font-mono text-sm font-medium">{getArcStatus(arcName, progress)}</span>
+                  <span className="text-gray-600 font-mono text-sm font-medium">{getArcStatus(progress)}</span>
                 </div>
               ))}
             </div>
