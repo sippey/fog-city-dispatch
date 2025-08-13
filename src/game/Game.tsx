@@ -13,17 +13,27 @@ import StatusBar from './components/StatusBar';
 import GameCard from './components/GameCard';
 import OutcomeDisplay from './components/OutcomeDisplay';
 import GameResults from './components/GameResults';
-import cardsData from '../../fog_city_dispatch_cards_with_powerups.json';
+// Import will be done via fetch;
 
 function Game() {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE);
   const [storyProgress, setStoryProgress] = useState<StoryArcProgress>(initializeStoryProgress());
   const [cardDeck, setCardDeck] = useState<DispatchCard[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Initialize game
   useEffect(() => {
-    const shuffled = shuffleCards(cardsData as DispatchCard[]);
-    setCardDeck(shuffled);
+    fetch('/fog-city-dispatch/fog_city_dispatch_cards_with_powerups.json')
+      .then(response => response.json())
+      .then(data => {
+        const shuffled = shuffleCards(data as DispatchCard[]);
+        setCardDeck(shuffled);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error loading cards:', error);
+        setLoading(false);
+      });
   }, []);
 
   // Game timer - runs every second
@@ -134,8 +144,19 @@ function Game() {
   const handlePlayAgain = useCallback(() => {
     setGameState(INITIAL_GAME_STATE);
     setStoryProgress(initializeStoryProgress());
-    const shuffled = shuffleCards(cardsData as DispatchCard[]);
-    setCardDeck(shuffled);
+    setLoading(true);
+    
+    fetch('/fog-city-dispatch/fog_city_dispatch_cards_with_powerups.json')
+      .then(response => response.json())
+      .then(data => {
+        const shuffled = shuffleCards(data as DispatchCard[]);
+        setCardDeck(shuffled);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error loading cards:', error);
+        setLoading(false);
+      });
   }, []);
 
   const handleBrowseCards = useCallback(() => {
@@ -165,6 +186,14 @@ function Game() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center">
         <div className="text-gray-800 text-xl font-semibold">Loading cards...</div>
+      </div>
+    );
+  }
+
+  if (loading || cardDeck.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 text-gray-800 flex items-center justify-center">
+        <div className="text-2xl font-bold text-gray-600">Loading game...</div>
       </div>
     );
   }

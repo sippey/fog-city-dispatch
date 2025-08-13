@@ -1,12 +1,25 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { DispatchCard } from './types'
 import CardList from './components/CardList'
 import Filters from './components/Filters'
 import DownloadButtons from './components/DownloadButtons'
-import cardsData from '../fog_city_dispatch_cards_with_powerups.json'
 
 function CardBrowser() {
-  const [cards] = useState<DispatchCard[]>(cardsData)
+  const [cards, setCards] = useState<DispatchCard[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/fog-city-dispatch/fog_city_dispatch_cards_with_powerups.json')
+      .then(response => response.json())
+      .then(data => {
+        setCards(data)
+        setLoading(false)
+      })
+      .catch(error => {
+        console.error('Error loading cards:', error)
+        setLoading(false)
+      })
+  }, [])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedArc, setSelectedArc] = useState<string>('all')
   const [selectedLocation, setSelectedLocation] = useState<string>('all')
@@ -53,6 +66,14 @@ function CardBrowser() {
       return a.id - b.id
     })
   }, [cards, searchTerm, selectedArc, selectedLocation, hasVoiceFilter, powerupFilter])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 text-gray-800 flex items-center justify-center">
+        <div className="text-2xl font-bold text-gray-600">Loading cards...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 text-gray-800">
