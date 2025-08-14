@@ -249,14 +249,14 @@ export default function Game() {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            filter: 'blur(8px)',
-            transform: 'scale(1.1)' // Slight scale to hide blur edges
+            filter: 'blur(4px)',
+            transform: 'scale(1.05)' // Slight scale to hide blur edges
           }}
         />
       )}
       
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/60 z-10" />
+      {/* Light overlay */}
+      <div className="absolute inset-0 bg-white/40 z-10" />
       
       <StatusBar
         readiness={gameState.readiness}
@@ -303,9 +303,9 @@ export default function Game() {
           </div>
         </div>
 
-        {/* Card area - positioned from top */}
-        <div className="relative flex-1" style={{ paddingTop: '6rem' }}>
-          <div className="flex justify-center px-8">
+        {/* Card area - fixed position to prevent jump on drag */}
+        <div className="relative flex-1">
+          <div className="absolute left-1/2 transform -translate-x-1/2" style={{ top: '8rem' }}>
             {!gameState.showOutcome && (
               <GameCard
                 card={currentCard}
@@ -320,23 +320,13 @@ export default function Game() {
         {/* Card description at bottom - fixed size */}
         {!gameState.showOutcome && currentCard && !currentSwipeDirection && (
           <div className="flex-shrink-0 px-8 pb-6 text-left">
-            <div className="max-w-md mx-auto bg-black/70 backdrop-blur-sm rounded-lg p-3">
+            <div className="max-w-lg mx-auto bg-black/80 backdrop-blur-sm rounded-lg p-4">
               <h2 className="text-sm font-extrabold mb-2 text-white leading-tight">
                 {currentCard.headline}
               </h2>
               <p className="text-gray-300 leading-relaxed font-medium text-sm">
                 {currentCard.description}
               </p>
-              {currentCard.isPowerup && (
-                <div className="mt-4 text-center">
-                  <div className="text-2xl font-extrabold text-green-400 mb-1">
-                    +{currentCard.powerupValue}
-                  </div>
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wide">
-                    Readiness Bonus
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}

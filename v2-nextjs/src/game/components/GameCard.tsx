@@ -125,15 +125,14 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   }, [card.id, card.headline, backgroundImageUrl])
 
   return (
-    <div className="relative" style={{ width: 'min(60vw, 280px)' }}>
+    <div className="relative" style={{ width: 'min(calc(100vw - 10rem), 400px)', maxWidth: '400px' }}>
       {/* Draggable Card */}
       <motion.div
         ref={cardRef}
         className="rounded-2xl p-4 border border-gray-700 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
         style={{ 
-          height: 'min(70vh, 400px)',
-          width: 'min(60vw, 280px)',
           aspectRatio: '6 / 7',
+          width: '100%',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
           filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
           x, 
@@ -167,8 +166,19 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
         
         {/* Card Content */}
         {isPowerupCard ? (
-          /* Powerup Card - Clean with button */
-          <div className="flex-1 flex flex-col justify-center items-center">
+          /* Powerup Card - Clean design with bonus info and button */
+          <div className="flex-1 flex flex-col justify-center items-center space-y-6 p-4">
+            <div className="text-center space-y-2">
+              <div className="text-2xl font-bold text-white uppercase tracking-wider drop-shadow-lg">
+                Bonus Card
+              </div>
+              <div className="text-6xl font-extrabold text-green-400 drop-shadow-lg">
+                +{card.powerupValue}
+              </div>
+              <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
+                Readiness
+              </div>
+            </div>
             <button
               onClick={onAcceptPowerup}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl text-lg uppercase tracking-wide shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
