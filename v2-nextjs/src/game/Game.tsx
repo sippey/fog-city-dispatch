@@ -266,7 +266,7 @@ export default function Game() {
       )}
       
       {/* Light overlay */}
-      <div className="absolute inset-0 bg-white/40 z-10" />
+      <div className="absolute inset-0 bg-white/15 z-10" />
       
       <StatusBar
         readiness={gameState.readiness}

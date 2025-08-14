@@ -193,7 +193,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           x, 
           y, 
           rotateZ,
-          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)), url(${backgroundImageUrl})`,
+          backgroundImage: `url(${backgroundImageUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
