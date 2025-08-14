@@ -4,10 +4,11 @@ interface StatusBarProps {
   readiness: number
   capacity: number
   score: number
+  deckSize: number
   timeRemaining: number
 }
 
-export default function StatusBar({ readiness, capacity, score, timeRemaining }: StatusBarProps) {
+export default function StatusBar({ readiness, capacity, score, deckSize, timeRemaining }: StatusBarProps) {
   const [isFlashing, setIsFlashing] = useState(false)
   const [prevScore, setPrevScore] = useState(score)
 
@@ -46,6 +47,12 @@ export default function StatusBar({ readiness, capacity, score, timeRemaining }:
             } ${
               score < 0 ? 'text-red-600' : 'text-emerald-600'
             }`}>{score.toLocaleString()}</div>
+          </div>
+
+          {/* Deck Size */}
+          <div className="text-center">
+            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Deck</div>
+            <div className="text-2xl font-bold text-blue-600 min-w-[60px]">{deckSize}</div>
           </div>
         </div>
 

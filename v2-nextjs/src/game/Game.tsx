@@ -74,6 +74,10 @@ export default function Game() {
   useEffect(() => {
     const shuffled = smartShuffle(cardsData)
     setCardDeck(shuffled)
+    setGameState(prev => ({
+      ...prev,
+      deckSize: shuffled.length
+    }))
   }, [])
 
   // Game timer
@@ -124,6 +128,29 @@ export default function Game() {
       }, 50)
     }
 
+    // Handle deck management based on response type
+    if (responseType === 'ignore') {
+      // For ignored cards: remove from current position and add to end
+      setCardDeck(prev => {
+        const newDeck = [...prev]
+        // Remove from current position
+        newDeck.splice(gameState.currentCardIndex, 1)
+        // Add to end of deck
+        newDeck.push(currentCard)
+        console.log(`Card ignored: "${currentCard.headline}" - Moved to end of deck. Deck size: ${newDeck.length}`)
+        return newDeck
+      })
+      // Deck size stays the same
+    } else {
+      // For basic/maximum responses: remove the card completely
+      setCardDeck(prev => {
+        const newDeck = [...prev]
+        newDeck.splice(gameState.currentCardIndex, 1)
+        console.log(`Card handled: "${currentCard.headline}" - Removed from deck. Deck size: ${newDeck.length}`)
+        return newDeck
+      })
+    }
+
     // Update game state with outcome and story progress
     setGameState(prev => ({
       ...prev,
@@ -133,7 +160,9 @@ export default function Game() {
       cardsHandled: prev.cardsHandled + 1,
       showOutcome: true,
       currentOutcome: response.outcome,
-      storyProgress: updateStoryProgress(currentCard, responseType, prev.storyProgress)
+      storyProgress: updateStoryProgress(currentCard, responseType, prev.storyProgress),
+      // Update deck size based on response type
+      deckSize: responseType === 'ignore' ? prev.deckSize : prev.deckSize - 1
     }))
   }
 
@@ -142,13 +171,22 @@ export default function Game() {
 
     const response = currentCard.responses.accept
 
+    // Remove powerup card from deck
+    setCardDeck(prev => {
+      const newDeck = [...prev]
+      newDeck.splice(gameState.currentCardIndex, 1)
+      console.log(`Powerup accepted: "${currentCard.headline}" - Removed from deck. Deck size: ${newDeck.length}`)
+      return newDeck
+    })
+
     // Update game state with powerup bonus
     setGameState(prev => ({
       ...prev,
       readiness: Math.min(prev.capacity, prev.readiness + response.readiness),
       cardsHandled: prev.cardsHandled + 1,
       showOutcome: true,
-      currentOutcome: response.outcome
+      currentOutcome: response.outcome,
+      deckSize: prev.deckSize - 1
     }))
   }
 
@@ -164,19 +202,28 @@ export default function Game() {
   const handleOutcomeComplete = useCallback(() => {
     console.log('handleOutcomeComplete called')
     setGameState(prev => {
-      const nextIndex = prev.currentCardIndex + 1
-      console.log('Current index:', prev.currentCardIndex, 'Next index:', nextIndex)
+      // Since we've already modified the deck, the current index now points to the next card
+      // (because we removed the current card or moved it to the end)
+      console.log('Current index:', prev.currentCardIndex)
+      console.log('Current deck size:', cardDeck.length)
       
-      // Check if we've run out of cards or time
-      if (nextIndex >= cardDeck.length || prev.timeRemaining <= 0) {
-        console.log('Game ending - out of cards or time')
+      // Only end game if time runs out
+      if (prev.timeRemaining <= 0) {
+        console.log('Game ending - out of time')
+        return { ...prev, showOutcome: false, isGameActive: false, showResults: true }
+      }
+      
+      // Check if we've reached the end of the deck
+      if (prev.currentCardIndex >= cardDeck.length) {
+        console.log('No more cards in deck - all cards have been handled')
         return { ...prev, showOutcome: false, isGameActive: false, showResults: true }
       }
       
       console.log('Moving to next card')
       return {
         ...prev,
-        currentCardIndex: nextIndex,
+        // Don't increment index - it already points to the next card after deck modification
+        currentCardIndex: prev.currentCardIndex,
         showOutcome: false,
         currentOutcome: ''
       }
@@ -199,9 +246,12 @@ export default function Game() {
         cardsHandled={gameState.cardsHandled}
         storyProgress={gameState.storyProgress}
         onPlayAgain={() => {
-          setGameState(INITIAL_GAME_STATE)
           const shuffled = smartShuffle(cardsData)
           setCardDeck(shuffled)
+          setGameState({
+            ...INITIAL_GAME_STATE,
+            deckSize: shuffled.length
+          })
         }}
       />
     )
@@ -272,6 +322,7 @@ export default function Game() {
         readiness={gameState.readiness}
         capacity={gameState.capacity}
         score={gameState.score}
+        deckSize={gameState.deckSize}
         timeRemaining={gameState.timeRemaining}
       />
       

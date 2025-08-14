@@ -2,6 +2,7 @@ export interface GameState {
   readiness: number;
   capacity: number;
   score: number;
+  deckSize: number; // Number of cards remaining in deck
   timeRemaining: number; // in seconds
   isGameActive: boolean;
   showIntro: boolean; // Show intro screen before game starts
@@ -47,6 +48,7 @@ export const INITIAL_GAME_STATE: GameState = {
   readiness: 100,
   capacity: 200,
   score: 0,
+  deckSize: 0, // Will be set when deck is initialized
   timeRemaining: 300, // 5 minutes
   isGameActive: false, // Don't start until intro is complete
   showIntro: true, // Show intro screen first
