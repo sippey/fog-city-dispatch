@@ -16,6 +16,7 @@ export default function Game() {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE)
   const [cardDeck, setCardDeck] = useState<DispatchCard[]>([])
   const [currentSwipeDirection, setCurrentSwipeDirection] = useState<'left' | 'right' | 'up' | null>(null)
+  const [isAnimatingSwipe, setIsAnimatingSwipe] = useState(false)
 
   // Smart shuffle function that maintains story order
   const smartShuffle = (cards: DispatchCard[]): DispatchCard[] => {
@@ -101,7 +102,7 @@ export default function Game() {
   const currentCard = cardDeck[gameState.currentCardIndex]
   const backgroundImageUrl = currentCard ? getCardImageUrl(currentCard) : null
 
-  const handleSwipe = (direction: 'left' | 'right' | 'up') => {
+  const handleSwipe = (direction: 'left' | 'right' | 'up', isKeyboard: boolean = false) => {
     if (!currentCard || gameState.showOutcome) return
 
     const responseType = direction === 'left' ? 'ignore' : 
@@ -113,6 +114,15 @@ export default function Game() {
     // Check if player can afford this response
     const cost = response.readiness
     if (gameState.readiness + cost < 0) return // Can't afford
+
+    // For keyboard swipes, the card has already animated off screen
+    // For drag swipes, the card disappears immediately
+    if (isKeyboard) {
+      // Small delay for smooth transition from card flying off to outcome appearing
+      setTimeout(() => {
+        setIsAnimatingSwipe(false)
+      }, 50)
+    }
 
     // Update game state with outcome and story progress
     setGameState(prev => ({
@@ -306,7 +316,7 @@ export default function Game() {
         {/* Card area - fixed position to prevent jump on drag */}
         <div className="relative flex-1">
           <div className="absolute left-1/2 transform -translate-x-1/2" style={{ top: '8rem' }}>
-            {!gameState.showOutcome && (
+            {(!gameState.showOutcome || isAnimatingSwipe) && (
               <GameCard
                 card={currentCard}
                 onSwipe={handleSwipe}

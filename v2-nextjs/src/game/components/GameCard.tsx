@@ -7,7 +7,7 @@ import { getCardImageUrl } from '@/utils/unsplash'
 
 interface GameCardProps {
   card: DispatchCard
-  onSwipe: (direction: 'left' | 'right' | 'up') => void
+  onSwipe: (direction: 'left' | 'right' | 'up', isKeyboard?: boolean) => void
   onAcceptPowerup?: () => void
   onSwipeDirectionChange?: (direction: 'left' | 'right' | 'up' | null) => void
 }
@@ -16,10 +16,17 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   const [, setIsDragging] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [isAnimating, setIsAnimating] = useState(false)
   
   // Motion values for smooth animations
   const x = useMotionValue(0)
   const y = useMotionValue(0)
+  
+  // Reset position when card changes (for new cards after keyboard swipe)
+  useEffect(() => {
+    x.set(0)
+    y.set(0)
+  }, [card.id, x, y])
   
   // Transform motion values to determine swipe direction and visual feedback
   const rotateZ = useTransform(x, [-150, 0, 150], [-10, 0, 10])
@@ -79,23 +86,71 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     animate(y, 0, { type: 'spring', stiffness: 600, damping: 40 })
   }, [x, y, onSwipeDirectionChange])
 
-  // Safety mechanism: if card gets stuck far from center, auto-reset
-  useEffect(() => {
-    const checkPosition = () => {
-      const currentX = x.get()
-      const currentY = y.get()
-      const distance = Math.sqrt(currentX * currentX + currentY * currentY)
+  // Animate card swipe for keyboard controls
+  const animateSwipe = useCallback((direction: 'left' | 'right' | 'up') => {
+    if (isAnimating) return
+    setIsAnimating(true)
+    
+    const animations = {
+      left: { x: -window.innerWidth, y: 50, rotate: -25 },
+      right: { x: window.innerWidth, y: 50, rotate: 25 },
+      up: { x: 0, y: -window.innerHeight, rotate: 5 }
+    }
+    
+    const target = animations[direction]
+    
+    // Animate the card flying completely off screen
+    Promise.all([
+      animate(x, target.x, { duration: 0.35, ease: [0.4, 0, 1, 1] }), // Custom easing for acceleration
+      animate(y, target.y, { duration: 0.35, ease: [0.4, 0, 1, 1] })
+    ]).then(() => {
+      // Card is now completely off screen
+      // Trigger the swipe and let the outcome show
+      onSwipe(direction, true)
       
-      // If card is more than 250px from center and not being dragged, reset it
-      if (distance > 250) {
-        console.log('Card stuck, auto-resetting')
-        resetCard()
+      // Don't reset position - card stays off screen
+      // The next card will start fresh at 0,0
+      setIsAnimating(false)
+    })
+  }, [x, y, onSwipe, isAnimating])
+
+  // Keyboard controls
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent keyboard controls while animating
+      if (isAnimating) return
+      
+      const isPowerupCard = card.isPowerup === true
+      
+      if (isPowerupCard) {
+        // For powerup cards, any arrow key, space, or enter accepts the bonus
+        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', ' '].includes(e.key)) {
+          e.preventDefault()
+          onAcceptPowerup?.()
+        }
+      } else {
+        // For regular cards, arrow keys trigger swipes
+        switch(e.key) {
+          case 'ArrowLeft':
+            e.preventDefault()
+            animateSwipe('left')
+            break
+          case 'ArrowRight':
+            e.preventDefault()
+            animateSwipe('right')
+            break
+          case 'ArrowUp':
+            e.preventDefault()
+            animateSwipe('up')
+            break
+        }
       }
     }
+    
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [card.isPowerup, animateSwipe, onAcceptPowerup, isAnimating])
 
-    const interval = setInterval(checkPosition, 1000) // Check every second
-    return () => clearInterval(interval)
-  }, [x, y, resetCard])
 
   const currentDirection = getSwipeDirection(x.get(), y.get())
   
@@ -143,7 +198,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         }}
-        drag={!isPowerupCard}
+        drag={!isPowerupCard && !isAnimating}
         dragElastic={0.2}
         dragMomentum={false}
         dragConstraints={{ 

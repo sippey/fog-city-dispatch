@@ -16,12 +16,27 @@ export default function StatusBar({ readiness, capacity, score, timeRemaining }:
 
   return (
     <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-4 relative z-30">
-      <div className="max-w-4xl mx-auto flex items-center justify-between">
-        {/* Readiness Bar */}
-        <div className="flex-1 max-w-xs">
+      <div className="max-w-5xl mx-auto flex items-center justify-between">
+        {/* Left side: Time and Score */}
+        <div className="flex items-center gap-8">
+          {/* Timer with fixed width */}
+          <div className="text-center">
+            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Time</div>
+            <div className="text-2xl font-bold text-gray-800 font-mono w-20">{formatTime(timeRemaining)}</div>
+          </div>
+
+          {/* Score */}
+          <div className="text-center">
+            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Score</div>
+            <div className="text-2xl font-bold text-emerald-600 min-w-[80px]">{score.toLocaleString()}</div>
+          </div>
+        </div>
+
+        {/* Right side: Readiness Bar */}
+        <div className="flex-1 max-w-sm">
           <div className="flex justify-between text-sm font-medium mb-1">
-            <span>Readiness</span>
-            <span>{readiness}/{capacity}</span>
+            <span className="text-gray-700">Readiness</span>
+            <span className="text-gray-700 font-mono">{readiness}/{capacity}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div 
@@ -29,18 +44,6 @@ export default function StatusBar({ readiness, capacity, score, timeRemaining }:
               style={{ width: `${readinessPercentage}%` }}
             />
           </div>
-        </div>
-
-        {/* Score */}
-        <div className="text-center mx-8">
-          <div className="text-sm font-medium text-gray-600">Score</div>
-          <div className="text-2xl font-bold text-emerald-600">{score}</div>
-        </div>
-
-        {/* Timer */}
-        <div className="text-center">
-          <div className="text-sm font-medium text-gray-600">Time</div>
-          <div className="text-2xl font-bold text-gray-800">{formatTime(timeRemaining)}</div>
         </div>
       </div>
     </div>
