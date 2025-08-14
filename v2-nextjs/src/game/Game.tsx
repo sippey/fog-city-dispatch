@@ -507,24 +507,7 @@ export default function Game() {
   }
 
   return (
-    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
-      {/* Background image with blur and dark overlay */}
-      {backgroundImageUrl && (
-        <div 
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `url(${backgroundImageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            filter: 'blur(4px)',
-            transform: 'scale(1.05)' // Slight scale to hide blur edges
-          }}
-        />
-      )}
-      
-      {/* Light overlay */}
-      <div className="absolute inset-0 bg-white/15 z-10" />
+    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden" style={{ backgroundColor: '#666666' }}>
       
       <StatusBar
         readiness={gameState.readiness}
@@ -572,34 +555,36 @@ export default function Game() {
           </div>
         </div>
 
-        {/* Card area - fixed position to prevent jump on drag */}
+        {/* Card area with description below */}
         <div className="relative flex-1">
           <div className="absolute left-1/2 transform -translate-x-1/2" style={{ top: '8rem' }}>
             {(!gameState.showOutcome || isAnimatingSwipe) && currentCard && (
-              <GameCard
-                card={currentCard}
-                onSwipe={handleSwipe}
-                onAcceptPowerup={handleAcceptPowerup}
-                onSwipeDirectionChange={setCurrentSwipeDirection}
-                shouldStopAudio={gameState.showOutcome}
-              />
+              <div className="flex flex-col items-center">
+                <GameCard
+                  card={currentCard}
+                  onSwipe={handleSwipe}
+                  onAcceptPowerup={handleAcceptPowerup}
+                  onSwipeDirectionChange={setCurrentSwipeDirection}
+                  shouldStopAudio={gameState.showOutcome}
+                />
+                
+                {/* Card description right below card */}
+                {!gameState.showOutcome && !currentSwipeDirection && (
+                  <div className="mt-5" style={{ width: 'min(calc(100vw - 10rem), 400px)', maxWidth: '400px' }}>
+                    <div className="bg-black/80 backdrop-blur-sm rounded-lg p-4">
+                      <h2 className="text-sm font-extrabold mb-2 text-white leading-tight">
+                        {currentCard.headline}
+                      </h2>
+                      <p className="text-gray-300 leading-relaxed font-medium text-sm">
+                        {currentCard.description}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
-
-        {/* Card description at bottom - fixed size with safe area padding */}
-        {!gameState.showOutcome && currentCard && !currentSwipeDirection && (
-          <div className="flex-shrink-0 px-8 pb-6 text-left safe-area-bottom">
-            <div className="max-w-lg mx-auto bg-black/80 backdrop-blur-sm rounded-lg p-4">
-              <h2 className="text-sm font-extrabold mb-2 text-white leading-tight">
-                {currentCard.headline}
-              </h2>
-              <p className="text-gray-300 leading-relaxed font-medium text-sm">
-                {currentCard.description}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
       
       <OutcomeDisplay
