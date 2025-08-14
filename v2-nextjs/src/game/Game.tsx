@@ -137,7 +137,7 @@ export default function Game() {
       ...prev,
       deckSize: shuffled.length
     }))
-  }, [])
+  }, [gameConfig.deckSize])
 
   // Game timer
   useEffect(() => {

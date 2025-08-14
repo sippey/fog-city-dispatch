@@ -67,7 +67,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
         audioRef.current = null
       }
     }
-  }, [card.id])
+  }, [card])
 
   // Stop audio when parent signals (e.g., when outcome is triggered)
   useEffect(() => {
