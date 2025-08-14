@@ -37,11 +37,7 @@ export interface SwipeDirection {
 
 export const STORY_ARC_MULTIPLIERS = {
   'Zodiac': { multiplier: 3.0, totalCards: 8 },
-  'Patty Hearst': { multiplier: 2.0, totalCards: 5 },
-  'Moscone-Milk': { multiplier: 2.0, totalCards: 5 },
-  'Golden Dragon': { multiplier: 1.5, totalCards: 3 },
-  'Marina Gas': { multiplier: 1.5, totalCards: 3 },
-  'Cable Car': { multiplier: 1.5, totalCards: 3 }
+  'Patty Hearst': { multiplier: 2.0, totalCards: 3 }
 } as const;
 
 export const INITIAL_GAME_STATE: GameState = {

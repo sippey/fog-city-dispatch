@@ -358,8 +358,8 @@ export const cardsData: DispatchCard[] =
     "id": 13,
     "storyArc": "Patty Hearst",
     "headline": "Missing UC Berkeley Student",
-    "location": "Berkeley/SF Border",
-    "description": "19-year-old newspaper heiress Patricia Hearst reported missing from Berkeley apartment. Signs of struggle, neighbors heard screaming.",
+    "location": "Berkeley",
+    "description": "19-year-old college student reported missing from Berkeley apartment. Signs of struggle, neighbors heard screaming.",
     "visual": "College apartment building, broken door, scattered belongings, worried parents with police, newspaper headlines visible",
     "hasVoice": false,
     "responses": {
@@ -593,7 +593,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 21,
-    "storyArc": "Golden Dragon",
+    "storyArc": "Random",
     "headline": "Gang Intelligence Report",
     "location": "Chinatown",
     "description": "Informant reports escalating tension between youth gangs. Mentions planned retaliation at popular restaurant.",
@@ -618,8 +618,7 @@ export const cardsData: DispatchCard[] =
         "score": 75,
         "outcome": "Gang task force mobilized"
       }
-    },
-    "arcNumber": "G1"
+    }
   },
   {
     "id": 22,
@@ -655,7 +654,7 @@ export const cardsData: DispatchCard[] =
     "storyArc": "Patty Hearst",
     "headline": "Ransom Demand Received",
     "location": "Chronicle Building",
-    "description": "Hearst family receives audio tape demanding food distribution to poor. Voice claims to be Symbionese Liberation Army.",
+    "description": "UC Berkely student's family receives audio tape demanding food distribution to poor. Voice claims to be Symbionese Liberation Army.",
     "visual": "Chronicle newsroom, family members listening to tape recorder, FBI agents taking notes, worried editors",
     "hasVoice": true,
     "voiceScript": "This is the Symbionese Liberation Army. We have Patricia Campbell Hearst. She will be released when the fascist Hearst family meets our demands for food distribution to the poor and oppressed people of California.",
@@ -772,7 +771,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 27,
-    "storyArc": "Marina Gas",
+    "storyArc": "Random",
     "headline": "Gas Leak Reported",
     "location": "Marina District",
     "description": "PG&E worker reports strong gas smell near apartment complex. Residents complain of headaches, possible major leak.",
@@ -797,8 +796,7 @@ export const cardsData: DispatchCard[] =
         "score": 100,
         "outcome": "Hazmat team evacuates building"
       }
-    },
-    "arcNumber": "M1"
+    }
   },
   {
     "id": 28,
@@ -831,7 +829,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 29,
-    "storyArc": "Cable Car",
+    "storyArc": "Random",
     "headline": "Brake System Warning",
     "location": "Powell Street",
     "description": "Cable car operator reports brake problems on steep descent. Tourists aboard, approaching busy intersection.",
@@ -857,8 +855,7 @@ export const cardsData: DispatchCard[] =
         "score": 100,
         "outcome": "Fire trucks create safety barriers"
       }
-    },
-    "arcNumber": "C1"
+    }
   },
   {
     "id": 30,
@@ -888,36 +885,6 @@ export const cardsData: DispatchCard[] =
         "outcome": "SWAT raids department store"
       }
     }
-  },
-  {
-    "id": 31,
-    "storyArc": "Moscone-Milk",
-    "headline": "City Hall Security Breach",
-    "location": "City Hall",
-    "description": "Former supervisor Dan White seen entering City Hall through basement window. Had been denied meeting with Mayor Moscone.",
-    "visual": "San Francisco City Hall dome, figure climbing through basement window, security guard noticing, political protest signs visible",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "Security guard handles alone"
-      },
-      "basic": {
-        "readiness": -12,
-        "capacity": 15,
-        "score": 30,
-        "outcome": "Officers escort White out"
-      },
-      "maximum": {
-        "readiness": -56,
-        "capacity": 40,
-        "score": 125,
-        "outcome": "City Hall evacuated and searched"
-      }
-    },
-    "arcNumber": "M1"
   },
   {
     "id": 32,
@@ -979,7 +946,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 34,
-    "storyArc": "Golden Dragon",
+    "storyArc": "Random",
     "headline": "Restaurant Shooting",
     "location": "Chinatown",
     "description": "Multiple gunshots reported at Golden Dragon restaurant. Several casualties, shooters fled on foot toward Grant Avenue.",
@@ -1004,8 +971,7 @@ export const cardsData: DispatchCard[] =
         "score": 150,
         "outcome": "Full emergency response mobilized"
       }
-    },
-    "arcNumber": "G2"
+    }
   },
   {
     "id": 35,
@@ -1041,7 +1007,7 @@ export const cardsData: DispatchCard[] =
     "storyArc": "Patty Hearst",
     "headline": "Bank Robbery in Progress",
     "location": "Sunset District",
-    "description": "Armed robbery at Hibernia Bank. Witnesses report female suspect resembling missing Hearst heiress among robbers.",
+    "description": "Armed robbery at Hibernia Bank. Witnesses report female suspect resembling missing Berkeley student among robbers.",
     "visual": "Bank exterior with police cars, shocked witnesses pointing, security camera footage showing armed figures, media arriving",
     "hasVoice": false,
     "responses": {
@@ -1155,36 +1121,6 @@ export const cardsData: DispatchCard[] =
     }
   },
   {
-    "id": 40,
-    "storyArc": "Marina Gas",
-    "headline": "Evacuation Orders",
-    "location": "Marina District",
-    "description": "Gas leak confirmed dangerous. Fire department ordering immediate evacuation of 6-block radius. Potential explosion risk.",
-    "visual": "Multiple fire trucks, residents carrying belongings, evacuation barriers, worried families with pets and children",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "Fire dept evacuates anyway"
-      },
-      "basic": {
-        "readiness": -16,
-        "capacity": 20,
-        "score": 40,
-        "outcome": "Controlled evacuation proceeds"
-      },
-      "maximum": {
-        "readiness": -80,
-        "capacity": 64,
-        "score": 150,
-        "outcome": "Emergency broadcast, mass exodus"
-      }
-    },
-    "arcNumber": "M2"
-  },
-  {
     "id": 41,
     "storyArc": "Random",
     "headline": "Pier 39 Pickpocket Ring",
@@ -1212,37 +1148,6 @@ export const cardsData: DispatchCard[] =
         "outcome": "Full pier shutdown for searches"
       }
     }
-  },
-  {
-    "id": 42,
-    "storyArc": "Moscone-Milk",
-    "headline": "Shots Fired at City Hall",
-    "location": "City Hall",
-    "description": "Multiple gunshots reported inside City Hall. Mayor Moscone and Supervisor Milk both shot. Suspect still inside building.",
-    "visual": "City Hall interior with police rushing in, paramedics, shocked staff evacuating, political offices in chaos",
-    "hasVoice": true,
-    "voiceScript": "Shots fired inside City Hall! Multiple shots! The Mayor's been shot! Harvey Milk too! Oh god, there's so much blood. The shooter might still be in here!",
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "Gunman escapes in chaos"
-      },
-      "basic": {
-        "readiness": -24,
-        "capacity": 25,
-        "score": 60,
-        "outcome": "Officers secure crime scene"
-      },
-      "maximum": {
-        "readiness": -120,
-        "capacity": 80,
-        "score": 225,
-        "outcome": "Full emergency lockdown activated"
-      }
-    },
-    "arcNumber": "M2"
   },
   {
     "id": 43,
@@ -1275,7 +1180,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 44,
-    "storyArc": "Cable Car",
+    "storyArc": "Random",
     "headline": "Cable Car Collision",
     "location": "Powell & Market",
     "description": "Cable car failed to stop, collided with vehicle at busy intersection. Multiple injuries, cable system damaged.",
@@ -1300,8 +1205,7 @@ export const cardsData: DispatchCard[] =
         "score": 125,
         "outcome": "Full system shutdown, massive response"
       }
-    },
-    "arcNumber": "C2"
+    }
   },
   {
     "id": 45,
@@ -1331,36 +1235,6 @@ export const cardsData: DispatchCard[] =
         "outcome": "Life flight blocks famous street"
       }
     }
-  },
-  {
-    "id": 46,
-    "storyArc": "Patty Hearst",
-    "headline": "SLA Safehouse Raided",
-    "location": "Mission District",
-    "description": "SWAT team raids suspected SLA hideout. Reports of automatic weapons fire. Hearst may be inside.",
-    "visual": "SWAT vehicles surrounding apartment building, officers with shields, smoke, worried neighbors watching from windows",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "FBI conducts raid alone"
-      },
-      "basic": {
-        "readiness": -30,
-        "capacity": 30,
-        "score": 50,
-        "outcome": "SWAT provides backup support"
-      },
-      "maximum": {
-        "readiness": -140,
-        "capacity": 96,
-        "score": 200,
-        "outcome": "Full military-style siege"
-      }
-    },
-    "arcNumber": "P4"
   },
   {
     "id": 47,
@@ -1393,7 +1267,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 48,
-    "storyArc": "Golden Dragon",
+    "storyArc": "Random",
     "headline": "Community Fear Response",
     "location": "Chinatown",
     "description": "Entire Chinatown community in panic after restaurant shooting. Shop owners closing early, demanding protection.",
@@ -1418,8 +1292,7 @@ export const cardsData: DispatchCard[] =
         "score": 125,
         "outcome": "Chinatown under police occupation"
       }
-    },
-    "arcNumber": "G3"
+    }
   },
   {
     "id": 49,
@@ -1512,7 +1385,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 52,
-    "storyArc": "Marina Gas",
+    "storyArc": "Random",
     "headline": "Gas Explosion",
     "location": "Marina District",
     "description": "Major gas explosion destroys apartment building. Multiple casualties, fire spreading to adjacent structures.",
@@ -1537,8 +1410,7 @@ export const cardsData: DispatchCard[] =
         "score": 250,
         "outcome": "Full disaster response mobilized"
       }
-    },
-    "arcNumber": "M3"
+    }
   },
   {
     "id": 53,
@@ -1571,7 +1443,7 @@ export const cardsData: DispatchCard[] =
   },
   {
     "id": 54,
-    "storyArc": "Cable Car",
+    "storyArc": "Random",
     "headline": "System-Wide Cable Failure",
     "location": "Multiple Lines",
     "description": "Cable car system experiencing city-wide failures. Multiple cars stranded with passengers, tourist safety concern.",
@@ -1596,8 +1468,7 @@ export const cardsData: DispatchCard[] =
         "score": 175,
         "outcome": "Helicopters evacuate cable cars"
       }
-    },
-    "arcNumber": "C3"
+    }
   },
   {
     "id": 55,
@@ -1629,36 +1500,6 @@ export const cardsData: DispatchCard[] =
     }
   },
   {
-    "id": 56,
-    "storyArc": "Patty Hearst",
-    "headline": "Hearst Arrest",
-    "location": "Mission District",
-    "description": "Patricia Hearst captured during FBI raid. Found with weapons and SLA propaganda. Major media response.",
-    "visual": "FBI agents with arrested woman, media trucks arriving, curious neighbors, evidence bags being carried out",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "FBI handles arrest alone"
-      },
-      "basic": {
-        "readiness": -16,
-        "capacity": 15,
-        "score": 40,
-        "outcome": "Police assist with crowd control"
-      },
-      "maximum": {
-        "readiness": -60,
-        "capacity": 48,
-        "score": 150,
-        "outcome": "Full media circus management"
-      }
-    },
-    "arcNumber": "P5"
-  },
-  {
     "id": 57,
     "storyArc": "Random",
     "headline": "Richmond District Home Invasion",
@@ -1688,36 +1529,6 @@ export const cardsData: DispatchCard[] =
     }
   },
   {
-    "id": 58,
-    "storyArc": "Moscone-Milk",
-    "headline": "Dan White Surrenders",
-    "location": "Northern Station",
-    "description": "Former supervisor Dan White turns himself in. Confesses to shooting Mayor Moscone and Supervisor Milk.",
-    "visual": "Police station with man in custody, lawyers arriving, media gathering outside, shocked police officers",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "White waits at front desk"
-      },
-      "basic": {
-        "readiness": -6,
-        "capacity": 10,
-        "score": 30,
-        "outcome": "Officers process confession"
-      },
-      "maximum": {
-        "readiness": -24,
-        "capacity": 24,
-        "score": 100,
-        "outcome": "Full protective custody protocol"
-      }
-    },
-    "arcNumber": "M3"
-  },
-  {
     "id": 59,
     "storyArc": "Random",
     "headline": "Crissy Field Dog Attack",
@@ -1745,36 +1556,6 @@ export const cardsData: DispatchCard[] =
         "outcome": "K9 unit hunts dangerous dog"
       }
     }
-  },
-  {
-    "id": 60,
-    "storyArc": "Moscone-Milk",
-    "headline": "City Hall Riots Begin",
-    "location": "Civic Center",
-    "description": "Angry crowds gathering at City Hall demanding justice. Windows broken, police cars overturned.",
-    "visual": "Chaotic scene with broken windows, overturned police cars, angry protesters, smoke, riot police forming lines",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "Riots spread unchecked"
-      },
-      "basic": {
-        "readiness": -20,
-        "capacity": 25,
-        "score": 40,
-        "outcome": "Riot police contain crowd"
-      },
-      "maximum": {
-        "readiness": -100,
-        "capacity": 80,
-        "score": 175,
-        "outcome": "Full martial law declared"
-      }
-    },
-    "arcNumber": "M4"
   },
   {
     "id": 61,
@@ -1862,36 +1643,6 @@ export const cardsData: DispatchCard[] =
         "outcome": "Full maritime rescue mobilized"
       }
     }
-  },
-  {
-    "id": 64,
-    "storyArc": "Moscone-Milk",
-    "headline": "Castro District Violence",
-    "location": "Castro District",
-    "description": "Riots spread to Castro. Harvey Milk's supporters clashing with police. Multiple fires, extensive property damage.",
-    "visual": "Castro Street with overturned cars burning, broken windows, riot police with shields, rainbow flags torn",
-    "hasVoice": false,
-    "responses": {
-      "ignore": {
-        "readiness": 1,
-        "capacity": 0,
-        "score": -10,
-        "outcome": "Castro burns while police watch"
-      },
-      "basic": {
-        "readiness": -24,
-        "capacity": 30,
-        "score": 50,
-        "outcome": "Riot control restores order"
-      },
-      "maximum": {
-        "readiness": -120,
-        "capacity": 96,
-        "score": 200,
-        "outcome": "Military intervenes in Castro"
-      }
-    },
-    "arcNumber": "M5"
   },
   {
     "id": 65,

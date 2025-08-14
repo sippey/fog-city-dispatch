@@ -22,7 +22,7 @@ interface GameConfig {
 }
 
 const DEFAULT_CONFIG: GameConfig = {
-  deckSize: 110, // Use all cards by default
+  deckSize: 50, // Default to 50 cards
   gameTime: 300, // 5 minutes
   startingReadiness: 100,
   recycleIgnoredCards: true,
@@ -404,11 +404,23 @@ export default function Game() {
                   onChange={(e) => setGameConfig(prev => ({ ...prev, deckSize: Number(e.target.value) }))}
                   className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
                 >
-                  {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110].map(size => (
-                    <option key={size} value={size}>
-                      {size === 110 ? `${size} (All cards)` : size}
-                    </option>
-                  ))}
+                  {(() => {
+                    const maxCards = cardsData.length
+                    const options = []
+                    // Generate options from 10 to max in increments of 10
+                    for (let i = 10; i <= Math.floor(maxCards / 10) * 10; i += 10) {
+                      options.push(i)
+                    }
+                    // Add the actual max if it's not already included
+                    if (!options.includes(maxCards)) {
+                      options.push(maxCards)
+                    }
+                    return options.map(size => (
+                      <option key={size} value={size}>
+                        {size === maxCards ? `${size} (All cards)` : size}
+                      </option>
+                    ))
+                  })()}
                 </select>
               </div>
 
