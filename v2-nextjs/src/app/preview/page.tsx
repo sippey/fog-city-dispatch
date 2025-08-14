@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
-import { getCardImageUrl } from '@/utils/unsplash'
+import { getCardImageUrl } from '@/utils/cardImages'
 
 // Smart shuffle function that maintains story order
 function smartShuffle(cards: DispatchCard[]): DispatchCard[] {

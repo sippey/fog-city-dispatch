@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion'
 import { DispatchCard } from '@/types'
-import { getCardImageUrl } from '@/utils/unsplash'
+import { getCardImageUrl } from '@/utils/cardImages'
 import { getCardAudioUrl, preloadAudio } from '@/utils/audio'
 
 interface GameCardProps {

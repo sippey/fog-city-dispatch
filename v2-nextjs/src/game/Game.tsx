@@ -10,7 +10,7 @@ import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
 import GameResults from './components/GameResults'
-import { getCardImageUrl } from '@/utils/unsplash'
+import { getCardImageUrl } from '@/utils/cardImages'
 import { initializeStoryProgress, updateStoryProgress } from './gameLogic'
 
 interface GameConfig {

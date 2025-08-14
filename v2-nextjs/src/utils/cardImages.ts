@@ -129,8 +129,3 @@ function findImageByHeadline(headline: string): string | null {
   
   return null
 }
-
-// Legacy function for backward compatibility
-export function getUnsplashImageUrl(card: { id: number; headline: string; imageFile?: string }): string {
-  return getCardImageUrl(card)
-}
