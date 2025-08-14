@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion'
 import { DispatchCard } from '@/types'
 import { getCardImageUrl } from '@/utils/cardImages'
+import { getCardVideoUrl } from '@/utils/cardVideos'
 import { getCardAudioUrl, preloadAudio } from '@/utils/audio'
 
 interface GameCardProps {
@@ -16,6 +17,7 @@ interface GameCardProps {
 
 export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio }: GameCardProps) {
   const [, setIsDragging] = useState(false)
+  const [isPowerupBeingSwiped, setIsPowerupBeingSwiped] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -122,6 +124,28 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     }
   }
 
+  const handlePowerupDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    setIsPowerupBeingSwiped(false)
+    
+    const { offset, velocity } = info
+    const swipeThreshold = 60 // Lower threshold for powerups to make them easier to accept
+    const swipeVelocity = 300
+    
+    // Check for any significant movement in any direction
+    const shouldAccept = Math.abs(offset.x) > swipeThreshold || 
+                        Math.abs(offset.y) > swipeThreshold ||
+                        Math.abs(velocity.x) > swipeVelocity ||
+                        Math.abs(velocity.y) > swipeVelocity
+    
+    if (shouldAccept && onAcceptPowerup) {
+      // Any swipe direction accepts the powerup
+      onAcceptPowerup()
+    } else {
+      // Small drag, just reset
+      resetCard()
+    }
+  }
+
   const resetCard = useCallback(() => {
     // Clear any existing timeout
     if (resetTimeoutRef.current) {
@@ -223,18 +247,23 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
 
   const isPowerupCard = card.isPowerup === true
   const backgroundImageUrl = getCardImageUrl(card)
+  const backgroundVideoUrl = isPowerupCard ? getCardVideoUrl(card) : null
   
   // Debug: log URL only when card changes
   useEffect(() => {
-    console.log(`Card ${card.id} (${card.headline}): ${backgroundImageUrl}`)
-  }, [card.id, card.headline, backgroundImageUrl])
+    if (backgroundVideoUrl) {
+      console.log(`Powerup Card ${card.id} (${card.headline}): video ${backgroundVideoUrl}`)
+    } else {
+      console.log(`Card ${card.id} (${card.headline}): image ${backgroundImageUrl}`)
+    }
+  }, [card.id, card.headline, backgroundImageUrl, backgroundVideoUrl])
 
   return (
     <div className="relative" style={{ width: 'min(calc(100vw - 10rem), 400px)', maxWidth: '400px' }}>
       {/* Draggable Card */}
       <motion.div
         ref={cardRef}
-        className="rounded-2xl p-4 border border-gray-700 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing"
+        className="rounded-2xl p-4 border border-gray-700 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing relative"
         style={{ 
           aspectRatio: '6 / 7',
           width: '100%',
@@ -243,12 +272,15 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           x, 
           y, 
           rotateZ,
-          backgroundImage: `url(${backgroundImageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          // Only set background image if no video
+          ...(backgroundVideoUrl ? {} : {
+            backgroundImage: `url(${backgroundImageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          })
         }}
-        drag={!isPowerupCard && !isAnimating}
+        drag={!isAnimating}
         dragElastic={0.2}
         dragMomentum={false}
         dragConstraints={{ 
@@ -258,12 +290,46 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           bottom: 100 
         }}
         whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={handleDragEnd}
+        onDragStart={() => {
+          setIsDragging(true)
+          if (isPowerupCard) {
+            setIsPowerupBeingSwiped(true)
+          }
+        }}
+        onDragEnd={isPowerupCard ? handlePowerupDragEnd : handleDragEnd}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
+        {/* Video background for powerup cards */}
+        {backgroundVideoUrl && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover rounded-2xl"
+            style={{ zIndex: -1 }}
+          >
+            <source src={backgroundVideoUrl} type="video/mp4" />
+          </video>
+        )}
+        
+        {/* Green acceptance overlay for powerup cards being swiped */}
+        {isPowerupBeingSwiped && (
+          <div 
+            className="absolute inset-0 bg-green-500 rounded-2xl flex items-center justify-center"
+            style={{ 
+              backgroundColor: 'rgba(34, 197, 94, 0.6)', // Green with 60% opacity
+              zIndex: 1 
+            }}
+          >
+            <div className="text-white text-2xl font-bold uppercase tracking-wider" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+              Accept Bonus
+            </div>
+          </div>
+        )}
+        
         {/* Location - top right */}
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 right-3" style={{ zIndex: 2 }}>
           <div className="bg-black/80 px-2 py-1 rounded-full text-xs font-medium text-gray-300">
             📍 {card.location}
           </div>
@@ -271,34 +337,42 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
         
         {/* Card Content */}
         {isPowerupCard ? (
-          /* Powerup Card - Clean design with bonus info and button */
-          <div className="flex-1 flex flex-col justify-center items-center space-y-6 p-4">
-            <div className="text-center space-y-2">
-              <div className="text-2xl font-bold text-white uppercase tracking-wider drop-shadow-lg">
-                Bonus Card
-              </div>
-              <div className="text-6xl font-extrabold text-green-400 drop-shadow-lg">
-                +{card.powerupValue}
-              </div>
-              <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
-                Readiness
+          /* Powerup Card - Clean design with bonus info and button at bottom */
+          <div className="flex-1 flex flex-col justify-between items-center p-4" style={{ zIndex: 2 }}>
+            {/* Main content centered */}
+            <div className="flex-1 flex flex-col justify-center items-center">
+              <div className="text-center space-y-1">
+                <div className="text-lg font-bold text-white uppercase tracking-wider" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
+                  Bonus Card
+                </div>
+                <div className="text-4xl font-extrabold text-green-400" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
+                  +{card.powerupValue}
+                </div>
+                <div className="text-sm font-bold text-white uppercase tracking-wide" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
+                  Readiness
+                </div>
               </div>
             </div>
-            <button
-              onClick={onAcceptPowerup}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl text-lg uppercase tracking-wide shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
-            >
-              Accept Bonus
-            </button>
+            
+            {/* Button at bottom */}
+            <div className="w-full flex justify-center">
+              <button
+                onClick={onAcceptPowerup}
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl text-base uppercase tracking-wide shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
+                style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}
+              >
+                Accept Bonus
+              </button>
+            </div>
           </div>
         ) : !currentDirection ? (
           /* Just show location badge - text moved below card */
-          <div className="flex-1 flex flex-col justify-start">
+          <div className="flex-1 flex flex-col justify-start" style={{ zIndex: 2 }}>
             {/* Location badge will be positioned by the absolute div above */}
           </div>
         ) : (
           /* Dramatic Score Display */
-          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8">
+          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8" style={{ zIndex: 2 }}>
             <div className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-lg">
               {currentDirection === 'left' ? 'Ignoring Call' : 
                currentDirection === 'right' ? 'Basic Response' : 
