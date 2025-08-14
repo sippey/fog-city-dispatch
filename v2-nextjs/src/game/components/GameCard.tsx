@@ -4,19 +4,23 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion'
 import { DispatchCard } from '@/types'
 import { getCardImageUrl } from '@/utils/unsplash'
+import { getCardAudioUrl, preloadAudio } from '@/utils/audio'
 
 interface GameCardProps {
   card: DispatchCard
   onSwipe: (direction: 'left' | 'right' | 'up', isKeyboard?: boolean) => void
   onAcceptPowerup?: () => void
   onSwipeDirectionChange?: (direction: 'left' | 'right' | 'up' | null) => void
+  shouldStopAudio?: boolean // Signal from parent to stop audio
 }
 
-export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirectionChange }: GameCardProps) {
+export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio }: GameCardProps) {
   const [, setIsDragging] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   
   // Motion values for smooth animations
   const x = useMotionValue(0)
@@ -27,6 +31,52 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     x.set(0)
     y.set(0)
   }, [card.id, x, y])
+
+  // Audio handling - load and play audio when card appears
+  useEffect(() => {
+    const audioUrl = getCardAudioUrl(card)
+    
+    // Clean up previous audio
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+    
+    // Load and play new audio if available
+    if (audioUrl) {
+      console.log(`Loading audio for card: ${card.headline}`)
+      const audio = preloadAudio(audioUrl)
+      audioRef.current = audio
+      
+      // Set up event listeners
+      audio.onplay = () => setIsAudioPlaying(true)
+      audio.onpause = () => setIsAudioPlaying(false)
+      audio.onended = () => setIsAudioPlaying(false)
+      
+      // Auto-play with error handling
+      audio.play().catch(error => {
+        console.log('Auto-play blocked or failed:', error)
+        setIsAudioPlaying(false)
+      })
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+    }
+  }, [card.id])
+
+  // Stop audio when parent signals (e.g., when outcome is triggered)
+  useEffect(() => {
+    if (shouldStopAudio && audioRef.current) {
+      console.log('Stopping audio due to parent signal')
+      audioRef.current.pause()
+      setIsAudioPlaying(false)
+    }
+  }, [shouldStopAudio])
   
   // Transform motion values to determine swipe direction and visual feedback
   const rotateZ = useTransform(x, [-150, 0, 150], [-10, 0, 10])
@@ -276,6 +326,35 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* Audio Visualization Overlay */}
+        {isAudioPlaying && (
+          <div className="absolute bottom-0 left-0 right-0 h-1/5 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-4">
+            <div className="flex items-end space-x-1">
+              {/* Animated waveform bars */}
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white/80 rounded-full"
+                  style={{
+                    width: '3px',
+                    height: '8px',
+                    animation: `audioWave 1.5s ease-in-out infinite`,
+                    animationDelay: `${i * 0.1}s`,
+                  }}
+                />
+              ))}
+            </div>
+            
+            {/* Audio playing indicator */}
+            <div className="absolute bottom-2 right-3 flex items-center space-x-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <span className="text-white text-xs font-bold uppercase tracking-wide">
+                Audio
+              </span>
+            </div>
           </div>
         )}
       </motion.div>

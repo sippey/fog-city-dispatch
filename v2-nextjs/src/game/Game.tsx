@@ -322,6 +322,7 @@ export default function Game() {
                 onSwipe={handleSwipe}
                 onAcceptPowerup={handleAcceptPowerup}
                 onSwipeDirectionChange={setCurrentSwipeDirection}
+                shouldStopAudio={gameState.showOutcome}
               />
             )}
           </div>

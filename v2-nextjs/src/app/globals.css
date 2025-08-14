@@ -29,3 +29,13 @@ body {
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 1.5rem);
 }
+
+/* Audio waveform animation */
+@keyframes audioWave {
+  0%, 100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1.8);
+  }
+}
