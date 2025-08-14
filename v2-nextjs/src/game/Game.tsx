@@ -327,9 +327,9 @@ export default function Game() {
           </div>
         </div>
 
-        {/* Card description at bottom - fixed size */}
+        {/* Card description at bottom - fixed size with safe area padding */}
         {!gameState.showOutcome && currentCard && !currentSwipeDirection && (
-          <div className="flex-shrink-0 px-8 pb-6 text-left">
+          <div className="flex-shrink-0 px-8 pb-6 text-left safe-area-bottom">
             <div className="max-w-lg mx-auto bg-black/80 backdrop-blur-sm rounded-lg p-4">
               <h2 className="text-sm font-extrabold mb-2 text-white leading-tight">
                 {currentCard.headline}

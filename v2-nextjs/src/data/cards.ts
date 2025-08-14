@@ -863,7 +863,7 @@ export const cardsData: DispatchCard[] =
   {
     "id": 30,
     "storyArc": "Random",
-    "headline": "Theft at Macy's",
+    "headline": "Theft at Macys",
     "location": "Union Square",
     "description": "Store security detained suspected shoplifter. Routine retail theft, no weapons involved.",
     "visual": "Busy department store, security guard with detained person, holiday decorations, shoppers with bags",
