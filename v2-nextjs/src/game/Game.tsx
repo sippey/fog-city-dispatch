@@ -12,11 +12,69 @@ import GameResults from './components/GameResults'
 import { getCardImageUrl } from '@/utils/unsplash'
 import { initializeStoryProgress, updateStoryProgress } from './gameLogic'
 
+interface GameConfig {
+  deckSize: number
+  gameTime: number // in seconds
+  startingReadiness: number
+  recycleIgnoredCards: boolean
+  readinessGainPerSecond: number
+}
+
+const DEFAULT_CONFIG: GameConfig = {
+  deckSize: 110, // Use all cards by default
+  gameTime: 300, // 5 minutes
+  startingReadiness: 100,
+  recycleIgnoredCards: true,
+  readinessGainPerSecond: 1
+}
+
 export default function Game() {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE)
   const [cardDeck, setCardDeck] = useState<DispatchCard[]>([])
   const [currentSwipeDirection, setCurrentSwipeDirection] = useState<'left' | 'right' | 'up' | null>(null)
   const [isAnimatingSwipe, setIsAnimatingSwipe] = useState(false)
+  const [gameConfig, setGameConfig] = useState<GameConfig>(DEFAULT_CONFIG)
+
+  // Select cards based on configuration
+  const selectCards = (allCards: DispatchCard[], targetCount: number): DispatchCard[] => {
+    // If we want all cards, just return them
+    if (targetCount >= allCards.length) {
+      return allCards
+    }
+
+    // Group cards by type
+    const zodiacCards = allCards.filter(card => card.storyArc === 'Zodiac')
+    const powerupCards = allCards.filter(card => card.isPowerup === true)
+    const otherCards = allCards.filter(card => 
+      card.storyArc !== 'Zodiac' && !card.isPowerup
+    )
+
+    // Start with all Zodiac cards (8 cards) and at least 1 powerup
+    const selectedCards: DispatchCard[] = []
+    
+    // Add all Zodiac cards
+    selectedCards.push(...zodiacCards)
+    
+    // Add at least one powerup if available
+    if (powerupCards.length > 0) {
+      selectedCards.push(powerupCards[Math.floor(Math.random() * powerupCards.length)])
+    }
+    
+    // Calculate how many more cards we need
+    const remainingSlots = targetCount - selectedCards.length
+    
+    if (remainingSlots > 0) {
+      // Combine remaining powerups and other cards
+      const remainingPowerups = powerupCards.filter(p => !selectedCards.includes(p))
+      const availableCards = [...remainingPowerups, ...otherCards]
+      
+      // Shuffle and select random cards to fill remaining slots
+      const shuffled = availableCards.sort(() => Math.random() - 0.5)
+      selectedCards.push(...shuffled.slice(0, remainingSlots))
+    }
+    
+    return selectedCards
+  }
 
   // Smart shuffle function that maintains story order
   const smartShuffle = (cards: DispatchCard[]): DispatchCard[] => {
@@ -72,7 +130,8 @@ export default function Game() {
 
   // Initialize game
   useEffect(() => {
-    const shuffled = smartShuffle(cardsData)
+    const selectedCards = selectCards(cardsData, gameConfig.deckSize)
+    const shuffled = smartShuffle(selectedCards)
     setCardDeck(shuffled)
     setGameState(prev => ({
       ...prev,
@@ -95,13 +154,13 @@ export default function Game() {
         return {
           ...prev,
           timeRemaining: newTimeRemaining,
-          readiness: Math.min(prev.capacity, prev.readiness + 1) // +1 readiness every second
+          readiness: Math.min(prev.capacity, prev.readiness + gameConfig.readinessGainPerSecond)
         }
       })
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [gameState.isGameActive])
+  }, [gameState.isGameActive, gameConfig.readinessGainPerSecond])
 
   const currentCard = cardDeck[gameState.currentCardIndex]
   const backgroundImageUrl = currentCard ? getCardImageUrl(currentCard) : null
@@ -130,17 +189,27 @@ export default function Game() {
 
     // Handle deck management based on response type
     if (responseType === 'ignore') {
-      // For ignored cards: remove from current position and add to end
-      setCardDeck(prev => {
-        const newDeck = [...prev]
-        // Remove from current position
-        newDeck.splice(gameState.currentCardIndex, 1)
-        // Add to end of deck
-        newDeck.push(currentCard)
-        console.log(`Card ignored: "${currentCard.headline}" - Moved to end of deck. Deck size: ${newDeck.length}`)
-        return newDeck
-      })
-      // Deck size stays the same
+      if (gameConfig.recycleIgnoredCards) {
+        // For ignored cards: remove from current position and add to end
+        setCardDeck(prev => {
+          const newDeck = [...prev]
+          // Remove from current position
+          newDeck.splice(gameState.currentCardIndex, 1)
+          // Add to end of deck
+          newDeck.push(currentCard)
+          console.log(`Card ignored: "${currentCard.headline}" - Moved to end of deck. Deck size: ${newDeck.length}`)
+          return newDeck
+        })
+        // Deck size stays the same
+      } else {
+        // Remove the card completely if not recycling
+        setCardDeck(prev => {
+          const newDeck = [...prev]
+          newDeck.splice(gameState.currentCardIndex, 1)
+          console.log(`Card ignored: "${currentCard.headline}" - Removed from deck. Deck size: ${newDeck.length}`)
+          return newDeck
+        })
+      }
     } else {
       // For basic/maximum responses: remove the card completely
       setCardDeck(prev => {
@@ -152,18 +221,30 @@ export default function Game() {
     }
 
     // Update game state with outcome and story progress
-    setGameState(prev => ({
-      ...prev,
-      readiness: Math.min(prev.capacity, prev.readiness + cost),
-      score: prev.score + response.score,
-      capacity: prev.capacity + response.capacity,
-      cardsHandled: prev.cardsHandled + 1,
-      showOutcome: true,
-      currentOutcome: response.outcome,
-      storyProgress: updateStoryProgress(currentCard, responseType, prev.storyProgress),
-      // Update deck size based on response type
-      deckSize: responseType === 'ignore' ? prev.deckSize : prev.deckSize - 1
-    }))
+    setGameState(prev => {
+      const newDeckSize = responseType === 'ignore' && gameConfig.recycleIgnoredCards 
+        ? prev.deckSize 
+        : prev.deckSize - 1
+      
+      // Check if this will be the last card after this action
+      const isLastCard = newDeckSize === 0
+
+      console.log(`Processing card: ${currentCard.headline}, current deck size: ${prev.deckSize}, new deck size: ${newDeckSize}, is last card: ${isLastCard}`)
+
+      return {
+        ...prev,
+        readiness: Math.min(prev.capacity, prev.readiness + cost),
+        score: prev.score + response.score,
+        capacity: prev.capacity + response.capacity,
+        cardsHandled: prev.cardsHandled + 1,
+        showOutcome: true,
+        currentOutcome: response.outcome,
+        storyProgress: updateStoryProgress(currentCard, responseType, prev.storyProgress),
+        deckSize: newDeckSize,
+        // If this was the last card, end the game immediately after outcome
+        isGameActive: !isLastCard
+      }
+    })
   }
 
   const handleAcceptPowerup = () => {
@@ -180,65 +261,71 @@ export default function Game() {
     })
 
     // Update game state with powerup bonus
-    setGameState(prev => ({
-      ...prev,
-      readiness: Math.min(prev.capacity, prev.readiness + response.readiness),
-      cardsHandled: prev.cardsHandled + 1,
-      showOutcome: true,
-      currentOutcome: response.outcome,
-      deckSize: prev.deckSize - 1
-    }))
+    setGameState(prev => {
+      const newDeckSize = prev.deckSize - 1
+      const isLastCard = newDeckSize === 0
+
+      console.log(`Processing powerup: ${currentCard.headline}, current deck size: ${prev.deckSize}, new deck size: ${newDeckSize}, is last card: ${isLastCard}`)
+
+      return {
+        ...prev,
+        readiness: Math.min(prev.capacity, prev.readiness + response.readiness),
+        cardsHandled: prev.cardsHandled + 1,
+        showOutcome: true,
+        currentOutcome: response.outcome,
+        deckSize: newDeckSize,
+        // If this was the last card, end the game immediately after outcome
+        isGameActive: !isLastCard
+      }
+    })
   }
 
   const handleStartGame = () => {
+    // Apply configuration and start game
+    const selectedCards = selectCards(cardsData, gameConfig.deckSize)
+    const shuffled = smartShuffle(selectedCards)
+    setCardDeck(shuffled)
+    
     setGameState(prev => ({
       ...prev,
       showIntro: false,
       isGameActive: true,
-      storyProgress: initializeStoryProgress()
+      storyProgress: initializeStoryProgress(),
+      readiness: gameConfig.startingReadiness,
+      timeRemaining: gameConfig.gameTime,
+      deckSize: shuffled.length
     }))
   }
 
   const handleOutcomeComplete = useCallback(() => {
     console.log('handleOutcomeComplete called')
     setGameState(prev => {
-      // Since we've already modified the deck, the current index now points to the next card
-      // (because we removed the current card or moved it to the end)
       console.log('Current index:', prev.currentCardIndex)
-      console.log('Current deck size:', cardDeck.length)
+      console.log('Deck size in state:', prev.deckSize)
+      console.log('Is game active:', prev.isGameActive)
       
-      // Only end game if time runs out
-      if (prev.timeRemaining <= 0) {
-        console.log('Game ending - out of time')
-        return { ...prev, showOutcome: false, isGameActive: false, showResults: true }
-      }
-      
-      // Check if we've reached the end of the deck
-      if (prev.currentCardIndex >= cardDeck.length) {
-        console.log('No more cards in deck - all cards have been handled')
-        return { ...prev, showOutcome: false, isGameActive: false, showResults: true }
+      // Check if game should end (time out or no more cards)
+      if (prev.timeRemaining <= 0 || !prev.isGameActive) {
+        console.log('Game ending - time out or no cards left')
+        return { 
+          ...prev, 
+          showOutcome: false, 
+          isGameActive: false, 
+          showResults: true
+        }
       }
       
       console.log('Moving to next card')
       return {
         ...prev,
-        // Don't increment index - it already points to the next card after deck modification
         currentCardIndex: prev.currentCardIndex,
         showOutcome: false,
         currentOutcome: ''
       }
     })
-  }, [cardDeck.length])
+  }, [])
 
-  if (!currentCard) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl font-bold text-gray-600">Loading game...</div>
-      </div>
-    )
-  }
-
-  // Show results screen
+  // Show results screen (check this before checking currentCard)
   if (gameState.showResults) {
     return (
       <GameResults
@@ -246,6 +333,8 @@ export default function Game() {
         cardsHandled={gameState.cardsHandled}
         storyProgress={gameState.storyProgress}
         onPlayAgain={() => {
+          // Reset to defaults
+          setGameConfig(DEFAULT_CONFIG)
           const shuffled = smartShuffle(cardsData)
           setCardDeck(shuffled)
           setGameState({
@@ -254,6 +343,14 @@ export default function Game() {
           })
         }}
       />
+    )
+  }
+
+  if (!currentCard && !gameState.showOutcome) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl font-bold text-gray-600">Loading game...</div>
+      </div>
     )
   }
 
@@ -283,9 +380,99 @@ export default function Game() {
             Fog City Dispatch
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-2xl leading-relaxed drop-shadow-lg">
-            You&apos;re a 1970s San Francisco police dispatcher. Make split-second decisions on emergency calls—swipe left to ignore, right for basic response, or up for maximum response. Balance your readiness with the city&apos;s needs.
-          </p>
+          {/* Game Configuration Options */}
+          <div className="bg-black/50 backdrop-blur-sm rounded-2xl p-8 mb-12 max-w-2xl w-full">
+            <h2 className="text-2xl font-bold text-white mb-6">Game Settings</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Deck Size */}
+              <div className="text-left">
+                <label className="text-sm font-medium text-gray-300 block mb-2">
+                  Number of Cards
+                </label>
+                <select
+                  value={gameConfig.deckSize}
+                  onChange={(e) => setGameConfig(prev => ({ ...prev, deckSize: Number(e.target.value) }))}
+                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110].map(size => (
+                    <option key={size} value={size}>
+                      {size === 110 ? `${size} (All cards)` : size}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Game Time */}
+              <div className="text-left">
+                <label className="text-sm font-medium text-gray-300 block mb-2">
+                  Time to Play
+                </label>
+                <select
+                  value={gameConfig.gameTime}
+                  onChange={(e) => setGameConfig(prev => ({ ...prev, gameTime: Number(e.target.value) }))}
+                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value={60}>1 minute</option>
+                  <option value={120}>2 minutes</option>
+                  <option value={180}>3 minutes</option>
+                  <option value={240}>4 minutes</option>
+                  <option value={300}>5 minutes</option>
+                </select>
+              </div>
+
+              {/* Starting Readiness */}
+              <div className="text-left">
+                <label className="text-sm font-medium text-gray-300 block mb-2">
+                  Starting Readiness
+                </label>
+                <select
+                  value={gameConfig.startingReadiness}
+                  onChange={(e) => setGameConfig(prev => ({ ...prev, startingReadiness: Number(e.target.value) }))}
+                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  {Array.from({ length: 21 }, (_, i) => i * 10).map(readiness => (
+                    <option key={readiness} value={readiness}>
+                      {readiness}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Recycle Ignored Cards */}
+              <div className="text-left">
+                <label className="text-sm font-medium text-gray-300 block mb-2">
+                  Recycle Ignored Cards
+                </label>
+                <select
+                  value={gameConfig.recycleIgnoredCards ? 'yes' : 'no'}
+                  onChange={(e) => setGameConfig(prev => ({ ...prev, recycleIgnoredCards: e.target.value === 'yes' }))}
+                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="yes">Yes - Return to deck</option>
+                  <option value="no">No - Remove from game</option>
+                </select>
+              </div>
+
+              {/* Readiness Gain Per Second */}
+              <div className="text-left">
+                <label className="text-sm font-medium text-gray-300 block mb-2">
+                  Readiness Gain Per Second
+                </label>
+                <select
+                  value={gameConfig.readinessGainPerSecond}
+                  onChange={(e) => setGameConfig(prev => ({ ...prev, readinessGainPerSecond: Number(e.target.value) }))}
+                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                >
+                  {Array.from({ length: 10 }, (_, i) => i + 1).map(gain => (
+                    <option key={gain} value={gain}>
+                      {gain} {gain === 1 ? 'point' : 'points'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
           
           <button
             onClick={handleStartGame}
@@ -367,7 +554,7 @@ export default function Game() {
         {/* Card area - fixed position to prevent jump on drag */}
         <div className="relative flex-1">
           <div className="absolute left-1/2 transform -translate-x-1/2" style={{ top: '8rem' }}>
-            {(!gameState.showOutcome || isAnimatingSwipe) && (
+            {(!gameState.showOutcome || isAnimatingSwipe) && currentCard && (
               <GameCard
                 card={currentCard}
                 onSwipe={handleSwipe}
