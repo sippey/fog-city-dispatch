@@ -10,7 +10,6 @@ import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
 import GameResults from './components/GameResults'
-import { getCardImageUrl } from '@/utils/cardImages'
 import { initializeStoryProgress, updateStoryProgress } from './gameLogic'
 
 interface GameConfig {
@@ -164,7 +163,11 @@ export default function Game() {
   }, [gameState.isGameActive, gameConfig.readinessGainPerSecond])
 
   const currentCard = cardDeck[gameState.currentCardIndex]
-  const backgroundImageUrl = currentCard ? getCardImageUrl(currentCard) : null
+
+  // Check which actions are affordable based on readiness
+  const canAffordIgnore = !currentCard || currentCard.isPowerup || (currentCard.responses.ignore && gameState.readiness + currentCard.responses.ignore.readiness >= 0)
+  const canAffordBasic = !currentCard || currentCard.isPowerup || (currentCard.responses.basic && gameState.readiness + currentCard.responses.basic.readiness >= 0)
+  const canAffordMaximum = !currentCard || currentCard.isPowerup || (currentCard.responses.maximum && gameState.readiness + currentCard.responses.maximum.readiness >= 0)
 
   const handleSwipe = (direction: 'left' | 'right' | 'up', isKeyboard: boolean = false) => {
     if (!currentCard || gameState.showOutcome) return
@@ -523,6 +526,8 @@ export default function Game() {
           <div className={`py-3 px-3 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[150px] text-center flex items-center justify-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
+              : !canAffordIgnore
+              ? 'bg-gray-500 text-gray-400 opacity-50'
               : `bg-green-500 text-white ${currentSwipeDirection === 'left' ? 'opacity-100' : 'opacity-70'}`
           }`}>
             <span className="text-xs font-bold uppercase tracking-wide">IGNORE</span>
@@ -536,6 +541,8 @@ export default function Game() {
           <div className={`py-3 px-2 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[150px] text-center flex items-center justify-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
+              : !canAffordBasic
+              ? 'bg-gray-500 text-gray-400 opacity-50'
               : `bg-blue-500 text-white ${currentSwipeDirection === 'right' ? 'opacity-100' : 'opacity-70'}`
           }`}>
             <span className="text-xs font-bold uppercase tracking-wide">BASIC</span>
@@ -549,6 +556,8 @@ export default function Game() {
           <div className={`px-2 py-2 rounded-b-lg shadow-lg transition-opacity duration-200 w-[150px] text-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
+              : !canAffordMaximum
+              ? 'bg-gray-500 text-gray-400 opacity-50'
               : `bg-red-500 text-white ${currentSwipeDirection === 'up' ? 'opacity-100' : 'opacity-70'}`
           }`}>
             <span className="text-xs font-bold uppercase tracking-wide">MAXIMUM</span>
@@ -562,6 +571,7 @@ export default function Game() {
               <div className="flex flex-col items-center">
                 <GameCard
                   card={currentCard}
+                  currentReadiness={gameState.readiness}
                   onSwipe={handleSwipe}
                   onAcceptPowerup={handleAcceptPowerup}
                   onSwipeDirectionChange={setCurrentSwipeDirection}

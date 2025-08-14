@@ -51,7 +51,7 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
 
           {/* Deck Size */}
           <div className="text-center">
-            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Deck</div>
+            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">QUEUE</div>
             <div className="text-2xl font-bold text-blue-600 min-w-[60px]">{deckSize}</div>
           </div>
         </div>

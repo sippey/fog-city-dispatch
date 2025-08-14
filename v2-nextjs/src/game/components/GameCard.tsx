@@ -9,15 +9,17 @@ import { getCardAudioUrl, preloadAudio } from '@/utils/audio'
 
 interface GameCardProps {
   card: DispatchCard
+  currentReadiness: number
   onSwipe: (direction: 'left' | 'right' | 'up', isKeyboard?: boolean) => void
   onAcceptPowerup?: () => void
   onSwipeDirectionChange?: (direction: 'left' | 'right' | 'up' | null) => void
   shouldStopAudio?: boolean // Signal from parent to stop audio
 }
 
-export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio }: GameCardProps) {
+export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio }: GameCardProps) {
   const [, setIsDragging] = useState(false)
   const [isPowerupBeingSwiped, setIsPowerupBeingSwiped] = useState(false)
+  const [isUnaffordableDrag, setIsUnaffordableDrag] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const resetTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -95,8 +97,10 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     return null
   }
 
+
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     setIsDragging(false)
+    setIsUnaffordableDrag(false) // Reset red overlay
     
     const { offset, velocity } = info
     const swipeThreshold = 80
@@ -111,9 +115,21 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     if (shouldSwipe) {
       // Determine swipe direction - prioritize the larger movement
       if (Math.abs(offset.y) > Math.abs(offset.x) && offset.y < 0) {
-        onSwipe('up') // Maximum response
+        // Check if player can afford maximum response
+        if (canAffordMaximum) {
+          onSwipe('up') // Maximum response
+        } else {
+          resetCard() // Can't afford, reset card
+        }
       } else if (Math.abs(offset.x) > Math.abs(offset.y)) {
-        onSwipe(offset.x < 0 ? 'left' : 'right') // Ignore or Basic
+        // Check if player can afford the horizontal response
+        const direction = offset.x < 0 ? 'left' : 'right'
+        const canAfford = direction === 'left' ? canAffordIgnore : canAffordBasic
+        if (canAfford) {
+          onSwipe(direction) // Ignore or Basic
+        } else {
+          resetCard() // Can't afford, reset card
+        }
       } else {
         // If unclear direction, reset card
         resetCard()
@@ -155,6 +171,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     
     // Reset direction immediately
     onSwipeDirectionChange?.(null)
+    setIsUnaffordableDrag(false) // Reset red overlay
     // Force reset position with stronger spring
     animate(x, 0, { type: 'spring', stiffness: 600, damping: 40 })
     animate(y, 0, { type: 'spring', stiffness: 600, damping: 40 })
@@ -188,13 +205,74 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     })
   }, [x, y, onSwipe, isAnimating])
 
+  // Wiggle animation for unaffordable keyboard attempts
+  const animateWiggle = useCallback((direction: 'left' | 'right' | 'up') => {
+    if (isAnimating) return
+    setIsAnimating(true)
+    
+    const wiggleDistance = 25 // Small wiggle distance
+    const wiggleAnimations = {
+      left: { x: -wiggleDistance, y: 0 },
+      right: { x: wiggleDistance, y: 0 },
+      up: { x: 0, y: -wiggleDistance }
+    }
+    
+    const target = wiggleAnimations[direction]
+    
+    // Quick wiggle animation: move out, then back to center
+    Promise.all([
+      animate(x, target.x, { duration: 0.15, ease: 'easeOut' }),
+      animate(y, target.y, { duration: 0.15, ease: 'easeOut' })
+    ]).then(() => {
+      // Return to center
+      return Promise.all([
+        animate(x, 0, { duration: 0.35, ease: 'easeOut' }),
+        animate(y, 0, { duration: 0.35, ease: 'easeOut' })
+      ])
+    }).then(() => {
+      setIsAnimating(false)
+    })
+  }, [x, y, isAnimating])
+
+  const currentDirection = getSwipeDirection(x.get(), y.get())
+  
+  const isPowerupCard = card.isPowerup === true
+  const backgroundImageUrl = getCardImageUrl(card)
+  const backgroundVideoUrl = isPowerupCard ? getCardVideoUrl(card) : null
+  
+  // Check which actions are affordable based on readiness
+  const canAffordIgnore = isPowerupCard || (card.responses.ignore && currentReadiness + card.responses.ignore.readiness >= 0)
+  const canAffordBasic = isPowerupCard || (card.responses.basic && currentReadiness + card.responses.basic.readiness >= 0)
+  const canAffordMaximum = isPowerupCard || (card.responses.maximum && currentReadiness + card.responses.maximum.readiness >= 0)
+
+  // Check if current drag direction is unaffordable
+  const checkUnaffordableDrag = useCallback((direction: 'left' | 'right' | 'up' | null) => {
+    if (!direction || isPowerupCard) return false
+    
+    switch(direction) {
+      case 'left': return !canAffordIgnore
+      case 'right': return !canAffordBasic
+      case 'up': return !canAffordMaximum
+      default: return false
+    }
+  }, [isPowerupCard, canAffordIgnore, canAffordBasic, canAffordMaximum])
+
+  // Check if current direction is unaffordable and update overlay
+  useEffect(() => {
+    const isUnaffordable = checkUnaffordableDrag(currentDirection)
+    setIsUnaffordableDrag(isUnaffordable)
+  }, [currentDirection, checkUnaffordableDrag])
+  
+  // Notify parent of direction changes
+  useEffect(() => {
+    onSwipeDirectionChange?.(currentDirection)
+  }, [currentDirection, onSwipeDirectionChange])
+
   // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Prevent keyboard controls while animating
       if (isAnimating) return
-      
-      const isPowerupCard = card.isPowerup === true
       
       if (isPowerupCard) {
         // For powerup cards, any arrow key, space, or enter accepts the bonus
@@ -203,19 +281,31 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           onAcceptPowerup?.()
         }
       } else {
-        // For regular cards, arrow keys trigger swipes
+        // For regular cards, arrow keys trigger swipes (only if affordable)
         switch(e.key) {
           case 'ArrowLeft':
             e.preventDefault()
-            animateSwipe('left')
+            if (canAffordIgnore) {
+              animateSwipe('left')
+            } else {
+              animateWiggle('left')
+            }
             break
           case 'ArrowRight':
             e.preventDefault()
-            animateSwipe('right')
+            if (canAffordBasic) {
+              animateSwipe('right')
+            } else {
+              animateWiggle('right')
+            }
             break
           case 'ArrowUp':
             e.preventDefault()
-            animateSwipe('up')
+            if (canAffordMaximum) {
+              animateSwipe('up')
+            } else {
+              animateWiggle('up')
+            }
             break
         }
       }
@@ -223,15 +313,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
     
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [card.isPowerup, animateSwipe, onAcceptPowerup, isAnimating])
-
-
-  const currentDirection = getSwipeDirection(x.get(), y.get())
-  
-  // Notify parent of direction changes
-  useEffect(() => {
-    onSwipeDirectionChange?.(currentDirection)
-  }, [currentDirection, onSwipeDirectionChange])
+  }, [card.isPowerup, animateSwipe, animateWiggle, onAcceptPowerup, isAnimating, canAffordIgnore, canAffordBasic, canAffordMaximum, isPowerupCard])
 
   // Get response based on current direction for preview
   const getActiveResponse = () => {
@@ -244,10 +326,6 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
   }
 
   const activeResponse = getActiveResponse()
-
-  const isPowerupCard = card.isPowerup === true
-  const backgroundImageUrl = getCardImageUrl(card)
-  const backgroundVideoUrl = isPowerupCard ? getCardVideoUrl(card) : null
   
   // Debug: log URL only when card changes
   useEffect(() => {
@@ -328,6 +406,21 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
           </div>
         )}
         
+        {/* Red unaffordable overlay for regular cards being dragged in unaffordable direction */}
+        {isUnaffordableDrag && !isPowerupCard && (
+          <div 
+            className="absolute inset-0 rounded-2xl flex items-center justify-center"
+            style={{ 
+              backgroundColor: 'rgba(239, 68, 68, 0.4)', // Red with 40% opacity - lighter so text is still readable
+              zIndex: 1 
+            }}
+          >
+            <div className="text-white text-xl font-bold uppercase tracking-wider" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+              Can&apos;t Afford
+            </div>
+          </div>
+        )}
+        
         {/* Location - top right */}
         <div className="absolute top-3 right-3" style={{ zIndex: 2 }}>
           <div className="bg-black/80 px-2 py-1 rounded-full text-xs font-medium text-gray-300">
@@ -383,7 +476,7 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
               <>
                 <div className="space-y-6">
                   <div className={`text-6xl font-extrabold drop-shadow-lg ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`}>
-                    {activeResponse.readiness > 0 ? '+' : ''}{activeResponse.readiness}
+                    {activeResponse.readiness >= 0 ? '+' : ''}{activeResponse.readiness}
                   </div>
                   <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
                     Readiness
@@ -391,8 +484,8 @@ export default function GameCard({ card, onSwipe, onAcceptPowerup, onSwipeDirect
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="text-4xl font-extrabold text-emerald-400 drop-shadow-lg">
-                    +{activeResponse.score}
+                  <div className={`text-4xl font-extrabold drop-shadow-lg ${activeResponse.score < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {activeResponse.score >= 0 ? '+' : ''}{activeResponse.score}
                   </div>
                   <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
                     Points
