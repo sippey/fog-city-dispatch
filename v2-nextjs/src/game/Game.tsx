@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 // import { motion } from 'framer-motion' // Unused
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
@@ -382,7 +383,15 @@ export default function Game() {
           
           {/* Game Configuration Options */}
           <div className="bg-black/50 backdrop-blur-sm rounded-2xl p-8 mb-12 max-w-2xl w-full">
-            <h2 className="text-2xl font-bold text-white mb-6">Game Settings</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-white">Game Settings</h2>
+              <Link 
+                href="/card-browser"
+                className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors duration-200 flex items-center gap-1"
+              >
+                📚 Browse All Cards
+              </Link>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Deck Size */}
