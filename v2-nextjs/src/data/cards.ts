@@ -14,7 +14,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Neighbors handle it themselves"
       },
       "basic": {
@@ -44,7 +44,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Crime scene goes cold"
       },
       "basic": {
@@ -74,7 +74,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Store owner finds broken window"
       },
       "basic": {
@@ -103,7 +103,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Passerby calls ambulance instead"
       },
       "basic": {
@@ -132,7 +132,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Tourists direct traffic"
       },
       "basic": {
@@ -161,7 +161,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Robber escapes with cash"
       },
       "basic": {
@@ -190,7 +190,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Family searches alone in fog"
       },
       "basic": {
@@ -220,7 +220,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Call logged as prank"
       },
       "basic": {
@@ -250,7 +250,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Bouncer breaks up fight"
       },
       "basic": {
@@ -279,7 +279,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Wife continues CPR alone"
       },
       "basic": {
@@ -308,7 +308,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Bystanders call ambulances"
       },
       "basic": {
@@ -337,7 +337,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Residents wait on street"
       },
       "basic": {
@@ -366,7 +366,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Parents hire private investigators"
       },
       "basic": {
@@ -396,7 +396,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Women avoid the area"
       },
       "basic": {
@@ -425,7 +425,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Cab company finds body"
       },
       "basic": {
@@ -455,7 +455,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Burglars escape with valuables"
       },
       "basic": {
@@ -484,7 +484,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Editor files story anyway"
       },
       "basic": {
@@ -514,7 +514,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Crowd talks man down"
       },
       "basic": {
@@ -544,7 +544,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Correction goes unnoticed"
       },
       "basic": {
@@ -574,7 +574,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Party winds down naturally"
       },
       "basic": {
@@ -603,7 +603,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Intelligence filed away"
       },
       "basic": {
@@ -633,7 +633,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Dog walkers help victim"
       },
       "basic": {
@@ -663,7 +663,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Family negotiates privately"
       },
       "basic": {
@@ -693,7 +693,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Traffic backs up for hours"
       },
       "basic": {
@@ -723,7 +723,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "School continues normal dismissal"
       },
       "basic": {
@@ -753,7 +753,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Groundskeeper files insurance claim"
       },
       "basic": {
@@ -782,7 +782,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "PG&E worker calls fire dept"
       },
       "basic": {
@@ -812,7 +812,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Company calls private ambulance"
       },
       "basic": {
@@ -842,7 +842,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Cable car stops using emergency brake"
       },
       "basic": {
@@ -872,7 +872,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Security handles it internally"
       },
       "basic": {
@@ -901,7 +901,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Security guard handles alone"
       },
       "basic": {
@@ -931,7 +931,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Party ends at sunrise"
       },
       "basic": {
@@ -960,7 +960,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Thieves escape with bikes"
       },
       "basic": {
@@ -989,7 +989,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Victims bleed while waiting"
       },
       "basic": {
@@ -1019,7 +1019,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Thieves escape with masterpieces"
       },
       "basic": {
@@ -1048,7 +1048,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Robbers escape with money"
       },
       "basic": {
@@ -1078,7 +1078,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Fire spreads to building"
       },
       "basic": {
@@ -1107,7 +1107,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Man disappears before bus arrives"
       },
       "basic": {
@@ -1137,7 +1137,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Family calls ambulance"
       },
       "basic": {
@@ -1166,7 +1166,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Fire dept evacuates anyway"
       },
       "basic": {
@@ -1196,7 +1196,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Tourists lose wallets and phones"
       },
       "basic": {
@@ -1226,7 +1226,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Gunman escapes in chaos"
       },
       "basic": {
@@ -1256,7 +1256,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Parade volunteers help"
       },
       "basic": {
@@ -1285,7 +1285,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Tourists help each other"
       },
       "basic": {
@@ -1315,7 +1315,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Other tourists call ambulance"
       },
       "basic": {
@@ -1344,7 +1344,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "FBI conducts raid alone"
       },
       "basic": {
@@ -1374,7 +1374,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Commuters talk person down"
       },
       "basic": {
@@ -1403,7 +1403,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Community forms own patrols"
       },
       "basic": {
@@ -1433,7 +1433,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Undercover officer aborts"
       },
       "basic": {
@@ -1463,7 +1463,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Call treated as hoax"
       },
       "basic": {
@@ -1493,7 +1493,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Performers sort it out"
       },
       "basic": {
@@ -1522,7 +1522,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Disaster spreads unchecked"
       },
       "basic": {
@@ -1552,7 +1552,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Flash mob disperses naturally"
       },
       "basic": {
@@ -1581,7 +1581,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Tourists walk down steep hills"
       },
       "basic": {
@@ -1611,7 +1611,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Fire spreads to three buildings"
       },
       "basic": {
@@ -1640,7 +1640,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "FBI handles arrest alone"
       },
       "basic": {
@@ -1670,7 +1670,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Family escapes through window"
       },
       "basic": {
@@ -1699,7 +1699,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "White waits at front desk"
       },
       "basic": {
@@ -1729,7 +1729,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Dog walkers help victim"
       },
       "basic": {
@@ -1758,7 +1758,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Riots spread unchecked"
       },
       "basic": {
@@ -1788,7 +1788,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Burglar hits six more houses"
       },
       "basic": {
@@ -1817,7 +1817,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Community cleans graffiti"
       },
       "basic": {
@@ -1846,7 +1846,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Coast Guard handles rescue"
       },
       "basic": {
@@ -1875,7 +1875,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Castro burns while police watch"
       },
       "basic": {
@@ -1905,7 +1905,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Family handles matter privately"
       },
       "basic": {
@@ -1934,7 +1934,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Rave continues until dawn"
       },
       "basic": {
@@ -1963,7 +1963,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Concert ends peacefully"
       },
       "basic": {
@@ -1992,7 +1992,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Hotel security handles it"
       },
       "basic": {
@@ -2021,7 +2021,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Witnesses call ambulance"
       },
       "basic": {
@@ -2050,7 +2050,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Residents jump to safety"
       },
       "basic": {
@@ -2079,7 +2079,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Suspect crashes into mansion gate"
       },
       "basic": {
@@ -2108,7 +2108,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Party organizers clean up"
       },
       "basic": {
@@ -2137,7 +2137,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Bystanders break up fight"
       },
       "basic": {
@@ -2166,7 +2166,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Community mediates dispute"
       },
       "basic": {
@@ -2195,7 +2195,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Tourists help each other"
       },
       "basic": {
@@ -2224,7 +2224,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Building security handles evacuation"
       },
       "basic": {
@@ -2253,7 +2253,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Residents evacuate themselves"
       },
       "basic": {
@@ -2282,7 +2282,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "School security handles situation"
       },
       "basic": {
@@ -2311,7 +2311,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Lifeguards attempt rescue alone"
       },
       "basic": {
@@ -2340,7 +2340,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Artists pack up voluntarily"
       },
       "basic": {
@@ -2369,7 +2369,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Bouncers restore order"
       },
       "basic": {
@@ -2398,7 +2398,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Hikers carry out injured biker"
       },
       "basic": {
@@ -2427,7 +2427,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Community locks down center"
       },
       "basic": {
@@ -2456,7 +2456,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Drivers help each other"
       },
       "basic": {
@@ -2485,7 +2485,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Protest ends naturally"
       },
       "basic": {
@@ -2514,7 +2514,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Owner calls insurance company"
       },
       "basic": {
@@ -2543,7 +2543,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "BART staff handles emergency"
       },
       "basic": {
@@ -2572,7 +2572,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Dog owners break up fight"
       },
       "basic": {
@@ -2601,7 +2601,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Fire spreads to three cars"
       },
       "basic": {
@@ -2630,7 +2630,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Neighbors avoid the area"
       },
       "basic": {
@@ -2659,7 +2659,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Surfer friends organize search"
       },
       "basic": {
@@ -2688,7 +2688,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Community leaders mediate"
       },
       "basic": {
@@ -2717,7 +2717,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Fire spreads to three shops"
       },
       "basic": {
@@ -2746,7 +2746,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Librarian calls security"
       },
       "basic": {
@@ -2775,7 +2775,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Private security handles it"
       },
       "basic": {
@@ -2804,7 +2804,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Residents evacuate themselves"
       },
       "basic": {
@@ -2833,7 +2833,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Bystanders help injured"
       },
       "basic": {
@@ -2862,7 +2862,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Bus driver uses emergency brake"
       },
       "basic": {
@@ -2891,7 +2891,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Parents rush children to hospital"
       },
       "basic": {
@@ -2920,7 +2920,7 @@ export const cardsData: DispatchCard[] =
       "ignore": {
         "readiness": 1,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Neighbors call ambulance"
       },
       "basic": {
@@ -2951,7 +2951,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 25,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -2970,7 +2970,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 40,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -2989,7 +2989,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 75,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3008,7 +3008,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 15,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3027,7 +3027,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 50,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3046,7 +3046,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 10,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3065,7 +3065,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 60,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3084,7 +3084,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 30,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3103,7 +3103,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 85,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }
@@ -3122,7 +3122,7 @@ export const cardsData: DispatchCard[] =
       "accept": {
         "readiness": 100,
         "capacity": 0,
-        "score": 0,
+        "score": -10,
         "outcome": "Feeling recharged and ready!"
       }
     }

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 interface StatusBarProps {
   readiness: number
   capacity: number
@@ -6,6 +8,17 @@ interface StatusBarProps {
 }
 
 export default function StatusBar({ readiness, capacity, score, timeRemaining }: StatusBarProps) {
+  const [isFlashing, setIsFlashing] = useState(false)
+  const [prevScore, setPrevScore] = useState(score)
+
+  useEffect(() => {
+    if (score !== prevScore) {
+      setIsFlashing(true)
+      setPrevScore(score)
+      const timer = setTimeout(() => setIsFlashing(false), 600)
+      return () => clearTimeout(timer)
+    }
+  }, [score, prevScore])
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
@@ -28,7 +41,11 @@ export default function StatusBar({ readiness, capacity, score, timeRemaining }:
           {/* Score */}
           <div className="text-center">
             <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Score</div>
-            <div className="text-2xl font-bold text-emerald-600 min-w-[80px]">{score.toLocaleString()}</div>
+            <div className={`text-2xl font-bold min-w-[80px] transition-all duration-300 ${
+              isFlashing ? 'animate-pulse scale-110' : ''
+            } ${
+              score < 0 ? 'text-red-600' : 'text-emerald-600'
+            }`}>{score.toLocaleString()}</div>
           </div>
         </div>
 
