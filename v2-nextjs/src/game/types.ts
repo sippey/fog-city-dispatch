@@ -1,3 +1,5 @@
+export type TutorialPhase = 'intro' | 'card1' | 'card2' | 'card3' | 'ready' | null
+
 export interface GameState {
   readiness: number;
   capacity: number;
@@ -11,7 +13,8 @@ export interface GameState {
   cardsHandled: number;
   showOutcome: boolean;
   currentOutcome: string;
-  tutorialStep: number; // 0-2 for first 3 cards, -1 when done
+  tutorialPhase: TutorialPhase; // Tutorial progression state
+  tutorialReadiness: number; // Separate readiness for tutorial
   storyProgress: StoryArcProgress; // Track story arc completion
 }
 
@@ -53,6 +56,7 @@ export const INITIAL_GAME_STATE: GameState = {
   cardsHandled: 0,
   showOutcome: false,
   currentOutcome: '',
-  tutorialStep: 0,
+  tutorialPhase: null, // Will be set based on localStorage
+  tutorialReadiness: 100, // Starting tutorial readiness
   storyProgress: {} // Will be initialized when game starts
 };

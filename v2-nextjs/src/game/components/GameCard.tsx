@@ -14,9 +14,10 @@ interface GameCardProps {
   onAcceptPowerup?: () => void
   onSwipeDirectionChange?: (direction: 'left' | 'right' | 'up' | null) => void
   shouldStopAudio?: boolean // Signal from parent to stop audio
+  isTutorial?: boolean
 }
 
-export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio }: GameCardProps) {
+export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio, isTutorial = false }: GameCardProps) {
   const [, setIsDragging] = useState(false)
   const [isPowerupBeingSwiped, setIsPowerupBeingSwiped] = useState(false)
   const [isUnaffordableDrag, setIsUnaffordableDrag] = useState(false)
@@ -29,6 +30,23 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
   // Motion values for smooth animations
   const x = useMotionValue(0)
   const y = useMotionValue(0)
+
+  // Get tutorial-specific preview text
+  const getTutorialPreviewText = (direction: 'left' | 'right' | 'up') => {
+    if (!isTutorial) return null
+    
+    // Based on card ID from tutorial data
+    switch (card.id) {
+      case 20: // Loud Party - teach ignore
+        return direction === 'left' ? 'Swipe Left to Ignore' : null
+      case 30: // Theft at Macy's - teach dispatch  
+        return direction === 'right' ? 'Swipe Right to Dispatch' : null
+      case 999: // Gas Explosion - teach priority dispatch
+        return direction === 'up' ? 'Swipe Up for High Priority Dispatch' : null
+      default:
+        return null
+    }
+  }
   
   // Reset position when card changes (for new cards after keyboard swipe)
   useEffect(() => {
@@ -467,12 +485,13 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
           /* Dramatic Score Display */
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8" style={{ zIndex: 2 }}>
             <div className="text-2xl font-black text-white uppercase tracking-widest" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
-              {currentDirection === 'left' ? 'Ignoring Call' : 
-               currentDirection === 'right' ? 'Dispatch' : 
-               'Priority Dispatch'}
+              {getTutorialPreviewText(currentDirection) || 
+               (currentDirection === 'left' ? 'Ignoring Call' : 
+                currentDirection === 'right' ? 'Dispatch' : 
+                'Priority Dispatch')}
             </div>
             
-            {activeResponse && (
+            {!isTutorial && activeResponse && (
               <>
                 <div className="space-y-6">
                   <div className={`text-6xl font-extrabold ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>

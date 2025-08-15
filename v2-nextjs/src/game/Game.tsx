@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import Link from 'next/link'
 // import { motion } from 'framer-motion' // Unused
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
-import { GameState, INITIAL_GAME_STATE } from './types'
+import { GameState, INITIAL_GAME_STATE, TutorialPhase } from './types'
+import { isTutorialCompleted, markTutorialCompleted, tutorialCards, getTutorialCardIndex, getNextTutorialPhase } from './tutorialData'
 import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
@@ -45,15 +45,19 @@ export default function Game() {
   const [gameConfig] = useState<GameConfig>(getInitialConfig)
   
   // Initialize game state with custom starting values
-  const getInitialGameState = (): GameState => ({
-    ...INITIAL_GAME_STATE,
-    showIntro: true, // Show intro screen
-    isGameActive: false, // Don't start until user clicks play
-    readiness: gameConfig.startingReadiness,
-    capacity: gameConfig.startingCapacity,
-    timeRemaining: gameConfig.gameTime,
-    storyProgress: initializeStoryProgress()
-  })
+  const getInitialGameState = (): GameState => {
+    const tutorialCompleted = isTutorialCompleted()
+    return {
+      ...INITIAL_GAME_STATE,
+      showIntro: true, // Show intro screen
+      isGameActive: false, // Don't start until user clicks play
+      readiness: gameConfig.startingReadiness,
+      capacity: gameConfig.startingCapacity,
+      timeRemaining: gameConfig.gameTime,
+      tutorialPhase: tutorialCompleted ? null : 'intro', // Start tutorial if not completed
+      storyProgress: initializeStoryProgress()
+    }
+  }
   
   const [gameState, setGameState] = useState<GameState>(getInitialGameState)
   const [cardDeck, setCardDeck] = useState<DispatchCard[]>([])
@@ -208,7 +212,7 @@ export default function Game() {
       ...prev,
       deckSize: shuffled.length
     }))
-  }, [])
+  }, [gameConfig.deckSize])
 
   // Game timer
   useEffect(() => {
@@ -233,12 +237,24 @@ export default function Game() {
     return () => clearInterval(timer)
   }, [gameState.isGameActive, gameConfig.readinessGainPerSecond])
 
-  const currentCard = cardDeck[gameState.currentCardIndex]
+  // Get current card (tutorial or game card)
+  const getTutorialCard = () => {
+    if (!gameState.tutorialPhase || gameState.tutorialPhase === 'intro' || gameState.tutorialPhase === 'ready') {
+      return null
+    }
+    const cardIndex = getTutorialCardIndex(gameState.tutorialPhase)
+    return cardIndex >= 0 ? tutorialCards[cardIndex] : null
+  }
+  
+  const currentCard = gameState.tutorialPhase && gameState.tutorialPhase !== 'ready' 
+    ? getTutorialCard()
+    : cardDeck[gameState.currentCardIndex]
 
-  // Check which actions are affordable based on readiness
-  const canAffordIgnore = !currentCard || currentCard.isPowerup || (currentCard.responses.ignore && gameState.readiness + currentCard.responses.ignore.readiness >= 0)
-  const canAffordBasic = !currentCard || currentCard.isPowerup || (currentCard.responses.basic && gameState.readiness + currentCard.responses.basic.readiness >= 0)
-  const canAffordMaximum = !currentCard || currentCard.isPowerup || (currentCard.responses.maximum && gameState.readiness + currentCard.responses.maximum.readiness >= 0)
+  // Check which actions are affordable based on readiness (use tutorial readiness in tutorial mode)
+  const currentReadiness = gameState.tutorialPhase ? gameState.tutorialReadiness : gameState.readiness
+  const canAffordIgnore = !currentCard || currentCard.isPowerup || (currentCard.responses.ignore && currentReadiness + currentCard.responses.ignore.readiness >= 0)
+  const canAffordBasic = !currentCard || currentCard.isPowerup || (currentCard.responses.basic && currentReadiness + currentCard.responses.basic.readiness >= 0)
+  const canAffordMaximum = !currentCard || currentCard.isPowerup || (currentCard.responses.maximum && currentReadiness + currentCard.responses.maximum.readiness >= 0)
 
   const handleSwipe = (direction: 'left' | 'right' | 'up', isKeyboard: boolean = false) => {
     if (!currentCard || gameState.showOutcome) return
@@ -249,7 +265,23 @@ export default function Game() {
     const response = currentCard.responses[responseType]
     if (!response) return
 
-    // Check if player can afford this response
+    // Tutorial mode - use tutorial readiness and handle progression
+    if (gameState.tutorialPhase && gameState.tutorialPhase !== 'ready') {
+      const cost = response.readiness
+      if (gameState.tutorialReadiness + cost < 0) return // Can't afford
+      
+      // Update tutorial readiness and show outcome
+      setGameState(prev => ({
+        ...prev,
+        tutorialReadiness: prev.tutorialReadiness + cost,
+        showOutcome: true,
+        currentOutcome: response.outcome
+      }))
+      
+      return // Exit early for tutorial mode
+    }
+
+    // Regular game mode
     const cost = response.readiness
     if (gameState.readiness + cost < 0) return // Can't afford
 
@@ -401,16 +433,51 @@ export default function Game() {
   }
 
   const handleStartGame = () => {
+    if (gameState.tutorialPhase === 'intro') {
+      // Start tutorial
+      setGameState(prev => ({
+        ...prev,
+        showIntro: false,
+        tutorialPhase: 'card1',
+        isGameActive: false // Don't start game until tutorial is complete
+      }))
+    } else {
+      // Skip tutorial, start game
+      setGameState(prev => ({
+        ...prev,
+        showIntro: false,
+        isGameActive: true,
+        tutorialPhase: null
+      }))
+    }
+  }
+
+  const handleStartTutorial = () => {
     setGameState(prev => ({
       ...prev,
       showIntro: false,
-      isGameActive: true
+      tutorialPhase: 'card1',
+      isGameActive: false
     }))
   }
 
   const handleOutcomeComplete = useCallback(() => {
     console.log('handleOutcomeComplete called')
     setGameState(prev => {
+      // Tutorial mode progression
+      if (prev.tutorialPhase && prev.tutorialPhase !== 'ready') {
+        const nextPhase = getNextTutorialPhase(prev.tutorialPhase) as TutorialPhase
+        console.log('Tutorial progressing from', prev.tutorialPhase, 'to', nextPhase)
+        
+        return {
+          ...prev,
+          tutorialPhase: nextPhase,
+          showOutcome: false,
+          currentOutcome: ''
+        }
+      }
+      
+      // Regular game mode
       console.log('Current index:', prev.currentCardIndex)
       console.log('Deck size in state:', prev.deckSize)
       console.log('Is game active:', prev.isGameActive)
@@ -466,7 +533,8 @@ export default function Game() {
     )
   }
 
-  if (!currentCard && !gameState.showOutcome) {
+  // Only show loading screen for regular game mode (not tutorial)
+  if (!currentCard && !gameState.showOutcome && !gameState.tutorialPhase) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-2xl font-bold text-gray-600">Loading game...</div>
@@ -476,6 +544,8 @@ export default function Game() {
 
   // Show intro screen
   if (gameState.showIntro) {
+    const tutorialCompleted = isTutorialCompleted()
+    
     return (
       <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
         {/* Background image with blur and dark overlay */}
@@ -501,14 +571,114 @@ export default function Game() {
           </h1>
           
           <p className="text-xl text-gray-300 font-medium mb-12 max-w-2xl leading-relaxed">
-            San Francisco has gone insane. It's your job to keep cool.
+            San Francisco has gone insane. It&apos;s your job to keep cool.
+          </p>
+          
+          {!tutorialCompleted && gameState.tutorialPhase === 'intro' ? (
+            // First-time player - start tutorial
+            <button
+              onClick={handleStartGame}
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+            >
+              Start Training
+            </button>
+          ) : (
+            // Returning player - show both options
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={handleStartGame}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+              >
+                Start Shift
+              </button>
+              <button
+                onClick={handleStartTutorial}
+                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-xl text-lg uppercase tracking-wide shadow-xl transition-all duration-200 transform hover:scale-105"
+              >
+                Replay Training
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Show tutorial intro screen
+  if (gameState.tutorialPhase === 'intro') {
+    return (
+      <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(/images/cards/Confession%20Call%20Downtown.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(8px)',
+            transform: 'scale(1.1)'
+          }}
+        />
+        <div className="absolute inset-0 bg-black/70 z-10" />
+        
+        <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-8 text-center">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-8 drop-shadow-2xl">
+            WELCOME TO YOUR FIRST DAY ON THE JOB
+          </h1>
+          
+          <p className="text-xl text-gray-300 font-medium mb-12 max-w-3xl leading-relaxed">
+            Let&apos;s teach you how to handle 911 calls as an emergency dispatcher.
           </p>
           
           <button
-            onClick={handleStartGame}
-            className="bg-green-600 hover:bg-red-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+            onClick={() => setGameState(prev => ({ ...prev, tutorialPhase: 'card1' }))}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
           >
-            Tap to Play
+            Start Training
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Show "Ready to Start Your Shift?" screen
+  if (gameState.tutorialPhase === 'ready') {
+    return (
+      <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(/images/cards/Confession%20Call%20Downtown.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(8px)',
+            transform: 'scale(1.1)'
+          }}
+        />
+        <div className="absolute inset-0 bg-black/70 z-10" />
+        
+        <div className="relative z-20 flex-1 flex flex-col items-center justify-center px-8 text-center">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-8 drop-shadow-2xl">
+            READY TO START YOUR SHIFT?
+          </h1>
+          
+          <p className="text-xl text-gray-300 font-medium mb-12 max-w-3xl leading-relaxed">
+            You&apos;ve learned the basics of emergency dispatch. Now earn points to get promoted through the ranks - from Trainee all the way up to Dispatch Commissioner. The better your decisions, the higher your score!
+          </p>
+          
+          <button
+            onClick={() => {
+              markTutorialCompleted()
+              setGameState(prev => ({ 
+                ...prev, 
+                tutorialPhase: null,
+                isGameActive: true 
+              }))
+            }}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+          >
+            Clock In
           </button>
         </div>
       </div>
@@ -519,11 +689,12 @@ export default function Game() {
     <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden bg-gradient-to-b from-gray-700 via-gray-600 to-gray-800">
       
       <StatusBar
-        readiness={gameState.readiness}
+        readiness={gameState.tutorialPhase ? gameState.tutorialReadiness : gameState.readiness}
         capacity={gameState.capacity}
         score={gameState.score}
         deckSize={gameState.deckSize}
-        timeRemaining={gameState.timeRemaining}
+        timeRemaining={gameState.tutorialPhase ? 0 : gameState.timeRemaining}
+        isTutorial={!!gameState.tutorialPhase}
       />
       
       {/* IGNORE tab - flush against left viewport edge */}
@@ -577,11 +748,12 @@ export default function Game() {
               <div className="flex flex-col items-center">
                 <GameCard
                   card={currentCard}
-                  currentReadiness={gameState.readiness}
+                  currentReadiness={currentReadiness}
                   onSwipe={handleSwipe}
                   onAcceptPowerup={handleAcceptPowerup}
                   onSwipeDirectionChange={setCurrentSwipeDirection}
                   shouldStopAudio={gameState.showOutcome}
+                  isTutorial={!!gameState.tutorialPhase}
                 />
                 
                 {/* Card description right below card */}

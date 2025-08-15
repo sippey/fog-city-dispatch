@@ -6,9 +6,10 @@ interface StatusBarProps {
   score: number
   deckSize: number
   timeRemaining: number
+  isTutorial?: boolean
 }
 
-export default function StatusBar({ readiness, capacity, score, deckSize, timeRemaining }: StatusBarProps) {
+export default function StatusBar({ readiness, capacity, score, deckSize, timeRemaining, isTutorial = false }: StatusBarProps) {
   const [isScoreAnimating, setIsScoreAnimating] = useState(false)
   const [displayScore, setDisplayScore] = useState(score)
   const [prevScore, setPrevScore] = useState(score)
@@ -70,7 +71,7 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
         setIsScoreAnimating(false)
       }
     }
-  }, [score])
+  }, [score, prevScore])
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -88,7 +89,9 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
           {/* Timer with fixed width */}
           <div className="text-center">
             <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Countdown</div>
-            <div className="text-2xl font-bold text-gray-800 font-mono w-20">{formatTime(timeRemaining)}</div>
+            <div className={`text-2xl font-bold font-mono w-20 ${isTutorial ? 'text-gray-400' : 'text-gray-800'}`}>
+              {isTutorial ? '0:00' : formatTime(timeRemaining)}
+            </div>
           </div>
 
           {/* Deck Size */}

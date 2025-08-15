@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { StoryArcProgress } from '../types'
 import { calculateFinalScore } from '../gameLogic'
 
@@ -75,20 +74,6 @@ export default function GameResults({
     }
   }
 
-  const getArcStatus = (progress: { cardsResponded: number; cardsIgnored: number; totalCards: number; isCompleted: boolean; multiplier: number }) => {
-    const responded = progress.cardsResponded
-    const ignored = progress.cardsIgnored
-    const encountered = responded + ignored
-    const total = progress.totalCards
-    
-    if (progress.isCompleted) {
-      return `(${total}/${total}) ${progress.multiplier}x`
-    } else if (encountered > 0) {
-      return `(${encountered}/${total}) --`
-    } else {
-      return `(0/${total}) --`
-    }
-  }
 
   return (
     <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
@@ -140,8 +125,8 @@ export default function GameResults({
               {completedArcs.length > 0 ? (
                 <div className="space-y-6">
                   {Object.entries(storyProgress)
-                    .filter(([_, progress]) => progress.isCompleted)
-                    .map(([arcName, progress]) => (
+                    .filter(([, progress]) => progress.isCompleted)
+                    .map(([arcName]) => (
                       <div key={arcName} className="border-b border-gray-600 last:border-b-0 pb-4 last:pb-0">
                         <div className="mb-2 text-left">
                           <span className="text-white font-bold text-lg">{getArcDisplayName(arcName)}</span>
