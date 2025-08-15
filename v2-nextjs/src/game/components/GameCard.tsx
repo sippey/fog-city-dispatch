@@ -15,9 +15,22 @@ interface GameCardProps {
   onSwipeDirectionChange?: (direction: 'left' | 'right' | 'up' | null) => void
   shouldStopAudio?: boolean // Signal from parent to stop audio
   isTutorial?: boolean
+  showOutcome?: boolean
+  currentSwipeDirection?: 'left' | 'right' | 'up' | null
 }
 
-export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio, isTutorial = false }: GameCardProps) {
+export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowerup, onSwipeDirectionChange, shouldStopAudio, isTutorial = false, showOutcome = false, currentSwipeDirection = null }: GameCardProps) {
+  // Check if mobile viewport
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640) // Tailwind's sm breakpoint
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   const [, setIsDragging] = useState(false)
   const [isPowerupBeingSwiped, setIsPowerupBeingSwiped] = useState(false)
   const [isUnaffordableDrag, setIsUnaffordableDrag] = useState(false)
@@ -403,13 +416,16 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
   }, [card.id, card.headline, backgroundImageUrl, backgroundVideoUrl])
 
   return (
-    <div className="relative" style={{ width: 'min(calc(100vw - 6rem), 400px)', maxWidth: '400px' }}>
+    <div className="relative" style={{ 
+      width: isMobile ? 'min(calc(100vw - 100px), 280px)' : 'min(calc(100vw - 6rem), 400px)', 
+      maxWidth: isMobile ? '280px' : '400px' 
+    }}>
       {/* Draggable Card */}
       <motion.div
         ref={cardRef}
         className="rounded-2xl p-4 border border-gray-700 flex flex-col justify-between overflow-hidden select-none cursor-grab active:cursor-grabbing relative"
         style={{ 
-          aspectRatio: '6 / 7',
+          aspectRatio: '3 / 4',
           width: '100%',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
           filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6))',
@@ -595,6 +611,20 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
           </div>
         )}
       </motion.div>
+      
+      {/* Card description right below card */}
+      {!showOutcome && !currentSwipeDirection && (
+        <div className="mt-2" style={{ width: '100%' }}>
+          <div className="bg-black/80 backdrop-blur-sm rounded-lg p-2.5">
+            <h2 className="text-xs font-extrabold mb-1 text-white leading-tight">
+              {card.headline}
+            </h2>
+            <p className="text-gray-300 leading-relaxed font-medium text-xs">
+              {card.description}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

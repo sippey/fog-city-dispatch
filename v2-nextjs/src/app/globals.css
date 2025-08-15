@@ -30,6 +30,36 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 1.5rem);
 }
 
+/* Mobile viewport fixes */
+.game-container {
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  overflow: hidden;
+  position: relative;
+}
+
+/* Prevent body scrolling on mobile */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+}
+
+/* Card area that fits within viewport */
+.game-card-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+  .game-card-area {
+    top: 45%; /* Adjust for mobile to account for browser chrome */
+  }
+}
+
 /* Audio waveform animation */
 @keyframes audioWave {
   0%, 100% {

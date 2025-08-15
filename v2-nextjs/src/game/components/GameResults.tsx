@@ -76,7 +76,7 @@ export default function GameResults({
 
 
   return (
-    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+    <div className="game-container text-gray-800 font-sans flex flex-col">
       {/* Background image with blur and dark overlay */}
       <div 
         className="absolute inset-0 z-0"

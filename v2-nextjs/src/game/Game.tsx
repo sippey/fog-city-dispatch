@@ -558,7 +558,7 @@ export default function Game() {
     const tutorialCompleted = isHydrated ? isTutorialCompleted() : false
     
     return (
-      <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+      <div className="game-container text-gray-800 font-sans flex flex-col">
         {/* Background image with blur and dark overlay */}
         <div 
           className="absolute inset-0 z-0"
@@ -618,7 +618,7 @@ export default function Game() {
   // Show tutorial intro screen
   if (gameState.tutorialPhase === 'intro') {
     return (
-      <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+      <div className="game-container text-gray-800 font-sans flex flex-col">
         <div 
           className="absolute inset-0 z-0"
           style={{
@@ -655,7 +655,7 @@ export default function Game() {
   // Show "Ready to Start Your Shift?" screen
   if (gameState.tutorialPhase === 'ready') {
     return (
-      <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
+      <div className="game-container text-gray-800 font-sans flex flex-col">
         <div 
           className="absolute inset-0 z-0"
           style={{
@@ -697,7 +697,7 @@ export default function Game() {
   }
 
   return (
-    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden bg-gradient-to-b from-gray-700 via-gray-600 to-gray-800">
+    <div className="game-container text-gray-800 font-sans flex flex-col bg-gradient-to-b from-gray-700 via-gray-600 to-gray-800">
       
       <StatusBar
         ref={statusBarRef}
@@ -709,10 +709,10 @@ export default function Game() {
         isTutorial={!!gameState.tutorialPhase}
       />
       
-      {/* IGNORE tab - flush against left viewport edge */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 z-30" style={{ left: '-60px' }}>
+      {/* IGNORE tab - positioned lower to create space from top tab */}
+      <div className="absolute z-30" style={{ left: '-55px', top: 'calc(50% + 40px)', transform: 'translateY(-50%)' }}>
         <div style={{ transform: 'rotate(-90deg)' }}>
-          <div className={`py-3 px-3 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[150px] text-center flex items-center justify-center ${
+          <div className={`py-2 px-2 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[130px] text-center flex items-center justify-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
               : !canAffordIgnore
@@ -724,10 +724,10 @@ export default function Game() {
         </div>
       </div>
 
-      {/* BASIC tab - flush against right viewport edge */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 z-30" style={{ right: '-60px' }}>
+      {/* BASIC tab - positioned lower to create space from top tab */}
+      <div className="absolute z-30" style={{ right: '-55px', top: 'calc(50% + 40px)', transform: 'translateY(-50%)' }}>
         <div style={{ transform: 'rotate(90deg)' }}>
-          <div className={`py-3 px-2 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[150px] text-center flex items-center justify-center ${
+          <div className={`py-2 px-2 rounded-bl-lg rounded-br-lg shadow-lg transition-opacity duration-200 w-[130px] text-center flex items-center justify-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
               : !canAffordBasic
@@ -740,9 +740,9 @@ export default function Game() {
       </div>
       
       <div className="flex-1 flex flex-col relative z-20">
-        {/* Priority Dispatch label at top of card area */}
+        {/* Priority Dispatch label flush against status bar */}
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-30">
-          <div className={`px-3 py-2 rounded-b-lg shadow-lg transition-opacity duration-200 w-[180px] text-center ${
+          <div className={`px-2 py-1.5 rounded-b-lg shadow-lg transition-opacity duration-200 w-[160px] text-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
               : !canAffordMaximum
@@ -753,35 +753,21 @@ export default function Game() {
           </div>
         </div>
 
-        {/* Card area with description below */}
-        <div className="relative flex-1">
-          <div className="absolute left-1/2 transform -translate-x-1/2" style={{ top: '8rem' }}>
+        {/* Card area with description below - centered with 20px spacing from all labels */}
+        <div className="relative flex-1 flex items-center justify-center">
+          <div style={{ paddingTop: '0px', paddingBottom: '20px' }}>
             {(!gameState.showOutcome || isAnimatingSwipe) && currentCard && (
-              <div className="flex flex-col items-center">
-                <GameCard
-                  card={currentCard}
-                  currentReadiness={currentReadiness}
-                  onSwipe={handleSwipe}
-                  onAcceptPowerup={handleAcceptPowerup}
-                  onSwipeDirectionChange={setCurrentSwipeDirection}
-                  shouldStopAudio={gameState.showOutcome}
-                  isTutorial={!!gameState.tutorialPhase}
-                />
-                
-                {/* Card description right below card */}
-                {!gameState.showOutcome && !currentSwipeDirection && (
-                  <div className="mt-5" style={{ width: 'min(calc(100vw - 6rem), 400px)', maxWidth: '400px' }}>
-                    <div className="bg-black/80 backdrop-blur-sm rounded-lg p-4">
-                      <h2 className="text-sm font-extrabold mb-2 text-white leading-tight">
-                        {currentCard.headline}
-                      </h2>
-                      <p className="text-gray-300 leading-relaxed font-medium text-sm">
-                        {currentCard.description}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <GameCard
+                card={currentCard}
+                currentReadiness={currentReadiness}
+                onSwipe={handleSwipe}
+                onAcceptPowerup={handleAcceptPowerup}
+                onSwipeDirectionChange={setCurrentSwipeDirection}
+                shouldStopAudio={gameState.showOutcome}
+                isTutorial={!!gameState.tutorialPhase}
+                showOutcome={gameState.showOutcome}
+                currentSwipeDirection={currentSwipeDirection}
+              />
             )}
           </div>
         </div>
