@@ -13,6 +13,7 @@ import GameResults from './components/GameResults'
 import FlyingScore from './components/FlyingScore'
 import FlyingReadiness from './components/FlyingReadiness'
 import { initializeStoryProgress, updateStoryProgress } from './gameLogic'
+import { preloadSwipeSounds, playSwipeSound } from '@/utils/soundEffects'
 
 interface GameConfig {
   deckSize: number
@@ -79,9 +80,15 @@ export default function Game() {
     }
   }, [])
 
-  // Apply no-scroll class to body when game is mounted
+  // Apply no-scroll class to body when game is mounted and preload sounds
   useEffect(() => {
     document.body.classList.add('no-scroll')
+    
+    // Preload swipe sounds for instant playback
+    preloadSwipeSounds().catch(error => {
+      console.log('Could not preload some swipe sounds:', error)
+    })
+    
     return () => {
       document.body.classList.remove('no-scroll')
     }
@@ -285,6 +292,9 @@ export default function Game() {
     
     const response = currentCard.responses[responseType]
     if (!response) return
+    
+    // Play swipe sound immediately when action completes
+    playSwipeSound(responseType)
 
     // Tutorial mode - use tutorial readiness and score, handle progression
     if (gameState.tutorialPhase && gameState.tutorialPhase !== 'ready') {
@@ -431,6 +441,9 @@ export default function Game() {
     if (!currentCard?.isPowerup || !currentCard.responses.accept) return
 
     const response = currentCard.responses.accept
+    
+    // Play powerup sound immediately when accepted
+    playSwipeSound('powerup')
     
     // Tutorial mode - handle powerup tutorial
     if (gameState.tutorialPhase === 'powerup') {

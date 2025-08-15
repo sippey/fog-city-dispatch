@@ -6,6 +6,7 @@ import { DispatchCard } from '@/types'
 import { getCardImageUrl } from '@/utils/cardImages'
 import { getCardVideoUrl } from '@/utils/cardVideos'
 import { getCardAudioUrl, preloadAudio } from '@/utils/audio'
+import { playTapSound } from '@/utils/soundEffects'
 
 interface GameCardProps {
   card: DispatchCard
@@ -460,6 +461,8 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
             setIsPowerupBeingSwiped(true)
           }
         }}
+        onMouseDown={playTapSound} // Play tap sound on mouse down
+        onTouchStart={playTapSound} // Play tap sound on touch start (mobile)
         onDragEnd={isPowerupCard ? handlePowerupDragEnd : handleDragEnd}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
