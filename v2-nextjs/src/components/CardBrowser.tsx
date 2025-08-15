@@ -116,7 +116,7 @@ export default function CardBrowser() {
             Fog City Dispatch Cards
           </h1>
           <p className="text-xl text-gray-600 font-medium mb-6">
-            1970s San Francisco Emergency Response Scenarios
+            Browse them!
           </p>
           <div className="mt-4">
             <Link 

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Fog City Dispatch",
-  description: "A 1970s San Francisco police dispatcher game",
+  description: "A police dispatcher game.",
 };
 
 export const viewport = {
