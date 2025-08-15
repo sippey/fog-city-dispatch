@@ -38,8 +38,8 @@ body {
   position: relative;
 }
 
-/* Prevent body scrolling on mobile */
-html, body {
+/* Prevent body scrolling only for game - not other routes */
+.no-scroll {
   overflow: hidden;
   height: 100%;
   position: fixed;

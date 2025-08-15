@@ -19,6 +19,7 @@ export interface DispatchCard {
   powerupValue?: number;  // Readiness points gained for powerup cards
   imageFile?: string;  // Local image filename (without extension)
   audioFile?: string;  // Local audio filename (without extension)
+  videoFile?: string;  // Local video filename (without extension)
   responses: {
     ignore?: ResponseOption;
     basic?: ResponseOption;

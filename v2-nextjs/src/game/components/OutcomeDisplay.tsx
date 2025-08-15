@@ -7,9 +7,10 @@ interface OutcomeDisplayProps {
   message: string
   visible: boolean
   onComplete: () => void
+  duration?: number // Duration in milliseconds, defaults to 1000
 }
 
-export default function OutcomeDisplay({ message, visible, onComplete }: OutcomeDisplayProps) {
+export default function OutcomeDisplay({ message, visible, onComplete, duration = 1000 }: OutcomeDisplayProps) {
   useEffect(() => {
     console.log('OutcomeDisplay useEffect - visible:', visible)
     if (visible) {
@@ -17,13 +18,13 @@ export default function OutcomeDisplay({ message, visible, onComplete }: Outcome
       const timer = setTimeout(() => {
         console.log('Timer fired - calling onComplete')
         onComplete()
-      }, 1000) // Show for 1 second
+      }, duration) // Show for specified duration
       return () => {
         console.log('Cleaning up timer')
         clearTimeout(timer)
       }
     }
-  }, [visible, onComplete])
+  }, [visible, onComplete, duration])
 
   return (
     <AnimatePresence mode="wait">

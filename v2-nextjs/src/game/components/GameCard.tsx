@@ -56,6 +56,8 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
         return 'Swipe Right to Dispatch'
       case 999: // Gas Explosion - teach priority dispatch
         return 'Swipe Up for High Priority Dispatch'
+      case 108: // Powerup - teach accepting powerups
+        return 'Tap to Accept Powerup'
       default:
         return null
     }
@@ -72,6 +74,8 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
         return 'right'
       case 999: // Gas Explosion - teach priority dispatch
         return 'up'
+      case 108: // Powerup - no swipe required
+        return null
       default:
         return null
     }
@@ -619,7 +623,7 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
             <h2 className="text-xs font-extrabold mb-1 text-white leading-tight">
               {card.headline}
             </h2>
-            <p className="text-gray-300 leading-relaxed font-medium text-xs">
+            <p className="text-gray-300 leading-relaxed font-medium text-xs sm:text-sm">
               {card.description}
             </p>
           </div>

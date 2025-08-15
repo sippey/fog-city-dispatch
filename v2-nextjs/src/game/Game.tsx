@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-// import { motion } from 'framer-motion' // Unused
+import { motion, AnimatePresence } from 'framer-motion'
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
 import { GameState, INITIAL_GAME_STATE, TutorialPhase } from './types'
@@ -55,7 +55,7 @@ export default function Game() {
       readiness: gameConfig.startingReadiness,
       capacity: gameConfig.startingCapacity,
       timeRemaining: gameConfig.gameTime,
-      tutorialPhase: 'intro', // Default to tutorial, will update after hydration
+      tutorialPhase: 'intro', // Always start with intro, will update after hydration
       storyProgress: initializeStoryProgress()
     }
   }
@@ -71,10 +71,20 @@ export default function Game() {
   useEffect(() => {
     setIsHydrated(true)
     const tutorialCompleted = isTutorialCompleted()
-    setGameState(prev => ({
-      ...prev,
-      tutorialPhase: tutorialCompleted ? null : 'intro'
-    }))
+    if (tutorialCompleted) {
+      setGameState(prev => ({
+        ...prev,
+        tutorialPhase: null
+      }))
+    }
+  }, [])
+
+  // Apply no-scroll class to body when game is mounted
+  useEffect(() => {
+    document.body.classList.add('no-scroll')
+    return () => {
+      document.body.classList.remove('no-scroll')
+    }
   }, [])
 
   // Select cards based on configuration
@@ -276,18 +286,43 @@ export default function Game() {
     const response = currentCard.responses[responseType]
     if (!response) return
 
-    // Tutorial mode - use tutorial readiness and handle progression
+    // Tutorial mode - use tutorial readiness and score, handle progression
     if (gameState.tutorialPhase && gameState.tutorialPhase !== 'ready') {
       const cost = response.readiness
       if (gameState.tutorialReadiness + cost < 0) return // Can't afford
       
-      // Update tutorial readiness and show outcome
+      // Show flying animations for tutorial
+      if (response.score !== 0) {
+        setFlyingScore(prev => ({ 
+          score: response.score, 
+          visible: true, 
+          key: prev.key + 1 
+        }))
+      }
+      
+      if (response.readiness !== 0) {
+        setFlyingReadiness(prev => ({ 
+          readiness: response.readiness, 
+          visible: true, 
+          key: prev.key + 1 
+        }))
+      }
+      
+      // Update tutorial state but don't update score/readiness immediately
       setGameState(prev => ({
         ...prev,
-        tutorialReadiness: prev.tutorialReadiness + cost,
         showOutcome: true,
         currentOutcome: response.outcome
       }))
+      
+      // Delay the actual score and readiness updates until animations "arrive" (1 second)
+      setTimeout(() => {
+        setGameState(prev => ({
+          ...prev,
+          tutorialReadiness: prev.tutorialReadiness + cost,
+          tutorialScore: prev.tutorialScore + response.score
+        }))
+      }, 1000)
       
       return // Exit early for tutorial mode
     }
@@ -396,6 +431,35 @@ export default function Game() {
     if (!currentCard?.isPowerup || !currentCard.responses.accept) return
 
     const response = currentCard.responses.accept
+    
+    // Tutorial mode - handle powerup tutorial
+    if (gameState.tutorialPhase === 'powerup') {
+      // Show flying readiness animation
+      if (response.readiness !== 0) {
+        setFlyingReadiness(prev => ({ 
+          readiness: response.readiness, 
+          visible: true, 
+          key: prev.key + 1 
+        }))
+      }
+      
+      // Update tutorial state with outcome
+      setGameState(prev => ({
+        ...prev,
+        showOutcome: true,
+        currentOutcome: response.outcome
+      }))
+      
+      // Delay the actual readiness update until animation "arrives" (1 second)
+      setTimeout(() => {
+        setGameState(prev => ({
+          ...prev,
+          tutorialReadiness: prev.tutorialReadiness + response.readiness
+        }))
+      }, 1000)
+      
+      return // Exit early for tutorial mode
+    }
 
     // Powerup cards don't affect score, only readiness - no flying score animation needed
     // Show flying readiness animation for powerups
@@ -480,6 +544,8 @@ export default function Game() {
         const nextPhase = getNextTutorialPhase(prev.tutorialPhase) as TutorialPhase
         console.log('Tutorial progressing from', prev.tutorialPhase, 'to', nextPhase)
         
+        // No special delay needed for powerup since all tutorial outcomes now show for 1.5 seconds
+        
         return {
           ...prev,
           tutorialPhase: nextPhase,
@@ -555,7 +621,7 @@ export default function Game() {
 
   // Show intro screen
   if (gameState.showIntro) {
-    const tutorialCompleted = isHydrated ? isTutorialCompleted() : false
+    const tutorialCompleted = isHydrated && gameState.tutorialPhase === null
     
     return (
       <div className="game-container text-gray-800 font-sans flex flex-col">
@@ -585,31 +651,54 @@ export default function Game() {
             San Francisco has gone insane. It&apos;s your job to keep cool.
           </p>
           
-          {!tutorialCompleted && gameState.tutorialPhase === 'intro' ? (
-            // First-time player - start tutorial
-            <button
-              onClick={handleStartGame}
-              className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
-            >
-              Start Training
-            </button>
-          ) : (
-            // Returning player - show both options
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={handleStartGame}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
-              >
-                Start Shift
-              </button>
-              <button
-                onClick={handleStartTutorial}
-                className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-xl text-lg uppercase tracking-wide shadow-xl transition-all duration-200 transform hover:scale-105"
-              >
-                Replay Training
-              </button>
-            </div>
-          )}
+          <div className="flex flex-col gap-4">
+            <AnimatePresence mode="wait">
+              {!tutorialCompleted && gameState.tutorialPhase === 'intro' ? (
+                // First-time player - start tutorial only
+                <motion.button
+                  key="start-training"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={handleStartGame}
+                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+                >
+                  Start Training
+                </motion.button>
+              ) : (
+                // Returning player - show both options with staggered animation
+                <>
+                  <motion.button
+                    key="start-shift"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={handleStartGame}
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+                  >
+                    Start Shift
+                  </motion.button>
+                  <motion.button
+                    key="replay-training"
+                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.5,
+                      delay: 0.2,
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 20
+                    }}
+                    onClick={handleStartTutorial}
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-8 rounded-xl text-lg uppercase tracking-wide shadow-xl transition-all duration-200 transform hover:scale-105"
+                  >
+                    Replay Training
+                  </motion.button>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     )
@@ -652,10 +741,15 @@ export default function Game() {
     )
   }
 
-  // Show "Ready to Start Your Shift?" screen
+  // Show "Ready to Start Your Shift?" screen with fade-in animation
   if (gameState.tutorialPhase === 'ready') {
     return (
-      <div className="game-container text-gray-800 font-sans flex flex-col">
+      <motion.div 
+        className="game-container text-gray-800 font-sans flex flex-col"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         <div 
           className="absolute inset-0 z-0"
           style={{
@@ -692,7 +786,7 @@ export default function Game() {
             Clock In
           </button>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
@@ -703,7 +797,7 @@ export default function Game() {
         ref={statusBarRef}
         readiness={gameState.tutorialPhase ? gameState.tutorialReadiness : gameState.readiness}
         capacity={gameState.capacity}
-        score={gameState.score}
+        score={gameState.tutorialPhase ? gameState.tutorialScore : gameState.score}
         deckSize={gameState.deckSize}
         timeRemaining={gameState.tutorialPhase ? 0 : gameState.timeRemaining}
         isTutorial={!!gameState.tutorialPhase}
@@ -777,6 +871,7 @@ export default function Game() {
         message={gameState.currentOutcome}
         visible={gameState.showOutcome}
         onComplete={handleOutcomeComplete}
+        duration={gameState.tutorialPhase ? 3000 : 1000}
       />
       
       <FlyingScore

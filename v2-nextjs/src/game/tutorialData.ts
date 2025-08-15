@@ -13,10 +13,10 @@ export const tutorialCards: DispatchCard[] = [
     "hasVoice": false,
     "responses": {
       "ignore": {
-        "readiness": 0,
+        "readiness": -10,
         "capacity": 0,
         "score": 0,
-        "outcome": "Good! You ignored a low-priority call."
+        "outcome": "Good! You ignored a low-priority call. Notice you still lost some readiness from the stress."
       },
       "basic": {
         "readiness": -15,
@@ -51,8 +51,8 @@ export const tutorialCards: DispatchCard[] = [
       "basic": {
         "readiness": -15,
         "capacity": 5,
-        "score": 15,
-        "outcome": "Well done! You dispatched a unit and it cost 15 readiness."
+        "score": 50,
+        "outcome": "Well done! You dispatched a unit, earned 50 points, and used 15 readiness."
       },
       "maximum": {
         "readiness": -25,
@@ -87,8 +87,28 @@ export const tutorialCards: DispatchCard[] = [
       "maximum": {
         "readiness": -30,
         "capacity": 25,
-        "score": 50,
-        "outcome": "Excellent! Priority dispatch for emergencies."
+        "score": 100,
+        "outcome": "Excellent! Priority dispatch earned you 100 points but cost 30 readiness."
+      }
+    }
+  },
+  // Card 4: Powerup (Teach Powerups - Tap to Accept)
+  {
+    "id": 108,
+    "storyArc": "Random",
+    "headline": "Boost your readiness",
+    "location": "Downtown",
+    "description": "Occasionally you'll be able to boost your readiness, letting you handle bigger challenges for more points. Tap to accept!",
+    "visual": "Coffee shop during morning rush, baristas working frantically, customers in business attire with phones",
+    "videoFile": "Partner Brings Perfect Coffee",
+    "isPowerup": true,
+    "hasVoice": false,
+    "responses": {
+      "accept": {
+        "readiness": 25,
+        "capacity": 0,
+        "score": 0,
+        "outcome": "Great! You gained 25 readiness to handle more calls."
       }
     }
   }
@@ -118,6 +138,7 @@ export const getTutorialCardIndex = (phase: string): number => {
     case 'card1': return 0
     case 'card2': return 1  
     case 'card3': return 2
+    case 'powerup': return 3
     default: return -1
   }
 }
@@ -127,7 +148,8 @@ export const getNextTutorialPhase = (currentPhase: string): string => {
     case 'intro': return 'card1'
     case 'card1': return 'card2'
     case 'card2': return 'card3'
-    case 'card3': return 'ready'
+    case 'card3': return 'powerup'
+    case 'powerup': return 'ready'
     case 'ready': return 'complete'
     default: return 'intro'
   }
