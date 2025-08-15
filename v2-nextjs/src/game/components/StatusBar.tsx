@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react'
 
 interface StatusBarProps {
   readiness: number
@@ -9,10 +9,29 @@ interface StatusBarProps {
   isTutorial?: boolean
 }
 
-export default function StatusBar({ readiness, capacity, score, deckSize, timeRemaining, isTutorial = false }: StatusBarProps) {
+export interface StatusBarRef {
+  getScorePosition: () => DOMRect | null
+  getReadinessPosition: () => DOMRect | null
+  isMobileLayout: () => boolean
+}
+
+const StatusBar = forwardRef<StatusBarRef, StatusBarProps>(({ readiness, capacity, score, deckSize, timeRemaining, isTutorial = false }, ref) => {
   const [isScoreAnimating, setIsScoreAnimating] = useState(false)
   const [displayScore, setDisplayScore] = useState(score)
   const [prevScore, setPrevScore] = useState(score)
+  
+  const scoreRef = useRef<HTMLDivElement>(null)
+  const readinessRef = useRef<HTMLDivElement>(null)
+
+  useImperativeHandle(ref, () => ({
+    getScorePosition: () => scoreRef.current?.getBoundingClientRect() || null,
+    getReadinessPosition: () => readinessRef.current?.getBoundingClientRect() || null,
+    isMobileLayout: () => {
+      // Check if mobile layout is active by checking window width
+      // This matches the sm: breakpoint from Tailwind (640px)
+      return typeof window !== 'undefined' && window.innerWidth < 640
+    }
+  }))
 
   // Update display values immediately if not animating (for initial render and edge cases)
   useEffect(() => {
@@ -82,64 +101,134 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
   const readinessPercentage = Math.max(0, Math.min(100, (readiness / capacity) * 100))
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-4 relative z-30">
-      <div className="max-w-5xl mx-auto flex items-center justify-between">
-        {/* Left side: Time and Deck Size */}
-        <div className="flex items-center gap-8">
-          {/* Timer with fixed width */}
-          <div className="text-center">
-            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Countdown</div>
-            <div className={`text-2xl font-bold font-mono w-20 ${isTutorial ? 'text-gray-400' : 'text-gray-800'}`}>
-              {isTutorial ? '0:00' : formatTime(timeRemaining)}
+    <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-2 sm:p-4 relative z-30">
+      <div className="max-w-5xl mx-auto">
+        {/* Mobile: Stack vertically */}
+        <div className="block sm:hidden">
+          {/* Top row: Timer, Queue, Score */}
+          <div className="flex items-center justify-between mb-2">
+            {/* Timer */}
+            <div className="text-center flex-1">
+              <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Time</div>
+              <div className={`text-lg font-bold font-mono ${isTutorial ? 'text-gray-400' : 'text-gray-800'}`}>
+                {isTutorial ? '0:00' : formatTime(timeRemaining)}
+              </div>
+            </div>
+
+            {/* Queue */}
+            <div className="text-center flex-1">
+              <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Queue</div>
+              <div className="text-lg font-bold text-blue-600">{deckSize}</div>
+            </div>
+
+            {/* Score */}
+            <div className="text-center flex-1">
+              <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Score</div>
+              <div 
+                ref={scoreRef}
+                className={`text-lg font-bold transition-all duration-100 ${
+                  displayScore < 0 ? 'text-red-600' : 'text-emerald-600'
+                }`}
+                style={{
+                  textShadow: isScoreAnimating 
+                    ? displayScore < 0 
+                      ? '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.6)'
+                      : '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.6)'
+                    : 'none',
+                  transform: isScoreAnimating ? 'scale(1.1)' : 'scale(1)'
+                }}
+              >
+                {displayScore.toLocaleString()}
+              </div>
             </div>
           </div>
 
-          {/* Deck Size */}
-          <div className="text-center">
-            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">QUEUE</div>
-            <div className="text-2xl font-bold text-blue-600 min-w-[60px]">{deckSize}</div>
-          </div>
-
-          {/* Score */}
-          <div className="text-center">
-            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Score</div>
-            <div 
-              className={`text-2xl font-bold min-w-[80px] transition-all duration-100 ${
-                displayScore < 0 ? 'text-red-600' : 'text-emerald-600'
-              }`}
-              style={{
-                textShadow: isScoreAnimating 
-                  ? displayScore < 0 
-                    ? '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.6)'
-                    : '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.6)'
-                  : 'none',
-                transform: isScoreAnimating ? 'scale(1.1)' : 'scale(1)'
-              }}
-            >
-              {displayScore.toLocaleString()}
+          {/* Bottom row: Readiness Bar */}
+          <div className="w-full">
+            <div className="flex justify-between text-xs font-medium mb-1">
+              <span className="text-gray-700">Readiness</span>
+              <span className="text-gray-700 font-mono text-xs">
+                {readiness}/{capacity}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                ref={readinessRef}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full"
+                style={{ 
+                  width: `${readinessPercentage}%`,
+                  transition: 'width 400ms ease-out'
+                }}
+              />
             </div>
           </div>
         </div>
 
-        {/* Right side: Readiness Bar */}
-        <div className="flex-1 max-w-sm">
-          <div className="flex justify-between text-sm font-medium mb-1">
-            <span className="text-gray-700">Readiness</span>
-            <span className="text-gray-700 font-mono">
-              {readiness}/{capacity}
-            </span>
+        {/* Desktop: Side by side */}
+        <div className="hidden sm:flex items-center justify-between">
+          {/* Left side: Time, Queue, Score */}
+          <div className="flex items-center gap-8">
+            {/* Timer */}
+            <div className="text-center">
+              <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Countdown</div>
+              <div className={`text-2xl font-bold font-mono w-20 ${isTutorial ? 'text-gray-400' : 'text-gray-800'}`}>
+                {isTutorial ? '0:00' : formatTime(timeRemaining)}
+              </div>
+            </div>
+
+            {/* Queue */}
+            <div className="text-center">
+              <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Queue</div>
+              <div className="text-2xl font-bold text-blue-600 min-w-[60px]">{deckSize}</div>
+            </div>
+
+            {/* Score */}
+            <div className="text-center">
+              <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Score</div>
+              <div 
+                ref={scoreRef}
+                className={`text-2xl font-bold min-w-[80px] transition-all duration-100 ${
+                  displayScore < 0 ? 'text-red-600' : 'text-emerald-600'
+                }`}
+                style={{
+                  textShadow: isScoreAnimating 
+                    ? displayScore < 0 
+                      ? '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.6)'
+                      : '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.6)'
+                    : 'none',
+                  transform: isScoreAnimating ? 'scale(1.1)' : 'scale(1)'
+                }}
+              >
+                {displayScore.toLocaleString()}
+              </div>
+            </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full"
-              style={{ 
-                width: `${readinessPercentage}%`,
-                transition: 'width 400ms ease-out' // Smooth transition for all readiness changes
-              }}
-            />
+
+          {/* Right side: Readiness Bar */}
+          <div className="flex-1 max-w-sm ml-8">
+            <div className="flex justify-between text-sm font-medium mb-1">
+              <span className="text-gray-700">Readiness</span>
+              <span className="text-gray-700 font-mono">
+                {readiness}/{capacity}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div 
+                ref={readinessRef}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full"
+                style={{ 
+                  width: `${readinessPercentage}%`,
+                  transition: 'width 400ms ease-out'
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
   )
-}
+})
+
+StatusBar.displayName = 'StatusBar'
+
+export default StatusBar

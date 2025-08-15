@@ -32,21 +32,37 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
   const y = useMotionValue(0)
 
   // Get tutorial-specific preview text
-  const getTutorialPreviewText = (direction: 'left' | 'right' | 'up') => {
+  const getTutorialPreviewText = () => {
     if (!isTutorial) return null
     
-    // Based on card ID from tutorial data
+    // Always show the intended instruction for each tutorial card, regardless of current direction
     switch (card.id) {
       case 20: // Loud Party - teach ignore
-        return direction === 'left' ? 'Swipe Left to Ignore' : null
+        return 'Swipe Left to Ignore'
       case 30: // Theft at Macy's - teach dispatch  
-        return direction === 'right' ? 'Swipe Right to Dispatch' : null
+        return 'Swipe Right to Dispatch'
       case 999: // Gas Explosion - teach priority dispatch
-        return direction === 'up' ? 'Swipe Up for High Priority Dispatch' : null
+        return 'Swipe Up for High Priority Dispatch'
       default:
         return null
     }
   }
+  
+  // Get the required tutorial direction for this card
+  const getRequiredTutorialDirection = useCallback((): 'left' | 'right' | 'up' | null => {
+    if (!isTutorial) return null
+    
+    switch (card.id) {
+      case 20: // Loud Party - teach ignore
+        return 'left'
+      case 30: // Theft at Macy's - teach dispatch  
+        return 'right'
+      case 999: // Gas Explosion - teach priority dispatch
+        return 'up'
+      default:
+        return null
+    }
+  }, [isTutorial, card.id])
   
   // Reset position when card changes (for new cards after keyboard swipe)
   useEffect(() => {
@@ -132,19 +148,34 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
     
     if (shouldSwipe) {
       // Determine swipe direction - prioritize the larger movement
+      let detectedDirection: 'left' | 'right' | 'up' | null = null
+      
       if (Math.abs(offset.y) > Math.abs(offset.x) && offset.y < 0) {
+        detectedDirection = 'up'
+      } else if (Math.abs(offset.x) > Math.abs(offset.y)) {
+        detectedDirection = offset.x < 0 ? 'left' : 'right'
+      }
+      
+      // In tutorial mode, enforce the required direction
+      const requiredDirection = getRequiredTutorialDirection()
+      if (isTutorial && requiredDirection && detectedDirection !== requiredDirection) {
+        resetCard() // Wrong direction in tutorial, reset card
+        return
+      }
+      
+      // Proceed with original logic
+      if (detectedDirection === 'up') {
         // Check if player can afford maximum response
         if (canAffordMaximum) {
           onSwipe('up') // Maximum response
         } else {
           resetCard() // Can't afford, reset card
         }
-      } else if (Math.abs(offset.x) > Math.abs(offset.y)) {
+      } else if (detectedDirection === 'left' || detectedDirection === 'right') {
         // Check if player can afford the horizontal response
-        const direction = offset.x < 0 ? 'left' : 'right'
-        const canAfford = direction === 'left' ? canAffordIgnore : canAffordBasic
+        const canAfford = detectedDirection === 'left' ? canAffordIgnore : canAffordBasic
         if (canAfford) {
-          onSwipe(direction) // Ignore or Basic
+          onSwipe(detectedDirection) // Ignore or Basic
         } else {
           resetCard() // Can't afford, reset card
         }
@@ -300,9 +331,16 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
         }
       } else {
         // For regular cards, arrow keys trigger swipes (only if affordable)
+        const requiredDirection = getRequiredTutorialDirection()
+        
         switch(e.key) {
           case 'ArrowLeft':
             e.preventDefault()
+            // In tutorial mode, only allow the required direction
+            if (isTutorial && requiredDirection && requiredDirection !== 'left') {
+              animateWiggle('left') // Wrong direction in tutorial
+              break
+            }
             if (canAffordIgnore) {
               animateSwipe('left')
             } else {
@@ -311,6 +349,11 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
             break
           case 'ArrowRight':
             e.preventDefault()
+            // In tutorial mode, only allow the required direction
+            if (isTutorial && requiredDirection && requiredDirection !== 'right') {
+              animateWiggle('right') // Wrong direction in tutorial
+              break
+            }
             if (canAffordBasic) {
               animateSwipe('right')
             } else {
@@ -319,6 +362,11 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
             break
           case 'ArrowUp':
             e.preventDefault()
+            // In tutorial mode, only allow the required direction
+            if (isTutorial && requiredDirection && requiredDirection !== 'up') {
+              animateWiggle('up') // Wrong direction in tutorial
+              break
+            }
             if (canAffordMaximum) {
               animateSwipe('up')
             } else {
@@ -331,7 +379,7 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
     
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [card.isPowerup, animateSwipe, animateWiggle, onAcceptPowerup, isAnimating, canAffordIgnore, canAffordBasic, canAffordMaximum, isPowerupCard])
+  }, [card.isPowerup, animateSwipe, animateWiggle, onAcceptPowerup, isAnimating, canAffordIgnore, canAffordBasic, canAffordMaximum, isPowerupCard, getRequiredTutorialDirection, isTutorial])
 
   // Get response based on current direction for preview
   const getActiveResponse = () => {
@@ -355,7 +403,7 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
   }, [card.id, card.headline, backgroundImageUrl, backgroundVideoUrl])
 
   return (
-    <div className="relative" style={{ width: 'min(calc(100vw - 10rem), 400px)', maxWidth: '400px' }}>
+    <div className="relative" style={{ width: 'min(calc(100vw - 6rem), 400px)', maxWidth: '400px' }}>
       {/* Draggable Card */}
       <motion.div
         ref={cardRef}
@@ -485,10 +533,13 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
           /* Dramatic Score Display */
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8" style={{ zIndex: 2 }}>
             <div className="text-2xl font-black text-white uppercase tracking-widest" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
-              {getTutorialPreviewText(currentDirection) || 
-               (currentDirection === 'left' ? 'Ignoring Call' : 
+              {isTutorial ? (
+                getTutorialPreviewText() || ''
+              ) : (
+                currentDirection === 'left' ? 'Ignoring Call' : 
                 currentDirection === 'right' ? 'Dispatch' : 
-                'Priority Dispatch')}
+                'Priority Dispatch'
+              )}
             </div>
             
             {!isTutorial && activeResponse && (

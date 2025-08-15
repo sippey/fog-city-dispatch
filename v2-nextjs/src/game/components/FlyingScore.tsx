@@ -7,9 +7,34 @@ interface FlyingScoreProps {
   score: number
   visible: boolean
   onComplete?: () => void
+  targetPosition?: DOMRect | null
+  isMobileLayout?: boolean
 }
 
-export default function FlyingScore({ score, visible, onComplete }: FlyingScoreProps) {
+export default function FlyingScore({ score, visible, onComplete, targetPosition, isMobileLayout = false }: FlyingScoreProps) {
+  // Calculate target position from DOMRect or use fallback
+  const getTargetPosition = () => {
+    // Check if we have a valid DOM position (not empty rect)
+    if (targetPosition && targetPosition.width > 0 && targetPosition.height > 0) {
+      return {
+        top: `${targetPosition.top}px`,
+        left: `${targetPosition.left + targetPosition.width / 2}px`
+      }
+    }
+    // Fallback to original hardcoded positions based on layout
+    const fallbackPosition = isMobileLayout ? {
+      top: '2rem', // Top row in mobile
+      left: '83%'  // Right third (score position) in mobile top row
+    } : {
+      top: '2.5rem',
+      left: '17rem' // Desktop position
+    }
+    
+    
+    return fallbackPosition
+  }
+  
+  const target = getTargetPosition()
   useEffect(() => {
     if (visible && onComplete) {
       // Animation completes after 1.2 seconds
@@ -39,9 +64,9 @@ export default function FlyingScore({ score, visible, onComplete }: FlyingScoreP
               fontSize: '3rem'
             }}
             animate={{ 
-              top: '2.5rem', // Position of score in status bar
-              left: '17rem', // Updated position after moving score right of deck size
-              x: 0,
+              top: target.top,
+              left: target.left,
+              x: targetPosition ? '-50%' : '0',
               y: 0,
               scale: 1,
               opacity: [0, 1, 1, 0],
@@ -82,9 +107,9 @@ export default function FlyingScore({ score, visible, onComplete }: FlyingScoreP
                 height: '8px'
               }}
               animate={{ 
-                top: '2.5rem',
-                left: '17rem',
-                x: 0,
+                top: target.top,
+                left: target.left,
+                x: targetPosition ? '-50%' : '0',
                 y: 0,
                 scale: 0,
                 opacity: 0

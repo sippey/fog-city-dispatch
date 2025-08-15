@@ -94,42 +94,42 @@ export default function GameResults({
       <div className="absolute inset-0 bg-black/70 z-10" />
       
       {/* Results content */}
-      <div className="relative z-20 flex-1 flex items-center justify-center p-8">
+      <div className="relative z-20 flex-1 flex items-center justify-center p-4 sm:p-8">
         <div className="max-w-2xl w-full text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-8 text-white uppercase tracking-wider drop-shadow-2xl">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 sm:mb-6 text-white uppercase tracking-wider drop-shadow-2xl">
             SHIFT COMPLETE
           </h1>
           
           {/* 1. Shift Score / Calls Processed */}
-          <div className="bg-black/80 p-8 rounded-lg mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-black/80 p-4 sm:p-6 rounded-lg mb-4 sm:mb-6">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
               <div className="text-center">
-                <div className="text-gray-400 text-sm uppercase tracking-wide mb-2">Shift Score</div>
-                <div className="text-4xl font-bold text-white">{baseScore.toLocaleString()}</div>
+                <div className="text-gray-400 text-xs sm:text-sm uppercase tracking-wide mb-1 sm:mb-2">Shift Score</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white">{baseScore.toLocaleString()}</div>
               </div>
               <div className="text-center">
-                <div className="text-gray-400 text-sm uppercase tracking-wide mb-2">Calls Processed</div>
-                <div className="text-4xl font-bold text-white">{cardsHandled}</div>
+                <div className="text-gray-400 text-xs sm:text-sm uppercase tracking-wide mb-1 sm:mb-2">Calls Processed</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white">{cardsHandled}</div>
               </div>
             </div>
           </div>
 
           {/* 2. Crimes referred to the major case squad */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">
+          <div className="mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 uppercase tracking-wide">
               CRIMES REFERRED TO THE MAJOR CASE SQUAD
             </h2>
             
             {/* 3. List crimes or "None" */}
-            <div className="bg-black/80 p-6 rounded-lg mb-6">
+            <div className="bg-black/80 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
               {completedArcs.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-3 sm:space-y-4">
                   {Object.entries(storyProgress)
                     .filter(([, progress]) => progress.isCompleted)
                     .map(([arcName]) => (
-                      <div key={arcName} className="border-b border-gray-600 last:border-b-0 pb-4 last:pb-0">
+                      <div key={arcName} className="border-b border-gray-600 last:border-b-0 pb-3 last:pb-0 sm:pb-4">
                         <div className="mb-2 text-left">
-                          <span className="text-white font-bold text-lg">{getArcDisplayName(arcName)}</span>
+                          <span className="text-white font-bold text-base sm:text-lg">{getArcDisplayName(arcName)}</span>
                         </div>
                         <p className="text-gray-300 leading-relaxed text-left text-sm">
                           {getArcDescription(arcName)}
@@ -138,7 +138,7 @@ export default function GameResults({
                     ))}
                 </div>
               ) : (
-                <div className="text-center text-gray-400 text-xl">
+                <div className="text-center text-gray-400 text-lg">
                   None
                 </div>
               )}
@@ -146,12 +146,12 @@ export default function GameResults({
 
             {/* 4. Squad bonus and total */}
             {storyBonus > 0 && (
-              <div className="bg-black/80 p-6 rounded-lg mb-6">
-                <div className="flex justify-between items-center mb-4 text-lg text-white">
+              <div className="bg-black/80 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
+                <div className="flex justify-between items-center mb-2 sm:mb-3 text-sm sm:text-base text-white">
                   <span>Major Case Squad Bonus:</span>
                   <span>+{storyBonus.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center text-2xl font-bold text-white border-t border-gray-600 pt-4">
+                <div className="flex justify-between items-center text-lg sm:text-xl font-bold text-white border-t border-gray-600 pt-2 sm:pt-3">
                   <span>TOTAL SCORE:</span>
                   <span>{totalScore.toLocaleString()}</span>
                 </div>
@@ -160,27 +160,27 @@ export default function GameResults({
           </div>
 
           {/* 5. Rank */}
-          <div className="bg-black/80 p-8 rounded-lg mb-8 text-center">
-            <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-wide">
+          <div className="bg-black/80 p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 text-center">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3 uppercase tracking-wide">
               DISPATCHER RANK
             </h2>
-            <div className="text-5xl font-bold text-white mb-4">
+            <div className="text-3xl sm:text-4xl font-bold text-white mb-2 sm:mb-3">
               {rankInfo.rank}
             </div>
             {rankInfo.nextRank && (
-              <div className="text-gray-300">
+              <div className="text-gray-300 text-sm sm:text-base">
                 <span className="font-medium">{rankInfo.pointsToNext} more points</span> needed for <span className="text-white font-semibold">{rankInfo.nextRank}</span>
               </div>
             )}
             {!rankInfo.nextRank && (
-              <div className="text-white font-medium">
+              <div className="text-white font-medium text-sm sm:text-base">
                 🏆 Maximum rank achieved!
               </div>
             )}
           </div>
 
           <button 
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-xl text-lg sm:text-xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
             onClick={onPlayAgain}
           >
             PLAY AGAIN

@@ -7,9 +7,34 @@ interface FlyingReadinessProps {
   readiness: number
   visible: boolean
   onComplete?: () => void
+  targetPosition?: DOMRect | null
+  isMobileLayout?: boolean
 }
 
-export default function FlyingReadiness({ readiness, visible, onComplete }: FlyingReadinessProps) {
+export default function FlyingReadiness({ readiness, visible, onComplete, targetPosition, isMobileLayout = false }: FlyingReadinessProps) {
+  // Calculate target position from DOMRect or use fallback
+  const getTargetPosition = () => {
+    // Check if we have a valid DOM position (not empty rect)
+    if (targetPosition && targetPosition.width > 0 && targetPosition.height > 0) {
+      return {
+        top: `${targetPosition.top + targetPosition.height / 2}px`,
+        left: `${targetPosition.left + targetPosition.width / 2}px`
+      }
+    }
+    // Fallback to original hardcoded positions based on layout
+    const fallbackPosition = isMobileLayout ? {
+      top: '4.5rem', // Bottom row in mobile (readiness bar area)
+      left: '15%'     // Left side where "Readiness" label is
+    } : {
+      top: '2.5rem',
+      left: '80%' // Desktop position
+    }
+    
+    
+    return fallbackPosition
+  }
+  
+  const target = getTargetPosition()
   useEffect(() => {
     if (visible && onComplete) {
       // Animation completes after 1.2 seconds
@@ -39,8 +64,8 @@ export default function FlyingReadiness({ readiness, visible, onComplete }: Flyi
               fontSize: '3rem'
             }}
             animate={{ 
-              top: '2.5rem', // Position of readiness bar in status bar
-              left: '80%', // Right side where readiness bar is located
+              top: target.top,
+              left: target.left,
               x: '-50%',
               y: 0,
               scale: 1,
@@ -82,8 +107,8 @@ export default function FlyingReadiness({ readiness, visible, onComplete }: Flyi
                 height: '8px'
               }}
               animate={{ 
-                top: '2.5rem',
-                left: '80%',
+                top: target.top,
+                left: target.left,
                 x: '-50%',
                 y: 0,
                 scale: 0,

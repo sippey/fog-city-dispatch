@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 // import { motion } from 'framer-motion' // Unused
 import { cardsData } from '@/data/cards'
 import { DispatchCard } from '@/types'
 import { GameState, INITIAL_GAME_STATE, TutorialPhase } from './types'
 import { isTutorialCompleted, markTutorialCompleted, tutorialCards, getTutorialCardIndex, getNextTutorialPhase } from './tutorialData'
 import GameCard from './components/GameCard'
-import StatusBar from './components/StatusBar'
+import StatusBar, { StatusBarRef } from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
 import GameResults from './components/GameResults'
 import FlyingScore from './components/FlyingScore'
@@ -43,10 +43,11 @@ export default function Game() {
   }
 
   const [gameConfig] = useState<GameConfig>(getInitialConfig)
+  const [isHydrated, setIsHydrated] = useState(false)
+  const statusBarRef = useRef<StatusBarRef>(null)
   
   // Initialize game state with custom starting values
   const getInitialGameState = (): GameState => {
-    const tutorialCompleted = isTutorialCompleted()
     return {
       ...INITIAL_GAME_STATE,
       showIntro: true, // Show intro screen
@@ -54,7 +55,7 @@ export default function Game() {
       readiness: gameConfig.startingReadiness,
       capacity: gameConfig.startingCapacity,
       timeRemaining: gameConfig.gameTime,
-      tutorialPhase: tutorialCompleted ? null : 'intro', // Start tutorial if not completed
+      tutorialPhase: 'intro', // Default to tutorial, will update after hydration
       storyProgress: initializeStoryProgress()
     }
   }
@@ -65,6 +66,16 @@ export default function Game() {
   const [isAnimatingSwipe, setIsAnimatingSwipe] = useState(false)
   const [flyingScore, setFlyingScore] = useState<{ score: number; visible: boolean; key: number }>({ score: 0, visible: false, key: 0 })
   const [flyingReadiness, setFlyingReadiness] = useState<{ readiness: number; visible: boolean; key: number }>({ readiness: 0, visible: false, key: 0 })
+
+  // Handle hydration and tutorial state
+  useEffect(() => {
+    setIsHydrated(true)
+    const tutorialCompleted = isTutorialCompleted()
+    setGameState(prev => ({
+      ...prev,
+      tutorialPhase: tutorialCompleted ? null : 'intro'
+    }))
+  }, [])
 
   // Select cards based on configuration
   const selectCards = (allCards: DispatchCard[], targetCount: number): DispatchCard[] => {
@@ -544,7 +555,7 @@ export default function Game() {
 
   // Show intro screen
   if (gameState.showIntro) {
-    const tutorialCompleted = isTutorialCompleted()
+    const tutorialCompleted = isHydrated ? isTutorialCompleted() : false
     
     return (
       <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden">
@@ -689,6 +700,7 @@ export default function Game() {
     <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden bg-gradient-to-b from-gray-700 via-gray-600 to-gray-800">
       
       <StatusBar
+        ref={statusBarRef}
         readiness={gameState.tutorialPhase ? gameState.tutorialReadiness : gameState.readiness}
         capacity={gameState.capacity}
         score={gameState.score}
@@ -758,7 +770,7 @@ export default function Game() {
                 
                 {/* Card description right below card */}
                 {!gameState.showOutcome && !currentSwipeDirection && (
-                  <div className="mt-5" style={{ width: 'min(calc(100vw - 10rem), 400px)', maxWidth: '400px' }}>
+                  <div className="mt-5" style={{ width: 'min(calc(100vw - 6rem), 400px)', maxWidth: '400px' }}>
                     <div className="bg-black/80 backdrop-blur-sm rounded-lg p-4">
                       <h2 className="text-sm font-extrabold mb-2 text-white leading-tight">
                         {currentCard.headline}
@@ -785,6 +797,8 @@ export default function Game() {
         key={`score-${flyingScore.key}`}
         score={flyingScore.score}
         visible={flyingScore.visible}
+        targetPosition={statusBarRef.current?.getScorePosition() || null}
+        isMobileLayout={statusBarRef.current?.isMobileLayout() || false}
         onComplete={() => setFlyingScore(prev => ({ score: 0, visible: false, key: prev.key }))}
       />
       
@@ -792,6 +806,8 @@ export default function Game() {
         key={`readiness-${flyingReadiness.key}`}
         readiness={flyingReadiness.readiness}
         visible={flyingReadiness.visible}
+        targetPosition={statusBarRef.current?.getReadinessPosition() || null}
+        isMobileLayout={statusBarRef.current?.isMobileLayout() || false}
         onComplete={() => setFlyingReadiness(prev => ({ readiness: 0, visible: false, key: prev.key }))}
       />
     </div>
