@@ -83,12 +83,18 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
   return (
     <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-4 relative z-30">
       <div className="max-w-5xl mx-auto flex items-center justify-between">
-        {/* Left side: Time and Score */}
+        {/* Left side: Time and Deck Size */}
         <div className="flex items-center gap-8">
           {/* Timer with fixed width */}
           <div className="text-center">
-            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Time</div>
+            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Countdown</div>
             <div className="text-2xl font-bold text-gray-800 font-mono w-20">{formatTime(timeRemaining)}</div>
+          </div>
+
+          {/* Deck Size */}
+          <div className="text-center">
+            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">QUEUE</div>
+            <div className="text-2xl font-bold text-blue-600 min-w-[60px]">{deckSize}</div>
           </div>
 
           {/* Score */}
@@ -109,12 +115,6 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
             >
               {displayScore.toLocaleString()}
             </div>
-          </div>
-
-          {/* Deck Size */}
-          <div className="text-center">
-            <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">QUEUE</div>
-            <div className="text-2xl font-bold text-blue-600 min-w-[60px]">{deckSize}</div>
           </div>
         </div>
 

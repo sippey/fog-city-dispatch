@@ -61,7 +61,7 @@ export function calculateFinalScore(baseScore: number, storyProgress: StoryArcPr
   
   Object.entries(storyProgress).forEach(([arcName, progress]) => {
     if (progress.isCompleted) {
-      storyBonus += baseScore * (progress.multiplier - 1)
+      storyBonus += 100 // Flat 100 points per completed story
       completedArcs.push(arcName)
     }
   })

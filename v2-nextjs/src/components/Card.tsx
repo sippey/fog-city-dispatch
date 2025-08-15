@@ -126,7 +126,12 @@ export default function Card({ card }: CardProps) {
             )}
             {card.isPowerup && (
               <span className="inline-flex items-center px-3 py-1 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-amber-600">
-                ⚡ Powerup +{card.powerupValue}
+                {card.responses.accept?.readiness && card.responses.accept.readiness > 0 
+                  ? `⚡ +${card.responses.accept.readiness} Readiness`
+                  : card.responses.accept?.capacity && card.responses.accept.capacity > 0
+                  ? `🔧 +${card.responses.accept.capacity} Capacity`
+                  : `⚡ Powerup +${card.powerupValue}`
+                }
               </span>
             )}
           </div>
@@ -219,9 +224,18 @@ export default function Card({ card }: CardProps) {
               <div className="bg-gradient-to-r from-amber-100 to-amber-200 p-6 rounded-3xl border-4 border-amber-500">
                 <div className="flex justify-between items-center mb-4 p-4 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl">
                   <span className="text-white font-bold text-lg">Accept Powerup:</span>
-                  <span className="text-amber-900 font-extrabold text-xl px-4 py-2 bg-emerald-100 rounded-full border-2 border-emerald-300">
-                    +{card.powerupValue} Readiness
-                  </span>
+                  <div className="flex gap-3">
+                    {card.responses.accept?.readiness && card.responses.accept.readiness > 0 && (
+                      <span className="text-amber-900 font-extrabold text-xl px-4 py-2 bg-emerald-100 rounded-full border-2 border-emerald-300">
+                        ⚡ +{card.responses.accept.readiness} Readiness
+                      </span>
+                    )}
+                    {card.responses.accept?.capacity && card.responses.accept.capacity > 0 && (
+                      <span className="text-amber-900 font-extrabold text-xl px-4 py-2 bg-blue-100 rounded-full border-2 border-blue-300">
+                        🔧 +{card.responses.accept.capacity} Capacity
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="text-center p-3">
                   <span className="text-amber-900 text-lg font-semibold italic">

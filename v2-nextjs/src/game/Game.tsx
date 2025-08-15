@@ -18,24 +18,47 @@ interface GameConfig {
   deckSize: number
   gameTime: number // in seconds
   startingReadiness: number
+  startingCapacity: number
   recycleIgnoredCards: boolean
   readinessGainPerSecond: number
 }
 
 const DEFAULT_CONFIG: GameConfig = {
-  deckSize: 50, // Default to 50 cards
-  gameTime: 300, // 5 minutes
-  startingReadiness: 100,
+  deckSize: 50,
+  gameTime: 180, // 3 minutes
+  startingReadiness: 50,
+  startingCapacity: 100,
   recycleIgnoredCards: true,
   readinessGainPerSecond: 1
 }
 
 export default function Game() {
-  const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE)
+  // Always use default config for root route - clear any custom settings
+  const getInitialConfig = (): GameConfig => {
+    if (typeof window !== 'undefined') {
+      // Clear any custom game config when accessing root route directly
+      sessionStorage.removeItem('gameConfig')
+    }
+    return DEFAULT_CONFIG
+  }
+
+  const [gameConfig] = useState<GameConfig>(getInitialConfig)
+  
+  // Initialize game state with custom starting values
+  const getInitialGameState = (): GameState => ({
+    ...INITIAL_GAME_STATE,
+    showIntro: true, // Show intro screen
+    isGameActive: false, // Don't start until user clicks play
+    readiness: gameConfig.startingReadiness,
+    capacity: gameConfig.startingCapacity,
+    timeRemaining: gameConfig.gameTime,
+    storyProgress: initializeStoryProgress()
+  })
+  
+  const [gameState, setGameState] = useState<GameState>(getInitialGameState)
   const [cardDeck, setCardDeck] = useState<DispatchCard[]>([])
   const [currentSwipeDirection, setCurrentSwipeDirection] = useState<'left' | 'right' | 'up' | null>(null)
   const [isAnimatingSwipe, setIsAnimatingSwipe] = useState(false)
-  const [gameConfig, setGameConfig] = useState<GameConfig>(DEFAULT_CONFIG)
   const [flyingScore, setFlyingScore] = useState<{ score: number; visible: boolean; key: number }>({ score: 0, visible: false, key: 0 })
   const [flyingReadiness, setFlyingReadiness] = useState<{ readiness: number; visible: boolean; key: number }>({ readiness: 0, visible: false, key: 0 })
 
@@ -49,87 +72,131 @@ export default function Game() {
     // Group cards by type
     const zodiacCards = allCards.filter(card => card.storyArc === 'Zodiac')
     const powerupCards = allCards.filter(card => card.isPowerup === true)
-    const otherCards = allCards.filter(card => 
-      card.storyArc !== 'Zodiac' && !card.isPowerup
+    const randomCards = allCards.filter(card => 
+      card.storyArc === 'Random'
     )
 
-    // Start with all Zodiac cards (8 cards) and at least 1 powerup
+    // Calculate how many of each type we need
+    const powerupCount = Math.floor(targetCount * 0.1) // 10% powerups
+    const zodiacCount = zodiacCards.length // All Zodiac cards
+    const randomCount = targetCount - powerupCount - zodiacCount // Rest are random
+    
     const selectedCards: DispatchCard[] = []
     
-    // Add all Zodiac cards
-    selectedCards.push(...zodiacCards)
+    // Add all Zodiac cards (sorted by arcNumber to maintain order)
+    const sortedZodiacCards = [...zodiacCards].sort((a, b) => {
+      const aNum = parseInt(a.arcNumber || '0')
+      const bNum = parseInt(b.arcNumber || '0') 
+      return aNum - bNum
+    })
+    selectedCards.push(...sortedZodiacCards)
     
-    // Add at least one powerup if available
-    if (powerupCards.length > 0) {
-      selectedCards.push(powerupCards[Math.floor(Math.random() * powerupCards.length)])
-    }
+    // Add random selection of powerup cards
+    const shuffledPowerups = [...powerupCards].sort(() => Math.random() - 0.5)
+    selectedCards.push(...shuffledPowerups.slice(0, powerupCount))
     
-    // Calculate how many more cards we need
-    const remainingSlots = targetCount - selectedCards.length
-    
-    if (remainingSlots > 0) {
-      // Combine remaining powerups and other cards
-      const remainingPowerups = powerupCards.filter(p => !selectedCards.includes(p))
-      const availableCards = [...remainingPowerups, ...otherCards]
-      
-      // Shuffle and select random cards to fill remaining slots
-      const shuffled = availableCards.sort(() => Math.random() - 0.5)
-      selectedCards.push(...shuffled.slice(0, remainingSlots))
-    }
+    // Add random selection of random cards
+    const shuffledRandomCards = [...randomCards].sort(() => Math.random() - 0.5)
+    selectedCards.push(...shuffledRandomCards.slice(0, randomCount))
     
     return selectedCards
   }
 
-  // Smart shuffle function that maintains story order
+  // Smart shuffle function that maintains Zodiac order and distributes powerups
   const smartShuffle = (cards: DispatchCard[]): DispatchCard[] => {
-    // Group cards by type
-    const randomCards = cards.filter(card => card.storyArc === 'Random')
+    // Separate cards by type
+    const zodiacCards = cards.filter(card => card.storyArc === 'Zodiac')
     const powerupCards = cards.filter(card => card.isPowerup === true)
+    const randomCards = cards.filter(card => card.storyArc === 'Random')
     
-    // Group story cards by arc and sort by arcNumber within each arc
-    const storyArcs = new Map<string, DispatchCard[]>()
-    cards.filter(card => card.storyArc !== 'Random' && !card.isPowerup).forEach(card => {
-      if (!storyArcs.has(card.storyArc)) {
-        storyArcs.set(card.storyArc, [])
+    // Zodiac cards should already be sorted from selectCards, but ensure order
+    const sortedZodiacCards = [...zodiacCards].sort((a, b) => {
+      const aNum = parseInt(a.arcNumber || '0')
+      const bNum = parseInt(b.arcNumber || '0') 
+      return aNum - bNum
+    })
+    
+    // Create base deck with evenly distributed Zodiac cards
+    const result: DispatchCard[] = new Array(cards.length)
+    
+    // Calculate positions for Zodiac cards (evenly distributed)
+    const zodiacPositions: number[] = []
+    if (sortedZodiacCards.length > 0) {
+      const spacing = Math.floor(cards.length / sortedZodiacCards.length)
+      for (let i = 0; i < sortedZodiacCards.length; i++) {
+        zodiacPositions.push(Math.floor(spacing * i + spacing / 2))
       }
-      storyArcs.get(card.storyArc)!.push(card)
-    })
-    
-    // Sort each story arc by arcNumber
-    storyArcs.forEach(arc => {
-      arc.sort((a, b) => {
-        const aNum = parseInt(a.arcNumber || '0')
-        const bNum = parseInt(b.arcNumber || '0') 
-        return aNum - bNum
-      })
-    })
-    
-    // Shuffle random cards and powerup cards
-    const shuffledRandom = [...randomCards].sort(() => Math.random() - 0.5)
-    const shuffledPowerups = [...powerupCards].sort(() => Math.random() - 0.5)
-    
-    // Convert story arcs to array and shuffle the order of arcs
-    const shuffledStoryArcs = Array.from(storyArcs.values()).sort(() => Math.random() - 0.5)
-    
-    // Interleave all cards
-    const result: DispatchCard[] = []
-    const allSources = [shuffledRandom, shuffledPowerups, ...shuffledStoryArcs]
-    const indices = new Array(allSources.length).fill(0)
-    
-    while (result.length < cards.length) {
-      // Pick a random source that still has cards
-      const availableSources = allSources
-        .map((source, i) => ({ source, index: i }))
-        .filter(({ source, index }) => indices[index] < source.length)
-      
-      if (availableSources.length === 0) break
-      
-      const chosen = availableSources[Math.floor(Math.random() * availableSources.length)]
-      result.push(chosen.source[indices[chosen.index]])
-      indices[chosen.index]++
     }
     
-    return result
+    // Place Zodiac cards in their calculated positions
+    sortedZodiacCards.forEach((card, index) => {
+      result[zodiacPositions[index]] = card
+    })
+    
+    // Get available positions (not occupied by Zodiac cards)
+    const availablePositions = []
+    for (let i = 0; i < cards.length; i++) {
+      if (!result[i]) {
+        availablePositions.push(i)
+      }
+    }
+    
+    // Shuffle available positions
+    availablePositions.sort(() => Math.random() - 0.5)
+    
+    // Create combined pool of random and powerup cards
+    const nonZodiacCards = [...randomCards, ...powerupCards]
+    nonZodiacCards.sort(() => Math.random() - 0.5)
+    
+    // Place cards ensuring no consecutive powerups and no powerup at start
+    let placedCards = 0
+    for (const position of availablePositions) {
+      if (placedCards >= nonZodiacCards.length) break
+      
+      const card = nonZodiacCards[placedCards]
+      
+      // Check constraints
+      const isPowerup = card.isPowerup
+      const isFirstPosition = position === 0
+      const prevCard = position > 0 ? result[position - 1] : null
+      const nextCard = position < result.length - 1 ? result[position + 1] : null
+      
+      // Skip if this would violate constraints
+      if ((isPowerup && isFirstPosition) || 
+          (isPowerup && prevCard?.isPowerup) ||
+          (isPowerup && nextCard?.isPowerup)) {
+        // Try to find a non-powerup card to place here
+        let swapIndex = -1
+        for (let i = placedCards + 1; i < nonZodiacCards.length; i++) {
+          const swapCard = nonZodiacCards[i]
+          if (!swapCard.isPowerup || 
+              (!isFirstPosition && !prevCard?.isPowerup && !nextCard?.isPowerup)) {
+            swapIndex = i
+            break
+          }
+        }
+        
+        if (swapIndex !== -1) {
+          // Swap cards
+          const temp = nonZodiacCards[placedCards]
+          nonZodiacCards[placedCards] = nonZodiacCards[swapIndex]
+          nonZodiacCards[swapIndex] = temp
+        }
+      }
+      
+      result[position] = nonZodiacCards[placedCards]
+      placedCards++
+    }
+    
+    // Fill any remaining empty slots
+    for (let i = 0; i < result.length; i++) {
+      if (!result[i] && placedCards < nonZodiacCards.length) {
+        result[i] = nonZodiacCards[placedCards]
+        placedCards++
+      }
+    }
+    
+    return result.filter(card => card !== undefined)
   }
 
   // Initialize game
@@ -141,7 +208,7 @@ export default function Game() {
       ...prev,
       deckSize: shuffled.length
     }))
-  }, [gameConfig.deckSize])
+  }, [])
 
   // Game timer
   useEffect(() => {
@@ -334,19 +401,10 @@ export default function Game() {
   }
 
   const handleStartGame = () => {
-    // Apply configuration and start game
-    const selectedCards = selectCards(cardsData, gameConfig.deckSize)
-    const shuffled = smartShuffle(selectedCards)
-    setCardDeck(shuffled)
-    
     setGameState(prev => ({
       ...prev,
       showIntro: false,
-      isGameActive: true,
-      storyProgress: initializeStoryProgress(),
-      readiness: gameConfig.startingReadiness,
-      timeRemaining: gameConfig.gameTime,
-      deckSize: shuffled.length
+      isGameActive: true
     }))
   }
 
@@ -386,13 +444,19 @@ export default function Game() {
         cardsHandled={gameState.cardsHandled}
         storyProgress={gameState.storyProgress}
         onPlayAgain={() => {
-          // Reset to defaults
-          setGameConfig(DEFAULT_CONFIG)
-          const shuffled = smartShuffle(cardsData)
+          // Reset game state to show intro again
+          const selectedCards = selectCards(cardsData, gameConfig.deckSize)
+          const shuffled = smartShuffle(selectedCards)
           setCardDeck(shuffled)
           setGameState({
             ...INITIAL_GAME_STATE,
-            deckSize: shuffled.length
+            showIntro: true,
+            isGameActive: false,
+            readiness: gameConfig.startingReadiness,
+            capacity: gameConfig.startingCapacity,
+            timeRemaining: gameConfig.gameTime,
+            deckSize: shuffled.length,
+            storyProgress: initializeStoryProgress()
           })
           // Reset flying score and readiness state
           setFlyingScore({ score: 0, visible: false, key: 0 })
@@ -436,125 +500,15 @@ export default function Game() {
             Fog City Dispatch
           </h1>
           
-          {/* Game Configuration Options */}
-          <div className="bg-black/50 backdrop-blur-sm rounded-2xl p-8 mb-12 max-w-2xl w-full">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-white">Game Settings</h2>
-              <Link 
-                href="/card-browser"
-                className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors duration-200 flex items-center gap-1"
-              >
-                📚 Browse All Cards
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Deck Size */}
-              <div className="text-left">
-                <label className="text-sm font-medium text-gray-300 block mb-2">
-                  Number of Cards
-                </label>
-                <select
-                  value={gameConfig.deckSize}
-                  onChange={(e) => setGameConfig(prev => ({ ...prev, deckSize: Number(e.target.value) }))}
-                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                >
-                  {(() => {
-                    const maxCards = cardsData.length
-                    const options = []
-                    // Generate options from 10 to max in increments of 10
-                    for (let i = 10; i <= Math.floor(maxCards / 10) * 10; i += 10) {
-                      options.push(i)
-                    }
-                    // Add the actual max if it's not already included
-                    if (!options.includes(maxCards)) {
-                      options.push(maxCards)
-                    }
-                    return options.map(size => (
-                      <option key={size} value={size}>
-                        {size === maxCards ? `${size} (All cards)` : size}
-                      </option>
-                    ))
-                  })()}
-                </select>
-              </div>
-
-              {/* Game Time */}
-              <div className="text-left">
-                <label className="text-sm font-medium text-gray-300 block mb-2">
-                  Time to Play
-                </label>
-                <select
-                  value={gameConfig.gameTime}
-                  onChange={(e) => setGameConfig(prev => ({ ...prev, gameTime: Number(e.target.value) }))}
-                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                >
-                  <option value={60}>1 minute</option>
-                  <option value={120}>2 minutes</option>
-                  <option value={180}>3 minutes</option>
-                  <option value={240}>4 minutes</option>
-                  <option value={300}>5 minutes</option>
-                </select>
-              </div>
-
-              {/* Starting Readiness */}
-              <div className="text-left">
-                <label className="text-sm font-medium text-gray-300 block mb-2">
-                  Starting Readiness
-                </label>
-                <select
-                  value={gameConfig.startingReadiness}
-                  onChange={(e) => setGameConfig(prev => ({ ...prev, startingReadiness: Number(e.target.value) }))}
-                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                >
-                  {Array.from({ length: 21 }, (_, i) => i * 10).map(readiness => (
-                    <option key={readiness} value={readiness}>
-                      {readiness}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Recycle Ignored Cards */}
-              <div className="text-left">
-                <label className="text-sm font-medium text-gray-300 block mb-2">
-                  Recycle Ignored Cards
-                </label>
-                <select
-                  value={gameConfig.recycleIgnoredCards ? 'yes' : 'no'}
-                  onChange={(e) => setGameConfig(prev => ({ ...prev, recycleIgnoredCards: e.target.value === 'yes' }))}
-                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                >
-                  <option value="yes">Yes - Return to deck</option>
-                  <option value="no">No - Remove from game</option>
-                </select>
-              </div>
-
-              {/* Readiness Gain Per Second */}
-              <div className="text-left">
-                <label className="text-sm font-medium text-gray-300 block mb-2">
-                  Readiness Gain Per Second
-                </label>
-                <select
-                  value={gameConfig.readinessGainPerSecond}
-                  onChange={(e) => setGameConfig(prev => ({ ...prev, readinessGainPerSecond: Number(e.target.value) }))}
-                  className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-                >
-                  {Array.from({ length: 10 }, (_, i) => i + 1).map(gain => (
-                    <option key={gain} value={gain}>
-                      {gain} {gain === 1 ? 'point' : 'points'}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
+          <p className="text-xl text-gray-300 font-medium mb-12 max-w-2xl leading-relaxed">
+            San Francisco has gone insane. It's your job to keep cool.
+          </p>
           
           <button
             onClick={handleStartGame}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+            className="bg-green-600 hover:bg-red-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
           >
-            Start Dispatch
+            Tap to Play
           </button>
         </div>
       </div>
@@ -562,7 +516,7 @@ export default function Game() {
   }
 
   return (
-    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden" style={{ backgroundColor: '#666666' }}>
+    <div className="min-h-screen text-gray-800 font-sans flex flex-col relative overflow-hidden bg-gradient-to-b from-gray-700 via-gray-600 to-gray-800">
       
       <StatusBar
         readiness={gameState.readiness}

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { StoryArcProgress } from '../types'
 import { calculateFinalScore } from '../gameLogic'
 
@@ -16,10 +17,62 @@ export default function GameResults({
 }: GameResultsProps) {
   const { storyBonus, totalScore, completedArcs } = calculateFinalScore(baseScore, storyProgress)
   
-  const getArcIcon = (progress: { isCompleted: boolean; cardsResponded: number }) => {
-    if (progress.isCompleted) return '✅'
-    if (progress.cardsResponded > 0) return '🔶'
-    return '❌'
+  const getRankInfo = (score: number) => {
+    if (score < 500) {
+      return { 
+        rank: 'Trainee', 
+        nextRank: 'Junior Operator', 
+        pointsToNext: 500 - score 
+      }
+    } else if (score < 800) {
+      return { 
+        rank: 'Junior Operator', 
+        nextRank: 'Dispatcher', 
+        pointsToNext: 800 - score 
+      }
+    } else if (score < 1100) {
+      return { 
+        rank: 'Dispatcher', 
+        nextRank: 'Senior Dispatcher', 
+        pointsToNext: 1100 - score 
+      }
+    } else if (score < 1400) {
+      return { 
+        rank: 'Senior Dispatcher', 
+        nextRank: 'Dispatch Commissioner', 
+        pointsToNext: 1400 - score 
+      }
+    } else {
+      return { 
+        rank: 'Dispatch Commissioner', 
+        nextRank: null, 
+        pointsToNext: 0 
+      }
+    }
+  }
+  
+  const rankInfo = getRankInfo(totalScore)
+  
+  const getArcDisplayName = (arcName: string) => {
+    switch (arcName) {
+      case 'Zodiac':
+        return 'Zodiac Copy Cat Serial Killer'
+      case 'Patty Hearst':
+        return 'Echoes of Patty Hearst'
+      default:
+        return arcName
+    }
+  }
+
+  const getArcDescription = (arcName: string) => {
+    switch (arcName) {
+      case 'Zodiac':
+        return 'A copycat killer has been leaving cryptic messages and symbols around the city, mimicking the infamous 1960s Zodiac murders. Your dispatching connected the dots between seemingly unrelated incidents across different neighborhoods.'
+      case 'Patty Hearst':
+        return 'A modern kidnapping and radicalization case has emerged, echoing the 1974 Symbionese Liberation Army incident. Your careful handling of related calls helped authorities track down this contemporary conspiracy.'
+      default:
+        return 'You uncovered a criminal pattern through your expert dispatching decisions.'
+    }
   }
 
   const getArcStatus = (progress: { cardsResponded: number; cardsIgnored: number; totalCards: number; isCompleted: boolean; multiplier: number }) => {
@@ -62,47 +115,58 @@ export default function GameResults({
             SHIFT COMPLETE
           </h1>
           
-          <div className="bg-black/60 backdrop-blur-sm p-6 rounded-2xl border border-white/20 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* 1. Shift Score / Calls Processed */}
+          <div className="bg-black/80 p-8 rounded-lg mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="text-center">
-                <div className="text-gray-300 text-sm font-semibold uppercase tracking-wide mb-2">Final Score</div>
-                <div className="text-3xl font-bold text-white">{baseScore.toLocaleString()}</div>
+                <div className="text-gray-400 text-sm uppercase tracking-wide mb-2">Shift Score</div>
+                <div className="text-4xl font-bold text-white">{baseScore.toLocaleString()}</div>
               </div>
               <div className="text-center">
-                <div className="text-gray-300 text-sm font-semibold uppercase tracking-wide mb-2">Cards Handled</div>
-                <div className="text-3xl font-bold text-white">{cardsHandled}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-gray-300 text-sm font-semibold uppercase tracking-wide mb-2">Stories Discovered</div>
-                <div className="text-3xl font-bold text-white">{completedArcs.length}</div>
+                <div className="text-gray-400 text-sm uppercase tracking-wide mb-2">Calls Processed</div>
+                <div className="text-4xl font-bold text-white">{cardsHandled}</div>
               </div>
             </div>
           </div>
 
+          {/* 2. Crimes referred to the major case squad */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-6 uppercase tracking-wide drop-shadow-lg">
-              STORY ARCS UNCOVERED
+            <h2 className="text-2xl font-bold text-white mb-4 uppercase tracking-wide">
+              CRIMES REFERRED TO THE MAJOR CASE SQUAD
             </h2>
             
-            <div className="bg-black/60 backdrop-blur-sm p-6 rounded-2xl border border-white/20 mb-5">
-              <div className="space-y-4">
-                {Object.entries(storyProgress).map(([arcName, progress]) => (
-                  <div key={arcName} className="flex items-center gap-4 p-4 bg-white/10 rounded-xl border border-white/20">
-                    <span className="text-2xl min-w-8">{getArcIcon(progress)}</span>
-                    <span className="flex-1 text-left text-white font-semibold">{arcName}</span>
-                    <span className="text-gray-300 font-mono text-sm font-medium">{getArcStatus(progress)}</span>
-                  </div>
-                ))}
-              </div>
+            {/* 3. List crimes or "None" */}
+            <div className="bg-black/80 p-6 rounded-lg mb-6">
+              {completedArcs.length > 0 ? (
+                <div className="space-y-6">
+                  {Object.entries(storyProgress)
+                    .filter(([_, progress]) => progress.isCompleted)
+                    .map(([arcName, progress]) => (
+                      <div key={arcName} className="border-b border-gray-600 last:border-b-0 pb-4 last:pb-0">
+                        <div className="mb-2 text-left">
+                          <span className="text-white font-bold text-lg">{getArcDisplayName(arcName)}</span>
+                        </div>
+                        <p className="text-gray-300 leading-relaxed text-left text-sm">
+                          {getArcDescription(arcName)}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="text-center text-gray-400 text-xl">
+                  None
+                </div>
+              )}
             </div>
 
+            {/* 4. Squad bonus and total */}
             {storyBonus > 0 && (
-              <div className="bg-gradient-to-r from-amber-600/80 to-amber-700/80 backdrop-blur-sm p-6 rounded-2xl border-2 border-amber-400 mb-5">
-                <div className="flex justify-between items-center mb-4 text-lg font-semibold text-amber-100">
-                  <span>Story Bonus:</span>
+              <div className="bg-black/80 p-6 rounded-lg mb-6">
+                <div className="flex justify-between items-center mb-4 text-lg text-white">
+                  <span>Major Case Squad Bonus:</span>
                   <span>+{storyBonus.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center text-2xl font-bold text-white border-t-2 border-amber-400 pt-4">
+                <div className="flex justify-between items-center text-2xl font-bold text-white border-t border-gray-600 pt-4">
                   <span>TOTAL SCORE:</span>
                   <span>{totalScore.toLocaleString()}</span>
                 </div>
@@ -110,8 +174,28 @@ export default function GameResults({
             )}
           </div>
 
+          {/* 5. Rank */}
+          <div className="bg-black/80 p-8 rounded-lg mb-8 text-center">
+            <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-wide">
+              DISPATCHER RANK
+            </h2>
+            <div className="text-5xl font-bold text-white mb-4">
+              {rankInfo.rank}
+            </div>
+            {rankInfo.nextRank && (
+              <div className="text-gray-300">
+                <span className="font-medium">{rankInfo.pointsToNext} more points</span> needed for <span className="text-white font-semibold">{rankInfo.nextRank}</span>
+              </div>
+            )}
+            {!rankInfo.nextRank && (
+              <div className="text-white font-medium">
+                🏆 Maximum rank achieved!
+              </div>
+            )}
+          </div>
+
           <button 
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-6 px-12 rounded-2xl text-2xl uppercase tracking-wide shadow-2xl transition-all duration-200 transform hover:scale-105"
             onClick={onPlayAgain}
           >
             PLAY AGAIN

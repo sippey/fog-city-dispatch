@@ -40,7 +40,7 @@ export default function FlyingScore({ score, visible, onComplete }: FlyingScoreP
             }}
             animate={{ 
               top: '2.5rem', // Position of score in status bar
-              left: '11rem', // Approximate left position of score in status bar
+              left: '17rem', // Updated position after moving score right of deck size
               x: 0,
               y: 0,
               scale: 1,
@@ -83,7 +83,7 @@ export default function FlyingScore({ score, visible, onComplete }: FlyingScoreP
               }}
               animate={{ 
                 top: '2.5rem',
-                left: '11rem',
+                left: '17rem',
                 x: 0,
                 y: 0,
                 scale: 0,
