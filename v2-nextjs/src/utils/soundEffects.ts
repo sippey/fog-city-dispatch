@@ -10,17 +10,14 @@ const getAudioContext = (): AudioContext | null => {
   if (!audioContext) {
     try {
       audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
-    } catch (error) {
-      console.log('Web Audio API not supported:', error)
+    } catch {
       return null
     }
   }
   
   // Handle suspended context (autoplay policy)
   if (audioContext.state === 'suspended') {
-    audioContext.resume().catch(error => {
-      console.log('Could not resume audio context:', error)
-    })
+    audioContext.resume().catch(() => {})
   }
   
   return audioContext
@@ -78,8 +75,8 @@ export const playTapSound = (): void => {
       gainNode.disconnect()
       filterNode.disconnect()
     }
-  } catch (error) {
-    console.log('Could not play tap sound:', error)
+  } catch {
+    // Silently fail
   }
 }
 
@@ -109,9 +106,8 @@ export const preloadSwipeSounds = async (): Promise<void> => {
       })
       
       swipeSounds[key] = audio
-      console.log(`Preloaded swipe sound: ${key}`)
-    } catch (error) {
-      console.log(`Could not preload swipe sound ${key}:`, error)
+    } catch {
+      // Silently fail
     }
   }
 }
@@ -120,17 +116,14 @@ export const preloadSwipeSounds = async (): Promise<void> => {
 export const playSwipeSound = (type: 'ignore' | 'basic' | 'maximum' | 'powerup'): void => {
   const audio = swipeSounds[type]
   if (!audio) {
-    console.log(`Swipe sound not loaded: ${type}`)
     return
   }
   
   try {
     // Reset to beginning in case it was played recently
     audio.currentTime = 0
-    audio.play().catch(error => {
-      console.log(`Could not play swipe sound ${type}:`, error)
-    })
-  } catch (error) {
-    console.log(`Error playing swipe sound ${type}:`, error)
+    audio.play().catch(() => {})
+  } catch {
+    // Silently fail
   }
 }
