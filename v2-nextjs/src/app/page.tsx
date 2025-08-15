@@ -1,9 +1,5 @@
-import Game from '@/game/Game'
+import ShowcasePage from './showcase/page'
 
 export default function Home() {
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200">
-      <Game />
-    </main>
-  )
+  return <ShowcasePage />
 }
