@@ -9,17 +9,69 @@ interface StatusBarProps {
 }
 
 export default function StatusBar({ readiness, capacity, score, deckSize, timeRemaining }: StatusBarProps) {
-  const [isFlashing, setIsFlashing] = useState(false)
+  const [isScoreAnimating, setIsScoreAnimating] = useState(false)
+  const [displayScore, setDisplayScore] = useState(score)
   const [prevScore, setPrevScore] = useState(score)
+
+  // Update display values immediately if not animating (for initial render and edge cases)
+  useEffect(() => {
+    if (!isScoreAnimating) {
+      setDisplayScore(score)
+    }
+  }, [score, isScoreAnimating])
 
   useEffect(() => {
     if (score !== prevScore) {
-      setIsFlashing(true)
+      setIsScoreAnimating(true)
+      
+      // Animate counting from old score to new score over 400ms
+      const startScore = prevScore
+      const endScore = score
+      const difference = endScore - startScore
+      const duration = 400 // 0.4 seconds for quick but visible counting
+      
+      // Cap the steps to prevent too fast animations
+      const maxSteps = Math.min(Math.abs(difference), 15) // Max 15 steps
+      const steps = Math.max(1, maxSteps) // At least 1 step
+      const stepSize = difference / steps // Proportional step size
+      const stepDuration = Math.max(25, duration / steps) // At least 25ms per step
+      
+      let currentStep = 0
+      let isActive = true
+      
+      const animate = () => {
+        const countingInterval = setInterval(() => {
+          if (!isActive) {
+            clearInterval(countingInterval)
+            return
+          }
+          
+          currentStep++
+          
+          if (currentStep < steps) {
+            const newDisplayScore = Math.round(startScore + (stepSize * currentStep))
+            setDisplayScore(newDisplayScore)
+          } else {
+            clearInterval(countingInterval)
+            setDisplayScore(endScore)
+            setIsScoreAnimating(false)
+          }
+        }, stepDuration)
+        
+        return countingInterval
+      }
+      
+      const interval = animate()
       setPrevScore(score)
-      const timer = setTimeout(() => setIsFlashing(false), 600)
-      return () => clearTimeout(timer)
+      
+      return () => {
+        isActive = false
+        if (interval) clearInterval(interval)
+        setIsScoreAnimating(false)
+      }
     }
-  }, [score, prevScore])
+  }, [score])
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
@@ -42,11 +94,21 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
           {/* Score */}
           <div className="text-center">
             <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">Score</div>
-            <div className={`text-2xl font-bold min-w-[80px] transition-all duration-300 ${
-              isFlashing ? 'animate-pulse scale-110' : ''
-            } ${
-              score < 0 ? 'text-red-600' : 'text-emerald-600'
-            }`}>{score.toLocaleString()}</div>
+            <div 
+              className={`text-2xl font-bold min-w-[80px] transition-all duration-100 ${
+                displayScore < 0 ? 'text-red-600' : 'text-emerald-600'
+              }`}
+              style={{
+                textShadow: isScoreAnimating 
+                  ? displayScore < 0 
+                    ? '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.6)'
+                    : '0 0 20px rgba(34, 197, 94, 0.8), 0 0 40px rgba(34, 197, 94, 0.6)'
+                  : 'none',
+                transform: isScoreAnimating ? 'scale(1.1)' : 'scale(1)'
+              }}
+            >
+              {displayScore.toLocaleString()}
+            </div>
           </div>
 
           {/* Deck Size */}
@@ -60,12 +122,17 @@ export default function StatusBar({ readiness, capacity, score, deckSize, timeRe
         <div className="flex-1 max-w-sm">
           <div className="flex justify-between text-sm font-medium mb-1">
             <span className="text-gray-700">Readiness</span>
-            <span className="text-gray-700 font-mono">{readiness}/{capacity}</span>
+            <span className="text-gray-700 font-mono">
+              {readiness}/{capacity}
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div 
-              className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${readinessPercentage}%` }}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full"
+              style={{ 
+                width: `${readinessPercentage}%`,
+                transition: 'width 400ms ease-out' // Smooth transition for all readiness changes
+              }}
             />
           </div>
         </div>

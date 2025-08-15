@@ -466,28 +466,28 @@ export default function GameCard({ card, currentReadiness, onSwipe, onAcceptPowe
         ) : (
           /* Dramatic Score Display */
           <div className="flex-1 flex flex-col justify-center items-center text-center space-y-8" style={{ zIndex: 2 }}>
-            <div className="text-2xl font-black text-white uppercase tracking-widest drop-shadow-lg">
+            <div className="text-2xl font-black text-white uppercase tracking-widest" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
               {currentDirection === 'left' ? 'Ignoring Call' : 
-               currentDirection === 'right' ? 'Basic Response' : 
-               'Maximum Response'}
+               currentDirection === 'right' ? 'Dispatch' : 
+               'Priority Dispatch'}
             </div>
             
             {activeResponse && (
               <>
                 <div className="space-y-6">
-                  <div className={`text-6xl font-extrabold drop-shadow-lg ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`}>
+                  <div className={`text-6xl font-extrabold ${activeResponse.readiness < 0 ? 'text-red-400' : 'text-green-400'}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
                     {activeResponse.readiness >= 0 ? '+' : ''}{activeResponse.readiness}
                   </div>
-                  <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
+                  <div className="text-lg font-bold text-white uppercase tracking-wide" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
                     Readiness
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <div className={`text-4xl font-extrabold drop-shadow-lg ${activeResponse.score < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                  <div className={`text-4xl font-extrabold ${activeResponse.score < 0 ? 'text-red-400' : 'text-emerald-400'}`} style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
                     {activeResponse.score >= 0 ? '+' : ''}{activeResponse.score}
                   </div>
-                  <div className="text-lg font-bold text-white uppercase tracking-wide drop-shadow-md">
+                  <div className="text-lg font-bold text-white uppercase tracking-wide" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)' }}>
                     Points
                   </div>
                 </div>

@@ -10,6 +10,8 @@ import GameCard from './components/GameCard'
 import StatusBar from './components/StatusBar'
 import OutcomeDisplay from './components/OutcomeDisplay'
 import GameResults from './components/GameResults'
+import FlyingScore from './components/FlyingScore'
+import FlyingReadiness from './components/FlyingReadiness'
 import { initializeStoryProgress, updateStoryProgress } from './gameLogic'
 
 interface GameConfig {
@@ -34,6 +36,8 @@ export default function Game() {
   const [currentSwipeDirection, setCurrentSwipeDirection] = useState<'left' | 'right' | 'up' | null>(null)
   const [isAnimatingSwipe, setIsAnimatingSwipe] = useState(false)
   const [gameConfig, setGameConfig] = useState<GameConfig>(DEFAULT_CONFIG)
+  const [flyingScore, setFlyingScore] = useState<{ score: number; visible: boolean; key: number }>({ score: 0, visible: false, key: 0 })
+  const [flyingReadiness, setFlyingReadiness] = useState<{ readiness: number; visible: boolean; key: number }>({ readiness: 0, visible: false, key: 0 })
 
   // Select cards based on configuration
   const selectCards = (allCards: DispatchCard[], targetCount: number): DispatchCard[] => {
@@ -224,7 +228,26 @@ export default function Game() {
       })
     }
 
-    // Update game state with outcome and story progress
+    // Show flying score animation
+    if (response.score !== 0) {
+      // Trigger the new animation with unique key to force re-render
+      setFlyingScore(prev => ({ 
+        score: response.score, 
+        visible: true, 
+        key: prev.key + 1 
+      }))
+    }
+
+    // Show flying readiness animation
+    if (response.readiness !== 0) {
+      setFlyingReadiness(prev => ({ 
+        readiness: response.readiness, 
+        visible: true, 
+        key: prev.key + 1 
+      }))
+    }
+
+    // Update game state with outcome and story progress, but delay score/readiness updates
     setGameState(prev => {
       const newDeckSize = responseType === 'ignore' && gameConfig.recycleIgnoredCards 
         ? prev.deckSize 
@@ -237,8 +260,7 @@ export default function Game() {
 
       return {
         ...prev,
-        readiness: Math.min(prev.capacity, prev.readiness + cost),
-        score: prev.score + response.score,
+        // Don't update readiness and score immediately - let animations "deliver" them
         capacity: prev.capacity + response.capacity,
         cardsHandled: prev.cardsHandled + 1,
         showOutcome: true,
@@ -249,12 +271,31 @@ export default function Game() {
         isGameActive: !isLastCard
       }
     })
+
+    // Delay the actual score and readiness updates until animations "arrive" (1 second)
+    setTimeout(() => {
+      setGameState(prev => ({
+        ...prev,
+        readiness: Math.min(prev.capacity, prev.readiness + cost),
+        score: prev.score + response.score
+      }))
+    }, 1000)
   }
 
   const handleAcceptPowerup = () => {
     if (!currentCard?.isPowerup || !currentCard.responses.accept) return
 
     const response = currentCard.responses.accept
+
+    // Powerup cards don't affect score, only readiness - no flying score animation needed
+    // Show flying readiness animation for powerups
+    if (response.readiness !== 0) {
+      setFlyingReadiness(prev => ({ 
+        readiness: response.readiness, 
+        visible: true, 
+        key: prev.key + 1 
+      }))
+    }
 
     // Remove powerup card from deck
     setCardDeck(prev => {
@@ -264,7 +305,7 @@ export default function Game() {
       return newDeck
     })
 
-    // Update game state with powerup bonus
+    // Update game state with powerup bonus, but delay readiness update
     setGameState(prev => {
       const newDeckSize = prev.deckSize - 1
       const isLastCard = newDeckSize === 0
@@ -273,7 +314,7 @@ export default function Game() {
 
       return {
         ...prev,
-        readiness: Math.min(prev.capacity, prev.readiness + response.readiness),
+        // Don't update readiness immediately - let animation "deliver" it
         cardsHandled: prev.cardsHandled + 1,
         showOutcome: true,
         currentOutcome: response.outcome,
@@ -282,6 +323,14 @@ export default function Game() {
         isGameActive: !isLastCard
       }
     })
+
+    // Delay the actual readiness update until animation "arrives" (1 second)
+    setTimeout(() => {
+      setGameState(prev => ({
+        ...prev,
+        readiness: Math.min(prev.capacity, prev.readiness + response.readiness)
+      }))
+    }, 1000)
   }
 
   const handleStartGame = () => {
@@ -345,6 +394,9 @@ export default function Game() {
             ...INITIAL_GAME_STATE,
             deckSize: shuffled.length
           })
+          // Reset flying score and readiness state
+          setFlyingScore({ score: 0, visible: false, key: 0 })
+          setFlyingReadiness({ readiness: 0, visible: false, key: 0 })
         }}
       />
     )
@@ -545,22 +597,22 @@ export default function Game() {
               ? 'bg-gray-500 text-gray-400 opacity-50'
               : `bg-blue-500 text-white ${currentSwipeDirection === 'right' ? 'opacity-100' : 'opacity-70'}`
           }`}>
-            <span className="text-xs font-bold uppercase tracking-wide">BASIC</span>
+            <span className="text-xs font-bold uppercase tracking-wide">DISPATCH</span>
           </div>
         </div>
       </div>
       
       <div className="flex-1 flex flex-col relative z-20">
-        {/* Maximum label at top of card area */}
+        {/* Priority Dispatch label at top of card area */}
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-30">
-          <div className={`px-2 py-2 rounded-b-lg shadow-lg transition-opacity duration-200 w-[150px] text-center ${
+          <div className={`px-3 py-2 rounded-b-lg shadow-lg transition-opacity duration-200 w-[180px] text-center ${
             currentCard?.isPowerup 
               ? 'bg-gray-500 text-gray-300 opacity-40' 
               : !canAffordMaximum
               ? 'bg-gray-500 text-gray-400 opacity-50'
               : `bg-red-500 text-white ${currentSwipeDirection === 'up' ? 'opacity-100' : 'opacity-70'}`
           }`}>
-            <span className="text-xs font-bold uppercase tracking-wide">MAXIMUM</span>
+            <span className="text-xs font-bold uppercase tracking-wide">PRIORITY DISPATCH</span>
           </div>
         </div>
 
@@ -601,6 +653,20 @@ export default function Game() {
         message={gameState.currentOutcome}
         visible={gameState.showOutcome}
         onComplete={handleOutcomeComplete}
+      />
+      
+      <FlyingScore
+        key={`score-${flyingScore.key}`}
+        score={flyingScore.score}
+        visible={flyingScore.visible}
+        onComplete={() => setFlyingScore(prev => ({ score: 0, visible: false, key: prev.key }))}
+      />
+      
+      <FlyingReadiness
+        key={`readiness-${flyingReadiness.key}`}
+        readiness={flyingReadiness.readiness}
+        visible={flyingReadiness.visible}
+        onComplete={() => setFlyingReadiness(prev => ({ readiness: 0, visible: false, key: prev.key }))}
       />
     </div>
   )

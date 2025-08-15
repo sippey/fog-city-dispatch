@@ -29,33 +29,28 @@ export default function OutcomeDisplay({ message, visible, onComplete }: Outcome
     <AnimatePresence mode="wait">
       {visible && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center z-50 bg-black/30 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          transition={{ 
+            type: 'spring', 
+            stiffness: 260, 
+            damping: 20,
+            duration: 0.3
+          }}
         >
-          <motion.div
-            className="bg-white rounded-2xl p-6 max-w-xs mx-4 shadow-2xl"
-            initial={{ scale: 0.5, opacity: 0, y: 50 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.8, opacity: 0, y: -50 }}
-            transition={{ 
-              type: 'spring', 
-              stiffness: 400, 
-              damping: 25,
-              opacity: { duration: 0.2 }
-            }}
-          >
+          <div className="bg-black/90 backdrop-blur-md rounded-2xl px-8 py-5 max-w-sm shadow-2xl border border-white/20">
             <motion.p 
-              className="text-base font-bold text-gray-800 text-center leading-relaxed"
+              className="text-white text-center font-semibold text-lg leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
+              transition={{ delay: 0.15, duration: 0.25 }}
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
             >
               {message}
             </motion.p>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
